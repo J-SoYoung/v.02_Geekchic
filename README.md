@@ -1,50 +1,14 @@
-# React + TypeScript + Vite
+# v.02_Geekchic
+- Vite + React + TypeScript + firebase 프로젝트
+- 제작 기간 : 2024.09.01 - 2024.10. 
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 프로젝트 목표 
+v.01_Geekchic프로젝트에서 아쉬웠던 부분을 리팩터링 하는 내용으로 프로젝트 주제를 잡았습니다. 큰 내용은 아래와 같습니다. 
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
-
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+| 리팩터링 주제 | 상세 내용 |
+| --- | --- |
+| 함수/변수 네이밍, 폴더구조, 타입설정 | • 함수, 변수명 통일성 있게 짓기<br>• 폴더별 컴포넌트 구조 나누기<br>• 중복타입 제거, string 타입 말고 구체화하기 |
+| database 구조 및 데이터 관리 | • 유저 데이터 DB 새로 만들기 ( message, sales, orders, carts )
+• 로드 하는 데이터 최신순 정렬하기<br>• react-query로 데이터 관리하기 |
+| 컴포넌트  | • 기본 컴포넌트 만들기 ( 원자컴포넌트!!!! )<br>• 컴포넌트 더 분리하기<br>• 공통 컴포넌트 사용하기<br>• 유효성 검사하기 ( react-form ) |
+| 개발 순서 | • 기본 데이터 형식 인지<br>• 전체적인 페이지 및 기능 요약<br>• 각 페이지 구현 시 세부 사항 미리 설계 후 진행 |
