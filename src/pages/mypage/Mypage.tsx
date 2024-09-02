@@ -1,3 +1,3 @@
-export const Mypage = () =>{
-  return <div>장바구니 Mypage</div>
-}
+export const Mypage = () => {
+  return <div> Mypage</div>;
+};
