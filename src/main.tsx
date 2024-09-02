@@ -1,10 +1,11 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import App from './App.tsx';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import './index.css';
+// 기본페이지
+import App from './App.tsx';
 import ErrorPage from './ErrorPage.tsx';
-// 페이지
+// url 생성 페이지
 import Home from './pages/home';
 import Products from './pages/products';
 import ProductsDetail from './pages/productsDetail';
@@ -36,14 +37,16 @@ const router = createBrowserRouter([
       { path: '/products', element: <Products /> }, //⭕탭 있는 페이지, 굳이??
       { path: '/products/new', element: <ProductsUpolad /> },
       { path: '/products/detail/:itemId', element: <ProductsDetail /> },
-      { path: '/wishlist/:userId', element: <WishList /> },
+      { path: '/wishlist/', element: <WishList /> }, //⭕임시페이지
+      // { path: '/wishlist/:userId', element: <WishList /> },
       { path: '/orders/:orderId', element: <OrderDetail /> },
       { path: '/payments/:orderId', element: <Payments /> },
       { path: '/used', element: <UsedHome /> },
       { path: '/used/new', element: <UsedProductsUpload /> },
       { path: '/used/detail/:itemId', element: <UsedProductsDetail /> },
       { path: '/message/send/:itemId/:buyerId', element: <UsedMessage /> },
-      { path: '/my/:userId', element: <Mypage /> },
+      { path: '/my', element: <Mypage /> }, //⭕임시페이지
+      // { path: '/my/:userId', element: <Mypage /> },
       { path: '/my/profile/:userId', element: <Profile /> },
       { path: '/my/salesList/:userId', element: <SalesList /> },
       { path: '/my/purchasesList/:userId', element: <PurchaseList /> },

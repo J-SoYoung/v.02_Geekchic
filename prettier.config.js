@@ -1,13 +1,13 @@
 const config = {
-  arrowParens: "always",
+  arrowParens: 'always',
   bracketSpacing: true,
-  embeddedLanguageFormatting: "auto",
+  embeddedLanguageFormatting: 'auto',
   jsxSingleQuote: true,
   printWidth: 120,
   semi: true,
   singleQuote: true,
   tabWidth: 2,
-  trailingComma: "all",
+  trailingComma: 'all',
 };
 
 export default config;
