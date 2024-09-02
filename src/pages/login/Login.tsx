@@ -1,26 +1,28 @@
 import { useState } from 'react';
+// image, icon
+import { FcGoogle } from "react-icons/fc";
 import Loginlogo from '@assets/rootImage/loginLogo.png';
 
 export const Login = () => {
   const [localUser, setLocalUser] = useState(false);
-  
+
   const onClickLogin = () => {};
   const onClickLogout = () => {};
 
   return (
-    <div>
-      <div className='flex justify-center border'>
-        <img className='w-[500px] h-[440px] mb-[80px]' src={Loginlogo} alt='loginLogo' />
-      </div>
-      <div className='mb-[15px]'>
+    <main>
+      <section className='flex justify-center'>
+        <img className='w-[500px] h-[440px] my-16' src={Loginlogo} alt='loginLogo' />
+      </section>
+      <section className='px-20'>
         <button
-          className='bg-white text-black text-[18px] w-[350px] h-[48px] rounded hover:brightness-90 border border-black'
+          className='w-full h-[50px] flex items-center justify-center mb-2 rounded-md bg-white hover:brightness-90 border border-black'
           onClick={!localUser ? onClickLogin : onClickLogout}
         >
-          <img className='inline w-[38px] h-[38px]' src='/public/img/googleLogo.png' alt='googleLogo' />
+          <FcGoogle className='mr-1 w-6 h-6'/>
           {!localUser ? 'Google로 로그인' : 'Google 로그아웃'}
         </button>
-      </div>
-    </div>
+      </section>
+    </main>
   );
 };
