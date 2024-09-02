@@ -26,6 +26,8 @@ import Carts from './pages/carts';
 import UsedMessageList from './pages/usedMessageList';
 import PurchaseDetail from './pages/purchaseDetail';
 
+// ⭕error컴포넌트 활용하기
+// 기본 라우터 뒤에 errorElement: <ErrorPage />, 추가하면 된데. 해당 문구랑 처리 가능한가>
 const router = createBrowserRouter([
   {
     path: '/',
