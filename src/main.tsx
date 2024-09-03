@@ -26,7 +26,7 @@ import Carts from './pages/carts';
 import UsedMessageList from './pages/usedMessageList';
 import PurchaseDetail from './pages/purchaseDetail';
 
-// ⭕error컴포넌트 활용하기
+// ⭕컴포넌트 : 에러컴포넌트를 만들어 적용해보자
 // 기본 라우터 뒤에 errorElement: <ErrorPage />, 추가하면 된데. 해당 문구랑 처리 가능한가>
 const router = createBrowserRouter([
   {
@@ -36,7 +36,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, path: '/', element: <Home /> },
       { path: '/login', element: <Login /> },
-      { path: '/products', element: <Products /> }, //⭕탭 있는 페이지, 굳이??
+      { path: '/products', element: <Products /> }, //⭕탭 있는 페이지
       { path: '/products/new', element: <ProductsUpolad /> },
       { path: '/products/detail/:itemId', element: <ProductsDetail /> },
       { path: '/wishlist/', element: <WishList /> }, //⭕임시페이지
