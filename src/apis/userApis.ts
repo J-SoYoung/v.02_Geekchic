@@ -1,7 +1,8 @@
 import { GoogleAuthProvider } from 'firebase/auth';
 import { auth, database, signInWithPopup, signOut } from './firebase';
-import { UserDataType } from '../types/userType';
+import { UserDataType } from '@typesBundle/userType';
 import { get, ref, set } from 'firebase/database';
+import { SetterOrUpdater } from 'recoil';
 
 export const signInWithGoogle = async () => {
   const provider = new GoogleAuthProvider();
@@ -34,8 +35,24 @@ export async function loadUserData(uid: string): Promise<UserDataType | null> {
   }
 }
 
-export async function createNewUser(newUser: UserDataType): Promise<UserDataType | null> {
+export async function createNewUser(
+  newUser: UserDataType,
+): Promise<UserDataType | null> {
   const userRef = ref(database, `userData/${newUser._id}`);
   await set(userRef, newUser);
   return newUser;
+}
+
+
+export async function editUserProfileData(
+  updatedUser: UserDataType,
+  setUser: SetterOrUpdater<UserDataType>,
+) {
+  try {
+    const userEditRef = ref(database, `userData/${updatedUser._id}`);
+    await set(userEditRef, updatedUser);
+    setUser(updatedUser);
+  } catch (err) {
+    console.error('Error 유저 프로필 수정');
+  }
 }
