@@ -1,10 +1,12 @@
 import { Link } from 'react-router-dom';
 import { usedProduct, UsedProductsCart } from './UsedProductsCart';
 import { BsSearch } from 'react-icons/bs';
+import { userState } from '../../recoil/atoms';
+import { useRecoilValue } from 'recoil';
 
 export const UsedHome = () => {
   const isSoldout = usedProduct.quantity < 1; // TEST
-
+  const user = useRecoilValue(userState);
   return (
     <main className='p-11 pb-4 text-right'>
       {/* 헤더 */}
@@ -12,8 +14,9 @@ export const UsedHome = () => {
         <h1 className='text-3xl font-bold text-left mb-5 '>
           <Link to='/used'>중고거래</Link>
         </h1>
-        <button className='w-[100px] h-[50px] mb-5 bg-black text-center text-white rounded-md '>
-          <Link to='/used/new'>등록하기</Link>
+        <span>{user?.username}님 반갑습니다!</span>
+        <button className='w-[100px] h-[50px] mb-5 ml-2 bg-black text-center text-white rounded-md '>
+          <Link to='/used/new'>제품 등록</Link>
         </button>
       </header>
 

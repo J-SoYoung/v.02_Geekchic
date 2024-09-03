@@ -1,21 +1,46 @@
 import { useState } from 'react';
-import { FcGoogle } from 'react-icons/fc';
-import { signInWithGoogle, signOutFromGoogle } from '@apis/auth';
-import Loginlogo from '@assets/rootImage/loginLogo.png';
 import { useNavigate } from 'react-router-dom';
+import { get, ref, set } from 'firebase/database';
+import { useRecoilState } from 'recoil';
+import { FcGoogle } from 'react-icons/fc';
+
+// ⭕절대경로로 커스텀했는데 안됨. 왜?
+import Loginlogo from '@assets/rootImage/loginLogo.png';
+import { signInWithGoogle, signOutFromGoogle } from '../../apis/auth';
+import { userState } from '../../recoil/atoms';
+import { UserDataType } from '../../types/userType';
+import { database } from '../../apis/firebase';
 
 export const Login = () => {
   const navigate = useNavigate();
-
-  const [userData, setUserData] = useState(null);
+  const [userData, setUserData] = useRecoilState(userState);
   const [loginError, setLoginError] = useState(false);
 
   const onClickLogin = async () => {
-    
     try {
       const user = await signInWithGoogle();
-      setUserData(user);
-      navigate('/used')
+      if (user) {
+        // firebase 유저검색 및 저장, recoil저장
+        const userRef = ref(database, `users/${user.uid}`);
+        const userSnapshot = await get(userRef);
+
+        if (userSnapshot.exists()) {
+          setUserData(userSnapshot.val());
+        } else {
+          const newUser: UserDataType = {
+            _id: user.uid,
+            username: user.displayName || '',
+            email: user.email || '',
+            avatar: user.photoURL || '',
+            serviceJoin: new Date().toISOString(),
+            phone: '',
+            address: '',
+          };
+          await set(userRef, newUser);
+          setUserData(newUser);
+        }
+      }
+      navigate('/used');
     } catch (error) {
       console.error('Logout failed:', error);
       setLoginError(true);
@@ -23,10 +48,13 @@ export const Login = () => {
   };
 
   const onClickLogout = async () => {
-    try {
-      await signOutFromGoogle();
-    } catch (error) {
-      console.error('Logout failed:', error);
+    if (confirm('정말 로그아웃 하시겠습니까?>')) {
+      try {
+        await signOutFromGoogle();
+        setUserData(null);
+      } catch (error) {
+        console.error('Logout failed:', error);
+      }
     }
   };
 
