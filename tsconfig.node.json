@@ -16,7 +16,19 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    
+    /* 절대경로 설정 */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@pages/*": ["src/pages/*"],
+      "@components/*": ["src/components/*"],
+      "@assets/*": ["src/assets/*"],
+      "@apis/*": ["src/apis/*"],
+      "@recoil/*": ["src/recoil/*"],
+      "@typesBundle/*": ["src/typesBundle/*"]
+    }
   },
   "include": ["vite.config.ts"]
 }
