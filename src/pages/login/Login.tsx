@@ -1,26 +1,50 @@
 import { useState } from 'react';
+import { FcGoogle } from 'react-icons/fc';
+import { signInWithGoogle, signOutFromGoogle } from '@apis/auth';
 import Loginlogo from '@assets/rootImage/loginLogo.png';
+import { useNavigate } from 'react-router-dom';
 
 export const Login = () => {
-  const [localUser, setLocalUser] = useState(false);
-  
-  const onClickLogin = () => {};
-  const onClickLogout = () => {};
+  const navigate = useNavigate();
+
+  const [userData, setUserData] = useState(null);
+  const [loginError, setLoginError] = useState(false);
+
+  const onClickLogin = async () => {
+    
+    try {
+      const user = await signInWithGoogle();
+      setUserData(user);
+      navigate('/used')
+    } catch (error) {
+      console.error('Logout failed:', error);
+      setLoginError(true);
+    }
+  };
+
+  const onClickLogout = async () => {
+    try {
+      await signOutFromGoogle();
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
 
   return (
-    <div>
-      <div className='flex justify-center border'>
-        <img className='w-[500px] h-[440px] mb-[80px]' src={Loginlogo} alt='loginLogo' />
-      </div>
-      <div className='mb-[15px]'>
+    <main>
+      <section className='flex justify-center'>
+        <img className='w-[500px] h-[440px] my-16' src={Loginlogo} alt='loginLogo' />
+      </section>
+      <section className='px-20'>
         <button
-          className='bg-white text-black text-[18px] w-[350px] h-[48px] rounded hover:brightness-90 border border-black'
-          onClick={!localUser ? onClickLogin : onClickLogout}
+          className='w-full h-[50px] flex items-center justify-center mb-2 rounded-md bg-white hover:brightness-90 border border-black'
+          onClick={userData ? onClickLogout : onClickLogin}
         >
-          <img className='inline w-[38px] h-[38px]' src='/public/img/googleLogo.png' alt='googleLogo' />
-          {!localUser ? 'Google로 로그인' : 'Google 로그아웃'}
+          <FcGoogle className='mr-1 w-6 h-6' />
+          {userData ? 'Google 로그아웃' : 'Google로 로그인'}
         </button>
-      </div>
-    </div>
+        {loginError && <p className='font-bold text-red-600'>로그인을 다시 시도해주세요</p>}
+      </section>
+    </main>
   );
 };
