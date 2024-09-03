@@ -1,35 +1,13 @@
 import { GoogleAuthProvider } from 'firebase/auth';
 import { auth, database, signInWithPopup, signOut } from './firebase';
-import { get, ref, set } from 'firebase/database';
 import { UserDataType } from '../types/userType';
+import { get, ref, set } from 'firebase/database';
 
 export const signInWithGoogle = async () => {
   const provider = new GoogleAuthProvider();
   try {
     const result = await signInWithPopup(auth, provider);
-    const user = result.user;
-    if (user) {
-      const userRef = ref(database, `users/${user.uid}`);
-      const userSnapshot = await get(userRef);
-
-      if (!userSnapshot.exists()) {
-        const newUser: UserDataType = {
-          _id: user.uid,
-          username: user.displayName || '',
-          email: user.email || '',
-          avatar: user.photoURL || '',
-          serviceJoin: new Date().toISOString(),
-          phone: '',
-          address: '',
-        };
-        await set(userRef, newUser);
-        console.log('User created in database:', newUser);
-        return newUser;
-      } else {
-        console.log('User already exists in database:', userSnapshot.val());
-        return userSnapshot.val();
-      }
-    }
+    return result.user;
   } catch (error) {
     console.error('Error during Google sign-in:', error);
   }
@@ -44,3 +22,20 @@ export const signOutFromGoogle = async () => {
     throw error;
   }
 };
+
+export async function loadUserData(uid: string): Promise<UserDataType | null> {
+  const userRef = ref(database, `userData/${uid}`);
+  const snapshot = await get(userRef);
+  if (snapshot.exists()) {
+    console.log(snapshot.val());
+    return snapshot.val() as UserDataType;
+  } else {
+    return null;
+  }
+}
+
+export async function createNewUser(newUser: UserDataType): Promise<UserDataType | null> {
+  const userRef = ref(database, `userData/${newUser._id}`);
+  await set(userRef, newUser);
+  return newUser;
+}

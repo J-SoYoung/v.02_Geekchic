@@ -11,7 +11,8 @@ export default defineConfig({
       { find: '@components', replacement: '/src/components' },
       { find: '@assets', replacement: '/src/assets' },
       { find: '@apis', replacement: '/src/apis' },
-      { find: '@types', replacement: '/src/types' },
+      { find: '@recoil', replacement: '/src/recoil' },
+      { find: '@typeBundle', replacement: '/src/typeBundle' },
     ],
   },
 });

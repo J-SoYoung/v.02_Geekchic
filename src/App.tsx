@@ -1,12 +1,16 @@
 import { Outlet } from 'react-router-dom';
+import { RecoilRoot } from 'recoil';
+
 import BottomNav from './components/navigation/BottomNav';
 
 function App() {
   return (
-    <div className='App min-h-screen w-[600px]'>
-      <Outlet />
-      <BottomNav/>
-    </div>
+    <RecoilRoot>
+      <div className='App min-h-screen w-[600px]'>
+        <Outlet />
+        <BottomNav />
+      </div>
+    </RecoilRoot>
   );
 }
 
