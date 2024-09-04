@@ -15,7 +15,8 @@ export const usedProduct = {
   seller: {
     nickname: 'soyoung jung',
     sellerId: 'x9vChpE8FBRiOUdCZImC35g3CzJ2',
-    userAvatar: 'https://lh3.googleusercontent.com/a/ACg8ocKP0FpYTme_3LWQEBuw0J2I1fu2L5qAYZxpBq0SOb9MMVrQ7g=s96-c',
+    userAvatar:
+      'https://lh3.googleusercontent.com/a/ACg8ocKP0FpYTme_3LWQEBuw0J2I1fu2L5qAYZxpBq0SOb9MMVrQ7g=s96-c',
     userName: 'soyoung jung',
     address: '인천시 인천시 인천시',
   },
