@@ -4,16 +4,15 @@ import { get, ref, set } from 'firebase/database';
 import { useRecoilState } from 'recoil';
 import { FcGoogle } from 'react-icons/fc';
 
-// ⭕절대경로로 커스텀했는데 안됨. 왜?
 import Loginlogo from '@assets/rootImage/loginLogo.png';
-import { signInWithGoogle, signOutFromGoogle } from '../../apis/auth';
-import { userState } from '../../recoil/atoms';
-import { UserDataType } from '../../types/userType';
-import { database } from '../../apis/firebase';
+import { signInWithGoogle, signOutFromGoogle } from '@apis/userApis';
+import { getEmptyUserData, userState } from '@recoil/atoms';
+import { UserDataType } from '@typesBundle/userType';
+import { database } from '@apis/firebase';
 
 export const Login = () => {
   const navigate = useNavigate();
-  const [userData, setUserData] = useRecoilState(userState);
+  const [userData, setUserData] = useRecoilState<UserDataType>(userState);
   const [loginError, setLoginError] = useState(false);
 
   const onClickLogin = async () => {
@@ -32,7 +31,7 @@ export const Login = () => {
             username: user.displayName || '',
             email: user.email || '',
             avatar: user.photoURL || '',
-            serviceJoin: new Date().toISOString(),
+            serviceJoinDate: new Date().toISOString(),
             phone: '',
             address: '',
           };
@@ -51,7 +50,7 @@ export const Login = () => {
     if (confirm('정말 로그아웃 하시겠습니까?>')) {
       try {
         await signOutFromGoogle();
-        setUserData(null);
+        setUserData(getEmptyUserData());
       } catch (error) {
         console.error('Logout failed:', error);
       }
@@ -61,7 +60,8 @@ export const Login = () => {
   return (
     <main>
       <section className='flex justify-center'>
-        <img className='w-[500px] h-[440px] my-16' src={Loginlogo} alt='loginLogo' />
+        <img
+          className='w-[500px] h-[440px] my-16' src={Loginlogo} alt='loginLogo' />
       </section>
       <section className='px-20'>
         <button
@@ -71,7 +71,9 @@ export const Login = () => {
           <FcGoogle className='mr-1 w-6 h-6' />
           {userData ? 'Google 로그아웃' : 'Google로 로그인'}
         </button>
-        {loginError && <p className='font-bold text-red-600'>로그인을 다시 시도해주세요</p>}
+        {loginError && (
+          <p className='font-bold text-red-600'>로그인을 다시 시도해주세요</p>
+        )}
       </section>
     </main>
   );

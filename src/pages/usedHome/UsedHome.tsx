@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { usedProduct, UsedProductsCart } from './UsedProductsCart';
 import { BsSearch } from 'react-icons/bs';
-import { userState } from '../../recoil/atoms';
+import { userState } from '@recoil/atoms';
 import { useRecoilValue } from 'recoil';
 
 export const UsedHome = () => {
@@ -49,7 +49,10 @@ export const UsedHome = () => {
               alt={usedProduct.itemName}
             />
           ) : (
-            <img src='/' className='w-full h-48 object-cover rounded-md mb-2 border' />
+            <img
+              src='/'
+              className='w-full h-48 object-cover rounded-md mb-2 border'
+            />
           )}
           <div className='flex'>
             <h2 className='text-lg font-bold mr-1 '>{usedProduct.itemName}</h2>
@@ -57,7 +60,9 @@ export const UsedHome = () => {
           <div className='flex items-center justify-center'>
             <div className='w-full flex text-gray-500'>
               <p>{usedProduct.price.toLocaleString()}원</p>
-              <p>{isSoldout ? '( 품절 )' : `( ${usedProduct.quantity}개 남음 )`}</p>
+              <p>
+                {isSoldout ? '( 품절 )' : `( ${usedProduct.quantity}개 남음 )`}
+              </p>
             </div>
           </div>
         </Link>
