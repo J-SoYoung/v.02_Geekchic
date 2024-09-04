@@ -4,7 +4,7 @@ export interface UserDataType {
   username: string;
   email: string;
   avatar: string;
-  serviceJoin: string;
+  serviceJoinDate: string;
   phone: string;
   address: string;
 }

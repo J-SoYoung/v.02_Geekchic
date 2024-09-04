@@ -1,9 +1,28 @@
 import { atom } from 'recoil';
-import { UserDataType } from '../types/userType';
+import { UserDataType } from '@typesBundle/userType';
 
-export const userState = atom<UserDataType | null>({
+// 유저 데이터 초기화
+export const getEmptyUserData = (): UserDataType => ({
+  _id: '',
+  address: '',
+  avatar: '',
+  email: '',
+  phone: '',
+  serviceJoinDate: '',
+  username: '',
+});
+
+export const userState = atom<UserDataType>({
   key: 'userState',
-  default: null,
+  default: {
+    _id: '',
+    address: '',
+    avatar: '',
+    email: '',
+    phone: '',
+    serviceJoinDate: '',
+    username: '',
+  },
   dangerouslyAllowMutability: true,
   effects_UNSTABLE: [
     ({ setSelf, onSet }) => {
