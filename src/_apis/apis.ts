@@ -31,3 +31,16 @@ export const uploadUsedProducts = async (
     console.error('중고제품 업로드 에러', error);
   }
 };
+
+export const loadUsedProducts = async(): Promise<UsedProductsType[]> => {
+  try {
+    const snapshot = await get(ref(database,`usedProducts`))
+    if (snapshot.exists()) {
+      return Object.values(snapshot.val());
+    }
+    return [];
+  } catch (error) {
+    console.error('중고 제품 로드 에러', error)
+    return [];
+  }
+}
