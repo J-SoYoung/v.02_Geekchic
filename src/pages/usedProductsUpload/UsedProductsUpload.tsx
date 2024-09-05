@@ -13,6 +13,7 @@ import Chevron_left from '@/_assets/icons/chevron_left.svg';
 // ⭕ Layout 공용컴포넌트 만들기 ( 지금은따로씀 <header> ) = 추상화하기
 // input 컴포넌트 만들기
 // 이미지컴포넌트 따로 만들기
+// 로딩스피터 생성하기 -> 지금은 문구로 되어있음
 export const UsedProductsUpload = () => {
   const navigate = useNavigate();
   const user = useRecoilValue(userState);
@@ -46,6 +47,7 @@ export const UsedProductsUpload = () => {
       const urlFile = URL.createObjectURL(file);
       setPreviewImages((prevImages) => prevImages.concat(urlFile));
       setUploadImages((prevImages) => prevImages.concat(file));
+      setUsedProducts({ ...usedProducts, images: previewImages });
     }
   };
   const onClickMoveUsedMain = () => {
@@ -54,19 +56,17 @@ export const UsedProductsUpload = () => {
       navigate('/used');
     }
   };
+  console.log(usedProducts);
 
   type ValidateProductInputType = Omit<
     UsedProductsType,
-    'id' | 'seller' | 'createdAt'
+    'id' | 'seller' | 'createdAt' | 'isSales' | 'deliveryCharge'
   >;
   const validateProductData = (usedProducts: ValidateProductInputType) => {
     console.log(usedProducts);
     if (
       !usedProducts.description ||
-      !usedProducts.images ||
-      !usedProducts.isSales ||
       !usedProducts.productName ||
-      !usedProducts.deliveryCharge ||
       !usedProducts.conditions ||
       !usedProducts.price ||
       !usedProducts.quantity ||
@@ -81,6 +81,7 @@ export const UsedProductsUpload = () => {
   const onClickUploadUsedProducts = async () => {
     setIsLoading(true);
     if (!validateProductData(usedProducts)) {
+      setIsLoading(false);
       return alert('모든 필수 필드를 입력해주세요');
     }
 
@@ -111,8 +112,12 @@ export const UsedProductsUpload = () => {
 
   return (
     <>
-      <header className='p-8 text-left '>
-        {isLoading && <div className='spinner'></div>}
+      <header className='p-8 text-left relative '>
+        {isLoading && (
+          <div className='fixed top-80 left-[40%] text-3xl text-red-500'>
+            Loading ...
+          </div>
+        )}
 
         <img
           src={Chevron_left}
@@ -127,7 +132,7 @@ export const UsedProductsUpload = () => {
         {/* 사진등록 */}
         <div className='mb-8'>
           <label className='block text-sm font-medium text-gray-700 mb-2'>
-            사진 등록
+            사진 등록 ( 2장 이상 올려주세요 )
           </label>
           <div className='flex space-x-2'>
             <input
