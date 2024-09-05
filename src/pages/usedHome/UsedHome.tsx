@@ -3,10 +3,29 @@ import { BsSearch } from 'react-icons/bs';
 import { userState } from '@/_recoil/atoms';
 import { useRecoilValue } from 'recoil';
 import { usedProduct } from '../../_example/example';
+import { Fragment, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { loadUsedProducts } from '@/_apis/apis';
+import { UsedProductsType } from '@/_typesBundle/productType';
+import { UsedProductsCart } from './UsedProductsCart';
 
+// ⭕ { } 컴포넌트 나누기
 export const UsedHome = () => {
   const isSoldout = usedProduct.quantity < 1; // TEST
   const user = useRecoilValue(userState);
+
+  const {
+    data: usedProducts,
+    isLoading,
+    isError,
+    error,
+  } = useQuery<UsedProductsType[], Error>({
+    queryKey: ['usedProducts'],
+    queryFn: () => loadUsedProducts(),
+    retry: 3, // 쿼리옵션-> 요청 3번 재시도
+    retryDelay: 1000, // 쿼리옵션-> 재시도 사이의 지연 시간
+  });
+
   return (
     <main className='p-11 pb-4 text-right'>
       {/* 헤더 */}
@@ -36,37 +55,19 @@ export const UsedHome = () => {
       </section>
 
       {/* 상품목록 */}
-      <section className='grid grid-cols-2 gap-4 mt-4 mb-24'>
-        <Link
-          to={`/used/detail/example1`}
-          className={`rounded-lg cursor-pointer relative ${isSoldout && 'opacity-50'}`}
-        >
-          {/* <IsSeller sellerId={usedProduct?.seller.sellerId} /> */}
-          {usedProduct.images ? (
-            <img
-              className='w-full h-48 object-cover rounded-md mb-2'
-              src={usedProduct.images[0]}
-              alt={usedProduct.productName}
-            />
-          ) : (
-            <img
-              src='/'
-              className='w-full h-48 object-cover rounded-md mb-2 border'
-            />
-          )}
-          <div className='flex'>
-            <h2 className='text-lg font-bold mr-1 '>{usedProduct.productName}</h2>
-          </div>
-          <div className='flex items-center justify-center'>
-            <div className='w-full flex text-gray-500'>
-              <p>{usedProduct.price.toLocaleString()}원</p>
-              <p>
-                {isSoldout ? '( 품절 )' : `( ${usedProduct.quantity}개 남음 )`}
-              </p>
-            </div>
-          </div>
-        </Link>
-      </section>
+      {isLoading ? (
+        <p>로딩중</p>
+      ) : (
+        <>
+          {usedProducts?.map((usedProduct) => {
+            return (
+              <Fragment key={usedProduct.id}>
+                <UsedProductsCart usedProduct={usedProduct} />
+              </Fragment>
+            );
+          })}
+        </>
+      )}
     </main>
   );
 };
