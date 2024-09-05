@@ -9,6 +9,7 @@ import { loadUsedProducts } from '@/_apis/apis';
 import { UsedProductsType } from '@/_typesBundle/productType';
 import { UsedProductsCart } from './UsedProductsCart';
 import Skeleton from './Skeleton';
+import { MoveButton } from '@/components/button/MoveButton';
 
 // ⭕ { } 컴포넌트 나누기
 export const UsedHome = () => {
@@ -35,9 +36,11 @@ export const UsedHome = () => {
           <Link to='/used'>중고거래</Link>
         </h1>
         <span>{user?.username}님 반갑습니다!</span>
-        <button className='w-[100px] h-[50px] mb-5 ml-2 bg-black text-center text-white rounded-md '>
+        <MoveButton text={'제품 등록'} url={'/used/new'} />
+        
+        {/* <button className='w-[100px] h-[50px] mb-5 ml-2 bg-black text-center text-white rounded-md '>
           <Link to='/used/new'>제품 등록</Link>
-        </button>
+        </button> */}
       </header>
 
       {/* 검색바 */}
@@ -57,7 +60,7 @@ export const UsedHome = () => {
 
       {/* 상품목록 */}
       {isLoading ? (
-        <Skeleton/>
+        <Skeleton />
       ) : (
         <>
           {usedProducts?.map((usedProduct) => {
