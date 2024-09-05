@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
-import { usedProduct, UsedProductsCart } from './UsedProductsCart';
 import { BsSearch } from 'react-icons/bs';
-import { userState } from '@recoil/atoms';
+import { userState } from '@/_recoil/atoms';
 import { useRecoilValue } from 'recoil';
+import { usedProduct } from '../../_example/example';
 
 export const UsedHome = () => {
   const isSoldout = usedProduct.quantity < 1; // TEST
@@ -42,11 +42,11 @@ export const UsedHome = () => {
           className={`rounded-lg cursor-pointer relative ${isSoldout && 'opacity-50'}`}
         >
           {/* <IsSeller sellerId={usedProduct?.seller.sellerId} /> */}
-          {usedProduct.imageArr ? (
+          {usedProduct.images ? (
             <img
               className='w-full h-48 object-cover rounded-md mb-2'
-              src={usedProduct.imageArr[0]}
-              alt={usedProduct.itemName}
+              src={usedProduct.images[0]}
+              alt={usedProduct.productName}
             />
           ) : (
             <img
@@ -55,7 +55,7 @@ export const UsedHome = () => {
             />
           )}
           <div className='flex'>
-            <h2 className='text-lg font-bold mr-1 '>{usedProduct.itemName}</h2>
+            <h2 className='text-lg font-bold mr-1 '>{usedProduct.productName}</h2>
           </div>
           <div className='flex items-center justify-center'>
             <div className='w-full flex text-gray-500'>

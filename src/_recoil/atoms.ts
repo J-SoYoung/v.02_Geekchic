@@ -1,5 +1,5 @@
 import { atom } from 'recoil';
-import { UserDataType } from '@typesBundle/userType';
+import { UserDataType } from '@/_typesBundle/userType';
 
 // 유저 데이터 초기화
 export const getEmptyUserData = (): UserDataType => ({

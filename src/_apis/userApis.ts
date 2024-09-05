@@ -1,6 +1,6 @@
 import { GoogleAuthProvider } from 'firebase/auth';
 import { auth, database, signInWithPopup, signOut } from './firebase';
-import { UserDataType } from '@typesBundle/userType';
+import { UserDataType } from '@/_typesBundle/userType';
 import { get, ref, set } from 'firebase/database';
 import { SetterOrUpdater } from 'recoil';
 
@@ -42,7 +42,6 @@ export async function createNewUser(
   await set(userRef, newUser);
   return newUser;
 }
-
 
 export async function editUserProfileData(
   updatedUser: UserDataType,

@@ -1,6 +1,6 @@
 import { useRecoilValue } from 'recoil';
-import { userState } from '@recoil/atoms';
-import { UserDataType } from '@typesBundle/userType';
+import { userState } from '@/_recoil/atoms';
+import { UserDataType } from '@/_typesBundle/userType';
 import { BottomNavLinkComp } from './BottomNavLinkComp';
 
 // icon import

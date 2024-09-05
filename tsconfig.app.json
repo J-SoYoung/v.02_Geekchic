@@ -26,10 +26,10 @@
       "@/*": ["src/*"],
       "@pages/*": ["src/pages/*"],
       "@components/*": ["src/components/*"],
-      "@assets/*": ["src/assets/*"],
-      "@apis/*": ["src/apis/*"],
-      "@recoil/*": ["src/recoil/*"],
-      "@typesBundle/*": ["src/typesBundle/*"]
+      "@assets/*": ["src/_assets/*"],
+      "@apis/*": ["src/_apis/*"],
+      "@recoil/*": ["src/_recoil/*"],
+      "@typesBundle/*": ["src/_typesBundle/*"]
     }
   },
   "include": ["src"]
