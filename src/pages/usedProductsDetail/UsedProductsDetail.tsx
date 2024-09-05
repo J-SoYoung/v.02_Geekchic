@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
-import { usedProduct } from '../usedHome/UsedProductsCart';
 import Chevron_left from '@assets/icons/chevron_left.svg';
+import { usedProduct } from '../../_example/example';
 
 export const UsedProductsDetail = () => {
   const navigate = useNavigate();
@@ -11,10 +11,10 @@ export const UsedProductsDetail = () => {
       <section>
         <div className='w-full h-[100%]'>
           <div className='mb-6 bg-gray-200 border-red-400'>
-            <img src={usedProduct.imageArr[0]} alt={usedProduct.itemName} className='w-[100%] h-96 object-cover' />
+            <img src={usedProduct.images[0]} alt={usedProduct.productName} className='w-[100%] h-96 object-cover' />
           </div>
           <div className='flex space-x-4 pl-8'>
-            {usedProduct.imageArr.map((i: string, idx: number) => (
+            {usedProduct.images.map((i: string, idx: number) => (
               <div key={idx} className='w-24 h-24 flex items-center justify-center'>
                 <img src={i} className='w-full h-full object-cover' />
               </div>
@@ -51,16 +51,16 @@ export const UsedProductsDetail = () => {
 
         {/* used products item */}
         <section className='my-8 border-b'>
-          <div className='text-xl font-bold'>{usedProduct.itemName}</div>
+          <div className='text-xl font-bold'>{usedProduct.productName}</div>
           <div className='text-sm text-gray-500'>{usedProduct.createdAt}</div>
           {/* <div className='text-sm text-gray-500'>{calculateDaysAgo(usedProduct.createdAt)}</div> */}
           <div className='text-xl font-bold mt-2'>{usedProduct.price.toLocaleString()}원</div>
           <div className='flex space-x-2 mt-2'>
-            {usedProduct.options.map((i: string, idx: number) => (
+            {/* {usedProduct.options.map((i: string, idx: number) => (
               <span key={idx} className='px-2 py-1 bg-gray-200 rounded-full text-sm'>
                 {i}
               </span>
-            ))}
+            ))} */}
           </div>
           <div className='py-8'>{usedProduct.description}</div>
         </section>

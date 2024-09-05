@@ -5,10 +5,10 @@ import { useRecoilState } from 'recoil';
 import { FcGoogle } from 'react-icons/fc';
 
 import Loginlogo from '@assets/rootImage/loginLogo.png';
-import { signInWithGoogle, signOutFromGoogle } from '@apis/userApis';
-import { getEmptyUserData, userState } from '@recoil/atoms';
-import { UserDataType } from '@typesBundle/userType';
-import { database } from '@apis/firebase';
+import { signInWithGoogle, signOutFromGoogle } from '@/_apis/userApis';
+import { getEmptyUserData, userState } from '@/_recoil/atoms';
+import { UserDataType } from '@/_typesBundle/userType';
+import { database } from '@/_apis/firebase';
 
 export const Login = () => {
   const navigate = useNavigate();
@@ -61,15 +61,18 @@ export const Login = () => {
     <main>
       <section className='flex justify-center'>
         <img
-          className='w-[500px] h-[440px] my-16' src={Loginlogo} alt='loginLogo' />
+          className='w-[500px] h-[440px] my-16'
+          src={Loginlogo}
+          alt='loginLogo'
+        />
       </section>
       <section className='px-20'>
         <button
           className='w-full h-[50px] flex items-center justify-center mb-2 rounded-md bg-white hover:brightness-90 border border-black'
-          onClick={userData ? onClickLogout : onClickLogin}
+          onClick={userData._id == '' ? onClickLogin : onClickLogout}
         >
           <FcGoogle className='mr-1 w-6 h-6' />
-          {userData ? 'Google 로그아웃' : 'Google로 로그인'}
+          {userData._id == '' ? 'Google로 로그인' : 'Google 로그아웃'}
         </button>
         {loginError && (
           <p className='font-bold text-red-600'>로그인을 다시 시도해주세요</p>

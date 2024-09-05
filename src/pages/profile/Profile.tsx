@@ -1,14 +1,17 @@
 import { useRef, useState } from 'react';
 import { useRecoilState } from 'recoil';
 
-import { userState } from '@recoil/atoms';
-import { UserDataType } from '@typesBundle/userType';
-import { uploadCloudImage } from '@/apis/uploader';
-import { editUserProfileData } from '@/apis/userApis';
+import { userState } from '@/_recoil/atoms';
+import { UserDataType } from '@/_typesBundle/userType';
+import { uploadCloudImage } from '@/_apis/uploader';
+import { editUserProfileData } from '@/_apis/userApis';
 import Icon_Pencile from '@assets/icons/pencil.svg';
 import { ContentsBox } from './ContentsBox';
 import { MyPageLayout } from '@components/MyPageLayout';
 
+// ⭕버튼 컴포넌트 만들기 full / half
+// 업로드 페이지에서 ContentsBox사용할 수 있지 않을까? think
+// onChangeEditInput데이터가 여러개인 input의 경우 (업로드페이지)에서 적용하기
 export const Profile = () => {
   const [user, setUser] = useRecoilState(userState);
   const [isEditing, setIsEditing] = useState(false);
@@ -40,7 +43,7 @@ export const Profile = () => {
     setPreviewImage(user.avatar ?? '');
   };
 
-  const onClickProfileSave = async () => {
+  const onClickSaveProfile = async () => {
     let updatedUser: UserDataType = { ...editUser };
     if (imageFile) {
       const cloudImage = await uploadCloudImage(imageFile);
@@ -117,7 +120,7 @@ export const Profile = () => {
         {isEditing ? (
           <div className='my-20 w-full flex justify-between'>
             <button
-              onClick={onClickProfileSave}
+              onClick={onClickSaveProfile}
               className='w-full py-3 mr-2 bg-[#8F5BBD] rounded-lg text-white hover:bg-[#7b49a7]'
             >
               저장하기

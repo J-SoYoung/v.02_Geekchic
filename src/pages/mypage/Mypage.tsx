@@ -1,7 +1,7 @@
 import { useRecoilState } from 'recoil';
 import { Link, useNavigate } from 'react-router-dom';
-import { getEmptyUserData, userState } from '@recoil/atoms';
-import { signOutFromGoogle } from '@apis/userApis';
+import { getEmptyUserData, userState } from '@/_recoil/atoms';
+import { signOutFromGoogle } from '@/_apis/userApis';
 import { MyPageLayout } from '@components/MyPageLayout';
 
 // ⭕ 마이페이지 4개탭 -> 공통컴포넌트로
@@ -17,7 +17,7 @@ export const Mypage = () => {
     if (confirm('로그아웃 하시겠습니까? ')) {
       await signOutFromGoogle();
       setUser(getEmptyUserData());
-      navigate('/api/login');
+      navigate('/login');
     }
   };
 

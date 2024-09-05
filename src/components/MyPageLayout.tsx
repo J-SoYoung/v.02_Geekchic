@@ -1,6 +1,6 @@
-import Chevron_left from '@/assets/icons/chevron_left.svg';
+import Chevron_left from '@/_assets/icons/chevron_left.svg';
 import { useRecoilValue } from 'recoil';
-import { userState } from '@recoil/atoms';
+import { userState } from '@/_recoil/atoms';
 import { useNavigate } from 'react-router-dom';
 
 interface LayoutProps {
