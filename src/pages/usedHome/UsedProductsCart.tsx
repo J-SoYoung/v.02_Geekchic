@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import { defaultImage } from '../../_example/example';
 import { UsedProductsType } from '@/_typesBundle/productType';
 
 interface usedProductProps {

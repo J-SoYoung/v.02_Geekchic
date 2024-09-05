@@ -8,6 +8,7 @@ import { useQuery } from '@tanstack/react-query';
 import { loadUsedProducts } from '@/_apis/apis';
 import { UsedProductsType } from '@/_typesBundle/productType';
 import { UsedProductsCart } from './UsedProductsCart';
+import Skeleton from './Skeleton';
 
 // ⭕ { } 컴포넌트 나누기
 export const UsedHome = () => {
@@ -40,7 +41,7 @@ export const UsedHome = () => {
       </header>
 
       {/* 검색바 */}
-      <section className='w-full h-[50px] px-4 flex items-center justify-between  text-xl bg-[#EEE] rounded-lg'>
+      <section className='w-full h-[50px] px-4 mb-8 flex items-center justify-between text-xl bg-[#EEE] rounded-lg'>
         <input
           className='w-full outline-none placeholder-gray-500 bg-[#EEE]'
           type='text'
@@ -56,7 +57,7 @@ export const UsedHome = () => {
 
       {/* 상품목록 */}
       {isLoading ? (
-        <p>로딩중</p>
+        <Skeleton/>
       ) : (
         <>
           {usedProducts?.map((usedProduct) => {
