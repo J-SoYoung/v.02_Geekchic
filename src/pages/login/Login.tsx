@@ -2,13 +2,13 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { get, ref, set } from 'firebase/database';
 import { useRecoilState } from 'recoil';
-import { FcGoogle } from 'react-icons/fc';
 
 import Loginlogo from '@assets/rootImage/loginLogo.png';
 import { signInWithGoogle, signOutFromGoogle } from '@/_apis/userApis';
 import { getEmptyUserData, userState } from '@/_recoil/atoms';
 import { UserDataType } from '@/_typesBundle/userType';
 import { database } from '@/_apis/firebase';
+import { LoginButton } from '@/components/button/LoginButton';
 
 export const Login = () => {
   const navigate = useNavigate();
@@ -67,13 +67,11 @@ export const Login = () => {
         />
       </section>
       <section className='px-20'>
-        <button
-          className='w-full h-[50px] flex items-center justify-center mb-2 rounded-md bg-white hover:brightness-90 border border-black'
-          onClick={userData._id == '' ? onClickLogin : onClickLogout}
-        >
-          <FcGoogle className='mr-1 w-6 h-6' />
-          {userData._id == '' ? 'Google로 로그인' : 'Google 로그아웃'}
-        </button>
+        {userData._id == '' ? (
+          <LoginButton onClickFunc={onClickLogin} text='Google로 로그인' />
+        ) : (
+          <LoginButton onClickFunc={onClickLogout} text='Google 로그아웃' />
+        )}
         {loginError && (
           <p className='font-bold text-red-600'>로그인을 다시 시도해주세요</p>
         )}
