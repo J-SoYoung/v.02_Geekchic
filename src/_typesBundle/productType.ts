@@ -1,6 +1,6 @@
 import { UserDataType } from './userType';
 
-export interface UsedProductsType {
+export interface UsedProductType {
   createdAt: string;
   description: string;
   id: string;
