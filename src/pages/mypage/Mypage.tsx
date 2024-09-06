@@ -3,9 +3,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { getEmptyUserData, userState } from '@/_recoil/atoms';
 import { signOutFromGoogle } from '@/_apis/userApis';
 import { MyPageLayout } from '@components/MyPageLayout';
+import { BasicButton } from '@/components/button/BasicButton';
 
 // ⭕ 마이페이지 4개탭 -> 공통컴포넌트로
-// ⭕ 로그아웃, 프로필 버튼 만들기 => 로그인 버튼이랑 공용으로 쓰는거
 export const Mypage = () => {
   const navigate = useNavigate();
   const [user, setUser] = useRecoilState(userState);
@@ -13,6 +13,7 @@ export const Mypage = () => {
   const onClickMoveProfile = () => {
     navigate(`/my/profile/${user?._id}`);
   };
+
   const onClickLogout = async () => {
     if (confirm('로그아웃 하시겠습니까? ')) {
       await signOutFromGoogle();
@@ -43,19 +44,16 @@ export const Mypage = () => {
               </div>
             </div>
           </div>
-
-          <button
-            onClick={onClickMoveProfile}
-            className='w-full h-[45px] py-2 mb-2 bg-[#8F5BBD] text-white rounded-md'
-          >
-            프로필 관리
-          </button>
-          <button
-            onClick={onClickLogout}
-            className='w-full h-[45px] py-2 mb-12 bg-gray-400 text-white rounded-md'
-          >
-            로그아웃
-          </button>
+          <BasicButton
+            onClickFunc={onClickMoveProfile}
+            text='프로필 관리'
+            bg='bg-[#8F5BBD]'
+          />
+          <BasicButton
+            onClickFunc={onClickLogout}
+            text='로그아웃'
+            bg='bg-[#adb5bd]'
+          />
         </div>
 
         <div>

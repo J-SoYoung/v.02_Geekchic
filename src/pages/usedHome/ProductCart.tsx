@@ -1,16 +1,15 @@
 import { Link } from 'react-router-dom';
-import { defaultImage } from '../../_example/example';
-import { UsedProductsType } from '@/_typesBundle/productType';
+import { UsedProductType } from '@/_typesBundle/productType';
 
-interface usedProductProps {
-  usedProduct: UsedProductsType;
+interface ProductProps {
+  usedProduct: UsedProductType;
 }
 
-export const UsedProductsCart = ({ usedProduct }: usedProductProps) => {
+export const ProductCart = ({ usedProduct }: ProductProps) => {
   const isSoldout = usedProduct.quantity < 1; // TEST
 
   return (
-    <section className='grid grid-cols-2 gap-4 mt-4 mb-24'>
+    <section>
       <Link
         to={`/used/detail/example1`}
         className={`rounded-lg cursor-pointer relative ${isSoldout && 'opacity-50'}`}
