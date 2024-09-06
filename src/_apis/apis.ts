@@ -1,9 +1,9 @@
 import { get, ref, set, update } from 'firebase/database';
 import { database } from './firebase';
-import { UsedProductsType } from '@/_typesBundle/productType';
+import { UsedProductType } from '@/_typesBundle/productType';
 
 export const uploadUsedProducts = async (
-  updateUsedProducts: UsedProductsType,
+  updateUsedProducts: UsedProductType,
 ) => {
   const { id, createdAt, seller, images, productName, price, quantity } =
     updateUsedProducts;
@@ -26,21 +26,42 @@ export const uploadUsedProducts = async (
         userSellData,
     };
     await update(ref(database), updates);
-
   } catch (error) {
     console.error('중고제품 업로드 에러', error);
   }
 };
 
-export const loadUsedProducts = async(): Promise<UsedProductsType[]> => {
+export const loadUsedProducts = async (): Promise<UsedProductType[]> => {
   try {
-    const snapshot = await get(ref(database,`usedProducts`))
+    const snapshot = await get(ref(database, `usedProducts`));
     if (snapshot.exists()) {
       return Object.values(snapshot.val());
     }
     return [];
   } catch (error) {
-    console.error('중고 제품 로드 에러', error)
+    console.error('중고 제품 로드 에러', error);
     return [];
   }
-}
+};
+
+export const searchUsedProducts = async (
+  queryString: string,
+): Promise<UsedProductType[]> => {
+  try {
+    const snapshot = await get(ref(database, `usedProducts`));
+    if (snapshot.exists()) {
+      const dataArr: UsedProductType[] = Object.values(snapshot.val());
+      const filterData = dataArr.filter((data) => {
+        return (
+          data.productName &&
+          data.productName.toLowerCase().includes(queryString.toLowerCase())
+        );
+      });
+      return filterData;
+    }
+    return [];
+  } catch (error) {
+    console.error('중고 제품 검색 에러', error);
+    return [];
+  }
+};
