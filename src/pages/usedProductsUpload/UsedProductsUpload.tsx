@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { v4 as uuidv4 } from 'uuid';
@@ -10,10 +10,10 @@ import { userState } from '@/_recoil/atoms';
 import { initlUsedProduct } from '@/_example/example';
 import Chevron_left from '@/_assets/icons/chevron_left.svg';
 import { BasicButton } from '@/components/button/BasicButton';
+import { UploadImage } from './UploadImage';
 
 // ⭕Layout 공용컴포넌트 만들기 ( 지금은따로씀 <header> ) = 추상화하기
 // ⭕input 컴포넌트 만들기
-// ⭕이미지컴포넌트 따로 만들기
 // ⭕로딩스피터 생성하기 -> 지금은 문구로 되어있음
 export const UsedProductsUpload = () => {
   const navigate = useNavigate();
@@ -41,27 +41,16 @@ export const UsedProductsUpload = () => {
     }
   };
 
-  const inputFileRef = useRef<HTMLInputElement>(null);
-  const onChangeImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const file = e.target.files[0];
-      const urlFile = URL.createObjectURL(file);
-      setPreviewImages((prevImages) => prevImages.concat(urlFile));
-      setUploadImages((prevImages) => prevImages.concat(file));
-      setUsedProducts({ ...usedProducts, images: previewImages });
-    }
-  };
   const onClickMoveUsedMain = () => {
     if (confirm('중고 제품 업로드를 취소하겠습니까?')) {
       setUsedProducts(initlUsedProduct);
       navigate('/used');
     }
   };
-  console.log(usedProducts);
 
   type ValidateProductInputType = Omit<
     UsedProductType,
-    'id' | 'seller' | 'createdAt' | 'isSales' | 'deliveryCharge'
+    'id' | 'seller' | 'createdAt' | 'isSales' | 'deliveryCharge' | 'images'
   >;
   const validateProductData = (usedProducts: ValidateProductInputType) => {
     console.log(usedProducts);
@@ -74,13 +63,14 @@ export const UsedProductsUpload = () => {
       !usedProducts.size
     ) {
       return false;
+    } else {
+      return true;
     }
-    if (usedProducts.images.length === 0) return false;
-    return true;
   };
 
   const onClickUploadUsedProducts = async () => {
     setIsLoading(true);
+
     if (!validateProductData(usedProducts)) {
       setIsLoading(false);
       return alert('모든 필수 필드를 입력해주세요');
@@ -130,45 +120,11 @@ export const UsedProductsUpload = () => {
       </header>
 
       <div className='pb-36 p-8 text-left'>
-        {/* 사진등록 */}
-        <div className='mb-8'>
-          <label className='block text-sm font-medium text-gray-700 mb-2'>
-            사진 등록 ( 2장 이상 올려주세요 )
-          </label>
-          <div className='flex space-x-2'>
-            <input
-              type='file'
-              className='mb-4 hidden'
-              multiple
-              onChange={onChangeImage}
-              ref={inputFileRef}
-            />
-            <div
-              onClick={() => inputFileRef.current?.click()}
-              className='w-20 h-20 bg-gray-300 flex items-center justify-center text-2xl text-gray-500 cursor-pointer'
-            >
-              +
-            </div>
-            {previewImages.map((image, index) => (
-              <div
-                key={index}
-                className='w-20 h-20 bg-gray-200 relative flex items-center justify-center'
-              >
-                <img
-                  src={image}
-                  alt={`uploaded ${index}`}
-                  className='object-cover w-full h-full'
-                />
-                <button
-                  // onClick={() => removeImage(index)}
-                  className='absolute top-0 right-0 p-1 text-xs text-gray-500'
-                >
-                  ×
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
+        <UploadImage
+          previewImages={previewImages}
+          setPreviewImages={setPreviewImages}
+          setUploadImages={setUploadImages}
+        />
 
         {/* input type등록 */}
         <div>
