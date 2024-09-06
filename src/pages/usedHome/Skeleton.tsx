@@ -10,7 +10,7 @@ const SkeletonCard = () => {
   );
 };
 
-const Skeleton: React.FC = () => {
+export const Skeleton = () => {
   return (
     <div className='grid grid-cols-2 pt-4'>
       {[1, 2, 3, 4, 5, 6].map((item) => (
@@ -19,5 +19,3 @@ const Skeleton: React.FC = () => {
     </div>
   );
 };
-
-export default Skeleton;
