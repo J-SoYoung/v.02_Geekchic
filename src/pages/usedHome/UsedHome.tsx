@@ -1,23 +1,24 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 
 import { SearchBar } from './SearchBar';
 import { SearchList } from './SearchList';
 import { Skeleton } from './Skeleton';
-import { ProductsList } from './productsList';
-import { MoveButton } from '@/components/button/MoveButton';
+import { ProductsList } from './ProductsList';
 
 import { userState } from '@/_recoil/atoms';
 import { useQuery } from '@tanstack/react-query';
 import { loadUsedProducts } from '@/_apis/apis';
 import { UsedProductType } from '@/_typesBundle/productType';
 import { usedProduct } from '../../_example/example';
+import { BasicButton } from '@/components/button/BasicButton';
 
 // ⭕ { } 컴포넌트 나누기
 // ⭕ 로티이미지 추가 : 데이터 새로고침 해주세요
 export const UsedHome = () => {
   const isSoldout = usedProduct.quantity < 1; // TEST
+  const navigate = useNavigate();
   const user = useRecoilValue(userState);
   const [searchResult, setSearchResult] = useState<UsedProductType[]>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -57,8 +58,10 @@ export const UsedHome = () => {
         <h1 className='text-3xl font-bold text-left mb-5 '>
           <Link to='/used'>중고거래</Link>
         </h1>
-        <span>{user?.username}님 반갑습니다!</span>
-        <MoveButton text={'제품 등록'} url={'/used/new'} />
+        <div className='flex justify-end items-center'>
+          <span className='mr-2'>{user?.username}님 반갑습니다!</span>
+          <BasicButton onClickFunc={()=> navigate('/used/new')} text='제품등록' bg='bg-black' width='100px' />
+        </div>
       </header>
 
       <SearchBar

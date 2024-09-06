@@ -8,9 +8,9 @@ import { editUserProfileData } from '@/_apis/userApis';
 import Icon_Pencile from '@assets/icons/pencil.svg';
 import { ContentsBox } from './ContentsBox';
 import { MyPageLayout } from '@components/MyPageLayout';
+import { BasicButton } from '@/components/button/BasicButton';
 
-// ⭕버튼 컴포넌트 만들기 full / half
-// 업로드 페이지에서 ContentsBox사용할 수 있지 않을까? think
+// ⭕업로드 페이지에서 ContentsBox사용할 수 있지 않을까? think
 // onChangeEditInput데이터가 여러개인 input의 경우 (업로드페이지)에서 적용하기
 export const Profile = () => {
   const [user, setUser] = useRecoilState(userState);
@@ -119,26 +119,25 @@ export const Profile = () => {
 
         {isEditing ? (
           <div className='my-20 w-full flex justify-between'>
-            <button
-              onClick={onClickSaveProfile}
-              className='w-full py-3 mr-2 bg-[#8F5BBD] rounded-lg text-white hover:bg-[#7b49a7]'
-            >
-              저장하기
-            </button>
-            <button
-              onClick={onClickProfileCancel}
-              className='w-full py-3 bg-[#524f4f] text-white rounded-lg hover:bg-[#524f4f]'
-            >
-              취소하기
-            </button>
+            <BasicButton
+              onClickFunc={onClickSaveProfile}
+              text='저장하기'
+              bg='bg-[#8F5BBD]'
+            />
+            <BasicButton
+              onClickFunc={onClickProfileCancel}
+              text='취소하기'
+              bg='bg-[#adb5bd]' //#868e96
+            />
           </div>
         ) : (
-          <button
-            onClick={() => setIsEditing(true)}
-            className='my-20 w-full py-3 bg-[#8F5BBD] text-white rounded-lg hover:bg-[#7b49a7]'
-          >
-            수정하기
-          </button>
+          <div className='my-20'>
+            <BasicButton
+              onClickFunc={() => setIsEditing(true)}
+              text='수정하기'
+              bg='bg-[#8F5BBD]'
+            />
+          </div>
         )}
       </div>
     </MyPageLayout>

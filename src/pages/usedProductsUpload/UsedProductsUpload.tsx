@@ -5,21 +5,22 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { uploadCloudImagesArray } from '@/_apis/uploader';
 import { uploadUsedProducts } from '@/_apis/apis';
-import { UsedProductsType } from '@/_typesBundle/productType';
+import { UsedProductType } from '@/_typesBundle/productType';
 import { userState } from '@/_recoil/atoms';
 import { initlUsedProduct } from '@/_example/example';
 import Chevron_left from '@/_assets/icons/chevron_left.svg';
+import { BasicButton } from '@/components/button/BasicButton';
 
-// ⭕ Layout 공용컴포넌트 만들기 ( 지금은따로씀 <header> ) = 추상화하기
-// input 컴포넌트 만들기
-// 이미지컴포넌트 따로 만들기
-// 로딩스피터 생성하기 -> 지금은 문구로 되어있음
+// ⭕Layout 공용컴포넌트 만들기 ( 지금은따로씀 <header> ) = 추상화하기
+// ⭕input 컴포넌트 만들기
+// ⭕이미지컴포넌트 따로 만들기
+// ⭕로딩스피터 생성하기 -> 지금은 문구로 되어있음
 export const UsedProductsUpload = () => {
   const navigate = useNavigate();
   const user = useRecoilValue(userState);
 
   const [usedProducts, setUsedProducts] =
-    useState<UsedProductsType>(initlUsedProduct);
+    useState<UsedProductType>(initlUsedProduct);
   const [previewImages, setPreviewImages] = useState<string[]>([]);
   const [uploadImages, setUploadImages] = useState<File[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -59,7 +60,7 @@ export const UsedProductsUpload = () => {
   console.log(usedProducts);
 
   type ValidateProductInputType = Omit<
-    UsedProductsType,
+    UsedProductType,
     'id' | 'seller' | 'createdAt' | 'isSales' | 'deliveryCharge'
   >;
   const validateProductData = (usedProducts: ValidateProductInputType) => {
@@ -90,7 +91,7 @@ export const UsedProductsUpload = () => {
       const createdAt = new Date().toISOString();
       const seller = { ...user };
 
-      let newUsedProducts: UsedProductsType = {
+      let newUsedProducts: UsedProductType = {
         ...usedProducts,
         id,
         createdAt,
@@ -295,13 +296,11 @@ export const UsedProductsUpload = () => {
               onChange={onChangeInput}
             />
           </div>
-
-          <button
-            onClick={onClickUploadUsedProducts}
-            className='w-full h-[45px] py-2 px-4 bg-[#8F5BBD] text-white rounded-md'
-          >
-            등록하기
-          </button>
+          <BasicButton
+            onClickFunc={onClickUploadUsedProducts}
+            text='등록하기'
+            bg='bg-[#8F5BBD]'
+          />
         </div>
       </div>
     </>
