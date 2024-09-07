@@ -1,4 +1,5 @@
 import { UsedProductType } from '@/_typesBundle/productType';
+import { UserDataType } from '@/_typesBundle/userType';
 
 type ValidateProductInputType = Omit<
   UsedProductType,
@@ -14,6 +15,14 @@ export const validateProductData = (usedProducts: ValidateProductInputType) => {
     !usedProducts.quantity ||
     !usedProducts.size
   ) {
+    return false;
+  } else {
+    return true;
+  }
+};
+
+export const validateUserData = (user: UserDataType) => {
+  if (!user.address || !user.phone || !user.avatar) {
     return false;
   } else {
     return true;
