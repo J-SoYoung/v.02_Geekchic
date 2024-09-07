@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { v4 as uuidv4 } from 'uuid';
 
-import { Layout } from './Layout';
 import { UploadImage } from './UploadImage';
 import { FormInput } from './FormInput';
 import { validateProductData } from './utils';
@@ -14,8 +13,8 @@ import { UsedProductType } from '@/_typesBundle/productType';
 import { userState } from '@/_recoil/atoms';
 import { initlUsedProduct } from '@/_example/example';
 import { BasicButton } from '@/components/button/BasicButton';
+import { Layout } from '@/components/Layout';
 
-// ⭕Layout 공용컴포넌트로 사용하기 (지금은 각각임)
 export const UsedProductsUpload = () => {
   const navigate = useNavigate();
   const user = useRecoilValue(userState);

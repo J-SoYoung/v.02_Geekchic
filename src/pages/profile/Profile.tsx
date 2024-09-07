@@ -7,12 +7,15 @@ import { uploadCloudImage } from '@/_apis/uploader';
 import { editUserProfileData } from '@/_apis/userApis';
 import Icon_Pencile from '@assets/icons/pencil.svg';
 import { ContentsBox } from './ContentsBox';
-import { MyPageLayout } from '@components/MyPageLayout';
+
 import { BasicButton } from '@/components/button/BasicButton';
+import { useNavigate } from 'react-router-dom';
+import { Layout } from '@/components/Layout';
 
 // ⭕업로드 페이지에서 ContentsBox사용할 수 있지 않을까? think
 // onChangeEditInput데이터가 여러개인 input의 경우 (업로드페이지)에서 적용하기
 export const Profile = () => {
+  const navigate = useNavigate();
   const [user, setUser] = useRecoilState(userState);
   const [isEditing, setIsEditing] = useState(false);
   const [editUser, setEditUser] = useState<UserDataType>(user);
@@ -54,7 +57,12 @@ export const Profile = () => {
   };
 
   return (
-    <MyPageLayout title='내 프로필 관리'>
+    <Layout
+      title='내 프로필 관리'
+      onClickFunc={() => {
+        navigate(-1);
+      }}
+    >
       <div className='p-8'>
         <div>
           <div className='w-24 h-24 bg-gray-200 rounded-full mx-auto mb-10 relative border'>
@@ -140,6 +148,6 @@ export const Profile = () => {
           </div>
         )}
       </div>
-    </MyPageLayout>
+    </Layout>
   );
 };
