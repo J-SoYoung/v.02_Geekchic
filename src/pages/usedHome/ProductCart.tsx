@@ -7,11 +7,11 @@ interface ProductProps {
 
 export const ProductCart = ({ usedProduct }: ProductProps) => {
   const isSoldout = usedProduct.quantity < 1; // TEST
-
+  
   return (
     <section>
       <Link
-        to={`/used/detail/example1`}
+        to={`/used/detail/${usedProduct.id}`}
         className={`rounded-lg cursor-pointer relative ${isSoldout && 'opacity-50'}`}
       >
         {/* <IsSeller sellerId={usedProduct?.seller.sellerId} /> */}

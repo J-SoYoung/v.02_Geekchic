@@ -31,24 +31,6 @@ export const uploadUsedProducts = async (
   }
 };
 
-export const getUsedProducts = async (): Promise<UsedProductType[]> => {
-  try {
-    const snapshot = await get(ref(database, `usedProducts`));
-    if (snapshot.exists()) {
-      const data = Object.values(snapshot.val()) as UsedProductType[];
-      const sortedData = data.sort(
-        (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-      );
-      return sortedData;
-    }
-    return [];
-  } catch (error) {
-    console.error('중고 제품 로드 에러', error);
-    return [];
-  }
-};
-
 export const searchUsedProducts = async (
   queryString: string,
 ): Promise<UsedProductType[]> => {
@@ -68,5 +50,33 @@ export const searchUsedProducts = async (
   } catch (error) {
     console.error('중고 제품 검색 에러', error);
     return [];
+  }
+};
+
+export const getUsedProducts = async (): Promise<UsedProductType[]> => {
+  try {
+    const snapshot = await get(ref(database, `usedProducts`));
+    if (snapshot.exists()) {
+      const data = Object.values(snapshot.val()) as UsedProductType[];
+      const sortedData = data.sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      );
+      return sortedData;
+    }
+    return [];
+  } catch (error) {
+    console.error('중고 제품 로드 에러', error);
+    return [];
+  }
+};
+
+export const getUsedProductDetail = async (itemId: string) => {
+  try {
+    const snapshot = await get(ref(database, `usedProducts/${itemId}`));
+    if (snapshot.exists()) return snapshot.val();
+  } catch (error) {
+    console.error('중고 상세 페이지 데이터 로드 에러', error);
+    return {};
   }
 };
