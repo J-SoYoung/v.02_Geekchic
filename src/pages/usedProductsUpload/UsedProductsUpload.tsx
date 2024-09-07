@@ -11,6 +11,7 @@ import { initlUsedProduct } from '@/_example/example';
 import Chevron_left from '@/_assets/icons/chevron_left.svg';
 import { BasicButton } from '@/components/button/BasicButton';
 import { UploadImage } from './UploadImage';
+import { FormInput } from './FormInput';
 
 // ⭕Layout 공용컴포넌트 만들기 ( 지금은따로씀 <header> ) = 추상화하기
 // ⭕input 컴포넌트 만들기
@@ -128,60 +129,43 @@ export const UsedProductsUpload = () => {
 
         {/* input type등록 */}
         <div>
-          <div className='mb-8'>
-            <label className='mb-1 block text-sm font-medium text-gray-700'>
-              상품명
-            </label>
-            <input
-              type='text'
-              name='productName'
-              value={usedProducts.productName}
-              onChange={onChangeInput}
-              className='w-full p-2 block text-lg border rounded shadow-sm '
-              placeholder='상품명을 입력하세요'
-            />
-          </div>
-          <div className='mb-8'>
-            <label className='mb-1 block text-sm font-medium text-gray-700'>
-              가격
-            </label>
-            <input
-              type='number'
-              name='price'
-              value={usedProducts.price}
-              onChange={onChangeInput}
-              min={1000}
-              className='w-full p-2 block text-lg border rounded shadow-sm '
-              placeholder='가격을 입력하세요'
-            />
-          </div>
-          <div className='mb-8'>
-            <label className='mb-1 block text-sm font-medium text-gray-700'>
-              수량
-            </label>
-            <input
-              type='number'
-              name='quantity'
-              value={usedProducts.quantity}
-              onChange={onChangeInput}
-              min={1}
-              className='w-full p-2 block text-lg border rounded shadow-sm '
-              placeholder='최소 수량은 1개 입니다'
-            />
-          </div>
-          <div className='mb-8'>
-            <label className='mb-1 block text-sm font-medium text-gray-700'>
-              사이즈
-            </label>
-            <select name='size' onChange={onChangeInput} className='border p-2'>
-              <option value=''>사이즈를 선택해주세요</option>
-              <option value='S'>S</option>
-              <option value='M'>M</option>
-              <option value='L'>L</option>
-              <option value='XL'>XL</option>
-              <option value='FREE'>FREE</option>
-            </select>
-          </div>
+          <FormInput
+            label='상품명'
+            type='text'
+            name='productName'
+            value={usedProducts.productName}
+            onChange={onChangeInput}
+            placeholder='상품명을 입력하세요'
+          />
+          <FormInput
+            label='가격'
+            type='number'
+            name='price'
+            value={usedProducts.price}
+            onChange={onChangeInput}
+            placeholder='가격을 입력하세요'
+            min={1000}
+            step={1000}
+          />
+          <FormInput
+            label='수량'
+            type='number'
+            name='quantity'
+            value={usedProducts.quantity}
+            onChange={onChangeInput}
+            placeholder='최소 수량은 1개 입니다'
+            min={1}
+          />
+          <FormInput
+            label='사이즈'
+            type='select'
+            name='size'
+            value={usedProducts.size}
+            onChange={onChangeInput}
+            placeholder='사이즈를 선택해주세요'
+            options={['사이즈를 선택해주세요', 'S', 'M', 'L', 'XL', 'FREE']}
+          />
+
           <div className='mb-8'>
             <label className='block text-sm font-medium text-gray-700 mb-2'>
               배송비
@@ -211,6 +195,7 @@ export const UsedProductsUpload = () => {
               </label>
             </div>
           </div>
+      
           <div className='mb-8'>
             <label className='block text-sm font-medium text-gray-700 mb-2'>
               물품 상태
@@ -240,18 +225,14 @@ export const UsedProductsUpload = () => {
               </label>
             </div>
           </div>
-          <div className='mb-8 h-[200px]'>
-            <label className='block text-sm font-medium text-gray-700'>
-              설명
-            </label>
-            <textarea
-              className='mt-1 block min-h-[150px] w-full resize-none border border-gray-300 rounded-md p-4 focus:outline-none'
-              placeholder='상품의 자세한 설명을 입력해 주세요'
-              name='description'
-              value={usedProducts.description}
-              onChange={onChangeInput}
-            />
-          </div>
+          <FormInput
+            label='설명'
+            type='textarea'
+            name='description'
+            value={usedProducts.description}
+            onChange={onChangeInput}
+            placeholder='상품의 자세한 설명을 입력해 주세요'
+          />
           <BasicButton
             onClickFunc={onClickUploadUsedProducts}
             text='등록하기'
