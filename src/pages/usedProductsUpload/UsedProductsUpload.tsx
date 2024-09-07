@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query';
 import { useRecoilValue } from 'recoil';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -48,6 +49,31 @@ export const UsedProductsUpload = () => {
     }
   };
 
+  const imageUploadMutation = useMutation({
+    mutationFn: async (uploadImages: File[]) => {
+      return uploadCloudImagesArray(uploadImages);
+    },
+  });
+
+  const productUploadMutation = useMutation({
+    mutationFn: async (newUsedProducts: UsedProductType) => {
+      uploadUsedProducts(newUsedProducts);
+    },
+    onSuccess: () => {
+      navigate('/used');
+    },
+    onError: (error) => {
+      console.log('중고 제품 업로드 에러', error);
+      alert('업로드 중 에러가 발생했습니다.');
+    },
+    onSettled: () => {
+      setIsLoading(false);
+    },
+  });
+
+  // ⭕ 에러를 따로 표시할 필요가 있을까? 음 think, 알림으로만 해도 충분하지 않나
+  // console.log('제품업로드 error', productUploadMutation.isError);
+
   const onClickUploadUsedProducts = async () => {
     setIsLoading(true);
 
@@ -56,28 +82,29 @@ export const UsedProductsUpload = () => {
       return alert('모든 필수 필드를 입력해주세요');
     }
 
-    try {
-      const id = uuidv4();
-      const createdAt = new Date().toISOString();
-      const seller = { ...user };
+    const id = uuidv4();
+    const createdAt = new Date().toISOString();
+    const seller = { ...user };
 
-      let newUsedProducts: UsedProductType = {
-        ...usedProducts,
-        id,
-        createdAt,
-        seller,
-      };
+    let newUsedProducts: UsedProductType = {
+      ...usedProducts,
+      id,
+      createdAt,
+      seller,
+    };
 
-      if (uploadImages) {
-        const cloudImage = await uploadCloudImagesArray(uploadImages);
-        newUsedProducts = { ...newUsedProducts, images: cloudImage };
-        uploadUsedProducts(newUsedProducts);
-        navigate('/used');
-      }
-    } catch (error) {
-      console.log('중고 제품 업로드 에러', error);
-    } finally {
-      setIsLoading(false);
+    if (uploadImages) {
+      imageUploadMutation.mutate(uploadImages, {
+        onSuccess: (cloudImage) => {
+          newUsedProducts = { ...newUsedProducts, images: cloudImage };
+          productUploadMutation.mutate(newUsedProducts);
+        },
+        onError: (error) => {
+          console.log('이미지 업로드 에러', error);
+          alert('이미지 업로드 중 에러가 발생했습니다.');
+          setIsLoading(false);
+        },
+      });
     }
   };
 
