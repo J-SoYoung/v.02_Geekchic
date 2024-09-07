@@ -3,19 +3,19 @@ import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { v4 as uuidv4 } from 'uuid';
 
+import { Layout } from './Layout';
+import { UploadImage } from './UploadImage';
+import { FormInput } from './FormInput';
+import { validateProductData } from './utils';
+
 import { uploadCloudImagesArray } from '@/_apis/uploader';
 import { uploadUsedProducts } from '@/_apis/apis';
 import { UsedProductType } from '@/_typesBundle/productType';
 import { userState } from '@/_recoil/atoms';
 import { initlUsedProduct } from '@/_example/example';
-import Chevron_left from '@/_assets/icons/chevron_left.svg';
 import { BasicButton } from '@/components/button/BasicButton';
-import { UploadImage } from './UploadImage';
-import { FormInput } from './FormInput';
 
-// ⭕Layout 공용컴포넌트 만들기 ( 지금은따로씀 <header> ) = 추상화하기
-// ⭕input 컴포넌트 만들기
-// ⭕로딩스피터 생성하기 -> 지금은 문구로 되어있음
+// ⭕Layout 공용컴포넌트로 사용하기 (지금은 각각임)
 export const UsedProductsUpload = () => {
   const navigate = useNavigate();
   const user = useRecoilValue(userState);
@@ -46,26 +46,6 @@ export const UsedProductsUpload = () => {
     if (confirm('중고 제품 업로드를 취소하겠습니까?')) {
       setUsedProducts(initlUsedProduct);
       navigate('/used');
-    }
-  };
-
-  type ValidateProductInputType = Omit<
-    UsedProductType,
-    'id' | 'seller' | 'createdAt' | 'isSales' | 'deliveryCharge' | 'images'
-  >;
-  const validateProductData = (usedProducts: ValidateProductInputType) => {
-    console.log(usedProducts);
-    if (
-      !usedProducts.description ||
-      !usedProducts.productName ||
-      !usedProducts.conditions ||
-      !usedProducts.price ||
-      !usedProducts.quantity ||
-      !usedProducts.size
-    ) {
-      return false;
-    } else {
-      return true;
     }
   };
 
@@ -104,31 +84,19 @@ export const UsedProductsUpload = () => {
 
   return (
     <>
-      <header className='p-8 text-left relative '>
-        {isLoading && (
-          <div className='fixed top-80 left-[40%] text-3xl text-red-500'>
-            Loading ...
-          </div>
-        )}
-
-        <img
-          src={Chevron_left}
-          alt='이전 페이지로'
-          className='w-10 h-10 cursor-pointer'
-          onClick={onClickMoveUsedMain}
-        />
-        <h1 className='text-3xl font-bold text-center mb-5 mt-5'>제품 등록</h1>
-      </header>
-
-      <div className='pb-36 p-8 text-left'>
-        <UploadImage
-          previewImages={previewImages}
-          setPreviewImages={setPreviewImages}
-          setUploadImages={setUploadImages}
-        />
-
-        {/* input type등록 */}
-        <div>
+      {isLoading && (
+        <div className='fixed top-80 left-[40%] text-3xl text-red-500'>
+          {/* ⭕로티이미지 - 제품 업로드 로딩 ( 로딩스피너 ) */}
+          Loading ...
+        </div>
+      )}
+      <Layout title='제품 등록' onClickFunc={onClickMoveUsedMain}>
+        <div className='pb-36 p-8 text-left'>
+          <UploadImage
+            previewImages={previewImages}
+            setPreviewImages={setPreviewImages}
+            setUploadImages={setUploadImages}
+          />
           <FormInput
             label='상품명'
             type='text'
@@ -165,7 +133,6 @@ export const UsedProductsUpload = () => {
             placeholder='사이즈를 선택해주세요'
             options={['사이즈를 선택해주세요', 'S', 'M', 'L', 'XL', 'FREE']}
           />
-
           <div className='mb-8'>
             <label className='block text-sm font-medium text-gray-700 mb-2'>
               배송비
@@ -195,7 +162,6 @@ export const UsedProductsUpload = () => {
               </label>
             </div>
           </div>
-      
           <div className='mb-8'>
             <label className='block text-sm font-medium text-gray-700 mb-2'>
               물품 상태
@@ -239,7 +205,7 @@ export const UsedProductsUpload = () => {
             bg='bg-[#8F5BBD]'
           />
         </div>
-      </div>
+      </Layout>
     </>
   );
 };
