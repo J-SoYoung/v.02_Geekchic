@@ -1,31 +1,24 @@
 import Chevron_left from '@/_assets/icons/chevron_left.svg';
 import { useRecoilValue } from 'recoil';
 import { userState } from '@/_recoil/atoms';
-import { useNavigate } from 'react-router-dom';
 
 interface LayoutProps {
   children: React.ReactNode;
   title: string;
+  onClickFunc?: () => void;
 }
-export const MyPageLayout = ({ children, title }: LayoutProps) => {
+export const Layout = ({ children, title, onClickFunc }: LayoutProps) => {
   const user = useRecoilValue(userState);
-  const navigate = useNavigate();
 
   return (
     <>
       <header className='p-8 text-left '>
-        {location.pathname.startsWith('/my') && (
+        {onClickFunc && (
           <img
             src={Chevron_left}
             alt='이전 페이지로'
             className='w-10 h-10 cursor-pointer '
-            onClick={() =>
-              location.pathname.startsWith('/message')
-                ? navigate(`/my/${user && user._id}/messageList`, {
-                    state: { messages: '메세지넘긴다' },
-                  })
-                : navigate(`/my/${user && user._id}`)
-            }
+            onClick={onClickFunc}
           />
         )}
         <h1
