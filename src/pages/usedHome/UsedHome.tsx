@@ -14,8 +14,6 @@ import { UsedProductType } from '@/_typesBundle/productType';
 import { usedProduct } from '../../_example/example';
 import { BasicButton } from '@/components/button/BasicButton';
 
-// ⭕ { } 컴포넌트 나누기
-// ⭕ 로티이미지 추가 : 데이터 새로고침 해주세요
 export const UsedHome = () => {
   const isSoldout = usedProduct.quantity < 1; // TEST
   const navigate = useNavigate();
@@ -38,6 +36,7 @@ export const UsedHome = () => {
     setIsSearching(false);
   };
 
+  // ⭕ 로티이미지 추가 : 에러 페이지 데이터 새로고침 해주세요
   if (isError) {
     return (
       <div className='border h-40 p-2 text-center'>
@@ -53,6 +52,16 @@ export const UsedHome = () => {
   }
 
   return (
+    // TEST
+    // <div className='border h-40 p-2 text-center'>
+    //   <p>데이터를 가져오는 동안 문제가 발생했습니다</p>
+    //   <button
+    //     className='cursor-pointer hover:font-bold'
+    //     onClick={() => window.location.reload()}
+    //   >
+    //     GeekChic 중고 메인 페이지 새로고침
+    //   </button>
+    // </div>
     <main className='p-11 pb-4 text-right'>
       <header>
         <h1 className='text-3xl font-bold text-left mb-5 '>
@@ -60,7 +69,12 @@ export const UsedHome = () => {
         </h1>
         <div className='flex justify-end items-center'>
           <span className='mr-2'>{user?.username}님 반갑습니다!</span>
-          <BasicButton onClickFunc={()=> navigate('/used/new')} text='제품등록' bg='bg-black' width='w-[100px]' />
+          <BasicButton
+            onClickFunc={() => navigate('/used/new')}
+            text='제품등록'
+            bg='bg-black'
+            width='w-[100px]'
+          />
         </div>
       </header>
 
