@@ -25,7 +25,7 @@ export const signOutFromGoogle = async () => {
 };
 
 export async function loadUserData(uid: string): Promise<UserDataType | null> {
-  const userRef = ref(database, `userData/${uid}`);
+  const userRef = ref(database, `users/${uid}`);
   const snapshot = await get(userRef);
   if (snapshot.exists()) {
     console.log(snapshot.val());
@@ -38,7 +38,7 @@ export async function loadUserData(uid: string): Promise<UserDataType | null> {
 export async function createNewUser(
   newUser: UserDataType,
 ): Promise<UserDataType | null> {
-  const userRef = ref(database, `userData/${newUser._id}`);
+  const userRef = ref(database, `users/${newUser._id}`);
   await set(userRef, newUser);
   return newUser;
 }
@@ -48,7 +48,7 @@ export async function editUserProfileData(
   setUser: SetterOrUpdater<UserDataType>,
 ) {
   try {
-    const userEditRef = ref(database, `userData/${updatedUser._id}`);
+    const userEditRef = ref(database, `users/${updatedUser._id}`);
     await set(userEditRef, updatedUser);
     setUser(updatedUser);
   } catch (err) {
