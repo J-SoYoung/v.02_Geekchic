@@ -60,7 +60,7 @@ export const UsedHome = () => {
         </h1>
         <div className='flex justify-end items-center'>
           <span className='mr-2'>{user?.username}님 반갑습니다!</span>
-          <BasicButton onClickFunc={()=> navigate('/used/new')} text='제품등록' bg='bg-black' width='100px' />
+          <BasicButton onClickFunc={()=> navigate('/used/new')} text='제품등록' bg='bg-black' width='w-[100px]' />
         </div>
       </header>
 

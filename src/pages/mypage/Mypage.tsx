@@ -2,7 +2,7 @@ import { useRecoilState } from 'recoil';
 import { Link, useNavigate } from 'react-router-dom';
 import { getEmptyUserData, userState } from '@/_recoil/atoms';
 import { signOutFromGoogle } from '@/_apis/userApis';
-import { MyPageLayout } from '@components/MyPageLayout';
+import { Layout } from '@/components/Layout';
 import { BasicButton } from '@/components/button/BasicButton';
 
 // ⭕ 마이페이지 4개탭 -> 공통컴포넌트로
@@ -23,7 +23,7 @@ export const Mypage = () => {
   };
 
   return (
-    <MyPageLayout title='마이페이지'>
+    <Layout title='마이페이지'>
       <div className='m-16 p-4'>
         {/* 프로필 관리 */}
         <div className='mb-12 border-b-2'>
@@ -93,6 +93,6 @@ export const Mypage = () => {
           </div>
         </div>
       </div>
-    </MyPageLayout>
+    </Layout>
   );
 };

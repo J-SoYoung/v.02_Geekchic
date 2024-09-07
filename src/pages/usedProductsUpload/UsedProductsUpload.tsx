@@ -1,20 +1,21 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query';
 import { useRecoilValue } from 'recoil';
 import { v4 as uuidv4 } from 'uuid';
+
+import { UploadImage } from './UploadImage';
+import { FormInput } from './FormInput';
+import { validateProductData } from './utils';
 
 import { uploadCloudImagesArray } from '@/_apis/uploader';
 import { uploadUsedProducts } from '@/_apis/apis';
 import { UsedProductType } from '@/_typesBundle/productType';
 import { userState } from '@/_recoil/atoms';
 import { initlUsedProduct } from '@/_example/example';
-import Chevron_left from '@/_assets/icons/chevron_left.svg';
 import { BasicButton } from '@/components/button/BasicButton';
+import { Layout } from '@/components/Layout';
 
-// ⭕Layout 공용컴포넌트 만들기 ( 지금은따로씀 <header> ) = 추상화하기
-// ⭕input 컴포넌트 만들기
-// ⭕이미지컴포넌트 따로 만들기
-// ⭕로딩스피터 생성하기 -> 지금은 문구로 되어있음
 export const UsedProductsUpload = () => {
   const navigate = useNavigate();
   const user = useRecoilValue(userState);
@@ -41,191 +42,123 @@ export const UsedProductsUpload = () => {
     }
   };
 
-  const inputFileRef = useRef<HTMLInputElement>(null);
-  const onChangeImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const file = e.target.files[0];
-      const urlFile = URL.createObjectURL(file);
-      setPreviewImages((prevImages) => prevImages.concat(urlFile));
-      setUploadImages((prevImages) => prevImages.concat(file));
-      setUsedProducts({ ...usedProducts, images: previewImages });
-    }
-  };
   const onClickMoveUsedMain = () => {
     if (confirm('중고 제품 업로드를 취소하겠습니까?')) {
       setUsedProducts(initlUsedProduct);
       navigate('/used');
     }
   };
-  console.log(usedProducts);
 
-  type ValidateProductInputType = Omit<
-    UsedProductType,
-    'id' | 'seller' | 'createdAt' | 'isSales' | 'deliveryCharge'
-  >;
-  const validateProductData = (usedProducts: ValidateProductInputType) => {
-    console.log(usedProducts);
-    if (
-      !usedProducts.description ||
-      !usedProducts.productName ||
-      !usedProducts.conditions ||
-      !usedProducts.price ||
-      !usedProducts.quantity ||
-      !usedProducts.size
-    ) {
-      return false;
-    }
-    if (usedProducts.images.length === 0) return false;
-    return true;
-  };
+  const imageUploadMutation = useMutation({
+    mutationFn: async (uploadImages: File[]) => {
+      return uploadCloudImagesArray(uploadImages);
+    },
+  });
+
+  const productUploadMutation = useMutation({
+    mutationFn: async (newUsedProducts: UsedProductType) => {
+      uploadUsedProducts(newUsedProducts);
+    },
+    onSuccess: () => {
+      navigate('/used');
+    },
+    onError: (error) => {
+      console.log('중고 제품 업로드 에러', error);
+      alert('업로드 중 에러가 발생했습니다.');
+    },
+    onSettled: () => {
+      setIsLoading(false);
+    },
+  });
+
+  // ⭕ 에러를 따로 표시할 필요가 있을까? 음 think, 알림으로만 해도 충분하지 않나
+  // console.log('제품업로드 error', productUploadMutation.isError);
 
   const onClickUploadUsedProducts = async () => {
     setIsLoading(true);
+
     if (!validateProductData(usedProducts)) {
       setIsLoading(false);
       return alert('모든 필수 필드를 입력해주세요');
     }
 
-    try {
-      const id = uuidv4();
-      const createdAt = new Date().toISOString();
-      const seller = { ...user };
+    const id = uuidv4();
+    const createdAt = new Date().toISOString();
+    const seller = { ...user };
 
-      let newUsedProducts: UsedProductType = {
-        ...usedProducts,
-        id,
-        createdAt,
-        seller,
-      };
+    let newUsedProducts: UsedProductType = {
+      ...usedProducts,
+      id,
+      createdAt,
+      seller,
+    };
 
-      if (uploadImages) {
-        const cloudImage = await uploadCloudImagesArray(uploadImages);
-        newUsedProducts = { ...newUsedProducts, images: cloudImage };
-        uploadUsedProducts(newUsedProducts);
-        navigate('/used');
-      }
-    } catch (error) {
-      console.log('중고 제품 업로드 에러', error);
-    } finally {
-      setIsLoading(false);
+    if (uploadImages) {
+      imageUploadMutation.mutate(uploadImages, {
+        onSuccess: (cloudImage) => {
+          newUsedProducts = { ...newUsedProducts, images: cloudImage };
+          productUploadMutation.mutate(newUsedProducts);
+        },
+        onError: (error) => {
+          console.log('이미지 업로드 에러', error);
+          alert('이미지 업로드 중 에러가 발생했습니다.');
+          setIsLoading(false);
+        },
+      });
     }
   };
 
   return (
     <>
-      <header className='p-8 text-left relative '>
-        {isLoading && (
-          <div className='fixed top-80 left-[40%] text-3xl text-red-500'>
-            Loading ...
-          </div>
-        )}
-
-        <img
-          src={Chevron_left}
-          alt='이전 페이지로'
-          className='w-10 h-10 cursor-pointer'
-          onClick={onClickMoveUsedMain}
-        />
-        <h1 className='text-3xl font-bold text-center mb-5 mt-5'>제품 등록</h1>
-      </header>
-
-      <div className='pb-36 p-8 text-left'>
-        {/* 사진등록 */}
-        <div className='mb-8'>
-          <label className='block text-sm font-medium text-gray-700 mb-2'>
-            사진 등록 ( 2장 이상 올려주세요 )
-          </label>
-          <div className='flex space-x-2'>
-            <input
-              type='file'
-              className='mb-4 hidden'
-              multiple
-              onChange={onChangeImage}
-              ref={inputFileRef}
-            />
-            <div
-              onClick={() => inputFileRef.current?.click()}
-              className='w-20 h-20 bg-gray-300 flex items-center justify-center text-2xl text-gray-500 cursor-pointer'
-            >
-              +
-            </div>
-            {previewImages.map((image, index) => (
-              <div
-                key={index}
-                className='w-20 h-20 bg-gray-200 relative flex items-center justify-center'
-              >
-                <img
-                  src={image}
-                  alt={`uploaded ${index}`}
-                  className='object-cover w-full h-full'
-                />
-                <button
-                  // onClick={() => removeImage(index)}
-                  className='absolute top-0 right-0 p-1 text-xs text-gray-500'
-                >
-                  ×
-                </button>
-              </div>
-            ))}
-          </div>
+      {isLoading && (
+        <div className='fixed top-80 left-[40%] text-3xl text-red-500'>
+          {/* ⭕로티이미지 - 제품 업로드 로딩 ( 로딩스피너 ) */}
+          Loading ...
         </div>
-
-        {/* input type등록 */}
-        <div>
-          <div className='mb-8'>
-            <label className='mb-1 block text-sm font-medium text-gray-700'>
-              상품명
-            </label>
-            <input
-              type='text'
-              name='productName'
-              value={usedProducts.productName}
-              onChange={onChangeInput}
-              className='w-full p-2 block text-lg border rounded shadow-sm '
-              placeholder='상품명을 입력하세요'
-            />
-          </div>
-          <div className='mb-8'>
-            <label className='mb-1 block text-sm font-medium text-gray-700'>
-              가격
-            </label>
-            <input
-              type='number'
-              name='price'
-              value={usedProducts.price}
-              onChange={onChangeInput}
-              min={1000}
-              className='w-full p-2 block text-lg border rounded shadow-sm '
-              placeholder='가격을 입력하세요'
-            />
-          </div>
-          <div className='mb-8'>
-            <label className='mb-1 block text-sm font-medium text-gray-700'>
-              수량
-            </label>
-            <input
-              type='number'
-              name='quantity'
-              value={usedProducts.quantity}
-              onChange={onChangeInput}
-              min={1}
-              className='w-full p-2 block text-lg border rounded shadow-sm '
-              placeholder='최소 수량은 1개 입니다'
-            />
-          </div>
-          <div className='mb-8'>
-            <label className='mb-1 block text-sm font-medium text-gray-700'>
-              사이즈
-            </label>
-            <select name='size' onChange={onChangeInput} className='border p-2'>
-              <option value=''>사이즈를 선택해주세요</option>
-              <option value='S'>S</option>
-              <option value='M'>M</option>
-              <option value='L'>L</option>
-              <option value='XL'>XL</option>
-              <option value='FREE'>FREE</option>
-            </select>
-          </div>
+      )}
+      <Layout title='제품 등록' onClickFunc={onClickMoveUsedMain}>
+        <div className='pb-36 p-8 text-left'>
+          <UploadImage
+            previewImages={previewImages}
+            setPreviewImages={setPreviewImages}
+            setUploadImages={setUploadImages}
+          />
+          <FormInput
+            label='상품명'
+            type='text'
+            name='productName'
+            value={usedProducts.productName}
+            onChange={onChangeInput}
+            placeholder='상품명을 입력하세요'
+          />
+          <FormInput
+            label='가격'
+            type='number'
+            name='price'
+            value={usedProducts.price}
+            onChange={onChangeInput}
+            placeholder='가격을 입력하세요'
+            min={1000}
+            step={1000}
+          />
+          <FormInput
+            label='수량'
+            type='number'
+            name='quantity'
+            value={usedProducts.quantity}
+            onChange={onChangeInput}
+            placeholder='최소 수량은 1개 입니다'
+            min={1}
+          />
+          <FormInput
+            label='사이즈'
+            type='select'
+            name='size'
+            value={usedProducts.size}
+            onChange={onChangeInput}
+            placeholder='사이즈를 선택해주세요'
+            options={['사이즈를 선택해주세요', 'S', 'M', 'L', 'XL', 'FREE']}
+          />
           <div className='mb-8'>
             <label className='block text-sm font-medium text-gray-700 mb-2'>
               배송비
@@ -284,25 +217,21 @@ export const UsedProductsUpload = () => {
               </label>
             </div>
           </div>
-          <div className='mb-8 h-[200px]'>
-            <label className='block text-sm font-medium text-gray-700'>
-              설명
-            </label>
-            <textarea
-              className='mt-1 block min-h-[150px] w-full resize-none border border-gray-300 rounded-md p-4 focus:outline-none'
-              placeholder='상품의 자세한 설명을 입력해 주세요'
-              name='description'
-              value={usedProducts.description}
-              onChange={onChangeInput}
-            />
-          </div>
+          <FormInput
+            label='설명'
+            type='textarea'
+            name='description'
+            value={usedProducts.description}
+            onChange={onChangeInput}
+            placeholder='상품의 자세한 설명을 입력해 주세요'
+          />
           <BasicButton
             onClickFunc={onClickUploadUsedProducts}
             text='등록하기'
             bg='bg-[#8F5BBD]'
           />
         </div>
-      </div>
+      </Layout>
     </>
   );
 };
