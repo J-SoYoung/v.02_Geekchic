@@ -6,7 +6,6 @@ type ValidateProductInputType = Omit<
 >;
 
 export const validateProductData = (usedProducts: ValidateProductInputType) => {
-  console.log(usedProducts);
   if (
     !usedProducts.description ||
     !usedProducts.productName ||
