@@ -9,7 +9,7 @@ import { ProductsList } from './ProductsList';
 
 import { userState } from '@/_recoil/atoms';
 import { useQuery } from '@tanstack/react-query';
-import { loadUsedProducts } from '@/_apis/apis';
+import { getUsedProducts } from '@/_apis/apis';
 import { UsedProductType } from '@/_typesBundle/productType';
 import { usedProduct } from '../../_example/example';
 import { BasicButton } from '@/components/button/BasicButton';
@@ -27,7 +27,7 @@ export const UsedHome = () => {
     isError,
   } = useQuery<UsedProductType[], Error>({
     queryKey: ['usedProducts'],
-    queryFn: () => loadUsedProducts(),
+    queryFn: () => getUsedProducts(),
     retry: 3, // 쿼리옵션-> 요청 3번 재시도
     retryDelay: 1000, // 쿼리옵션-> 재시도 사이의 지연 시간
   });

@@ -1,4 +1,4 @@
-import { get, ref, set, update } from 'firebase/database';
+import { get, ref, update } from 'firebase/database';
 import { database } from './firebase';
 import { UsedProductType } from '@/_typesBundle/productType';
 
@@ -31,11 +31,16 @@ export const uploadUsedProducts = async (
   }
 };
 
-export const loadUsedProducts = async (): Promise<UsedProductType[]> => {
+export const getUsedProducts = async (): Promise<UsedProductType[]> => {
   try {
     const snapshot = await get(ref(database, `usedProducts`));
     if (snapshot.exists()) {
-      return Object.values(snapshot.val());
+      const data = Object.values(snapshot.val()) as UsedProductType[];
+      const sortedData = data.sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      );
+      return sortedData;
     }
     return [];
   } catch (error) {
