@@ -7,4 +7,8 @@ export interface UserDataType {
   serviceJoinDate: string;
   phone: string;
   address: string;
+  listCarts: number;
+  listMessages: number;
+  listPurchases: number;
+  listSells: number;
 }

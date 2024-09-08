@@ -1,5 +1,10 @@
 import { UserDataType } from './userType';
 
+type UsedProductSellerType = Omit<
+  UserDataType,
+  'listCarts' | 'listMessages' | 'listPurchases' | 'listSells'
+>;
+
 export interface UsedProductType {
   createdAt: string;
   description: string;
@@ -11,6 +16,6 @@ export interface UsedProductType {
   conditions: 'new' | 'used'; // new새상품, used중고상품
   price: string;
   quantity: number;
-  seller: UserDataType;
+  seller: UsedProductSellerType;
   size: string;
 }
