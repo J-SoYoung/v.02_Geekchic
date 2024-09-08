@@ -18,6 +18,7 @@ import { validateUserData } from '../usedProductsUpload/utils';
 export const UsedHome = () => {
   const isSoldout = usedProduct.quantity < 1; // TEST
   const navigate = useNavigate();
+
   const user = useRecoilValue(userState);
   const [searchResult, setSearchResult] = useState<UsedProductType[]>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -28,11 +29,12 @@ export const UsedHome = () => {
     isError,
   } = useQuery<UsedProductType[], Error>({
     queryKey: ['usedProducts'],
-    queryFn: () => getUsedProducts(),
+    queryFn: async() => await getUsedProducts(),
     retry: 3, // 쿼리옵션-> 요청 3번 재시도
     retryDelay: 1000, // 쿼리옵션-> 재시도 사이의 지연 시간
   });
 
+  console.log(usedProducts);
   const onClickBackToUsedHome = () => {
     setIsSearching(false);
   };
