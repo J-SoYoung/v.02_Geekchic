@@ -55,9 +55,9 @@ export const UsedProductsUpload = () => {
     },
   });
 
-  const productUploadMutation = useMutation({
+  const usedProductUploadMutation = useMutation({
     mutationFn: async (newUsedProducts: UsedProductType) => {
-      uploadUsedProducts(newUsedProducts);
+      await uploadUsedProducts(newUsedProducts);
     },
     onSuccess: () => {
       navigate('/used');
@@ -73,7 +73,6 @@ export const UsedProductsUpload = () => {
 
   // ⭕ 에러를 따로 표시할 필요가 있을까? 음 think, 알림으로만 해도 충분하지 않나
   // console.log('제품업로드 error', productUploadMutation.isError);
-
   const onClickUploadUsedProducts = async () => {
     setIsLoading(true);
 
@@ -81,10 +80,18 @@ export const UsedProductsUpload = () => {
       setIsLoading(false);
       return alert('모든 필수 필드를 입력해주세요');
     }
+    
+    const {
+      listCarts,
+      listMessages,
+      listPurchases,
+      listSells,
+      ...filteredUserData
+    } = user;
 
     const id = uuidv4();
     const createdAt = new Date().toISOString();
-    const seller = { ...user };
+    const seller = { ...filteredUserData };
 
     let newUsedProducts: UsedProductType = {
       ...usedProducts,
@@ -97,7 +104,7 @@ export const UsedProductsUpload = () => {
       imageUploadMutation.mutate(uploadImages, {
         onSuccess: (cloudImage) => {
           newUsedProducts = { ...newUsedProducts, images: cloudImage };
-          productUploadMutation.mutate(newUsedProducts);
+          usedProductUploadMutation.mutate(newUsedProducts);
         },
         onError: (error) => {
           console.log('이미지 업로드 에러', error);
