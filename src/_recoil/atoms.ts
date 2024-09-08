@@ -10,6 +10,10 @@ export const getEmptyUserData = (): UserDataType => ({
   phone: '',
   serviceJoinDate: '',
   username: '',
+  listCarts: 0,
+  listMessages: 0,
+  listPurchases: 0,
+  listSells: 0,
 });
 
 export const userState = atom<UserDataType>({
@@ -22,6 +26,10 @@ export const userState = atom<UserDataType>({
     phone: '',
     serviceJoinDate: '',
     username: '',
+    listCarts: 0,
+    listMessages: 0,
+    listPurchases: 0,
+    listSells: 0,
   },
   dangerouslyAllowMutability: true,
   effects_UNSTABLE: [
