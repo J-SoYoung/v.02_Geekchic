@@ -1,5 +1,6 @@
 import { UsedProductType } from '@/_typesBundle/productType';
 import { ProductCart } from './ProductCart';
+import { UsedProductCard } from '@/components/UsedProductCard';
 
 interface SearchListProps {
   searchResult: UsedProductType[];
@@ -18,7 +19,17 @@ export const SearchList = ({ searchResult, onClickFunc }: SearchListProps) => {
       {searchResult.length !== 0 ? (
         <div className='grid grid-cols-2 gap-4 mt-4 mb-24'>
           {searchResult.map((search: UsedProductType) => {
-            return <ProductCart key={search.id} usedProduct={search} />;
+            return (
+              <UsedProductCard
+                key={search.id}
+                id={search.id}
+                name={search.productName}
+                price={search.price}
+                image={search.images[0]}
+                quantity={search.quantity}
+                isSoldOut={search.quantity < 1}
+              />
+            );
           })}
         </div>
       ) : (
