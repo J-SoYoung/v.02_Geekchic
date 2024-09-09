@@ -24,7 +24,7 @@ export const signOutFromGoogle = async () => {
   }
 };
 
-export async function loadUserData(uid: string): Promise<UserDataType | null> {
+export async function getUserData(uid: string): Promise<UserDataType | null> {
   const userRef = ref(database, `users/${uid}`);
   const snapshot = await get(userRef);
   if (snapshot.exists()) {
