@@ -14,6 +14,7 @@ export const SearchBar = ({
 }: SearchBarProps) => {
   const [searchQuery, setSearchQuery] = useState('');
 
+  // ⭕mutation으로 검색기능 구현
   const onClickButtonSearch = async () => {
     const result = await searchUsedProducts(searchQuery);
     setSearchResult(result);

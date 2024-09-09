@@ -9,14 +9,16 @@ import { ProductsList } from './ProductsList';
 
 import { userState } from '@/_recoil/atoms';
 import { useQuery } from '@tanstack/react-query';
-import { loadUsedProducts } from '@/_apis/apis';
+import { getUsedProducts } from '@/_apis/apis';
 import { UsedProductType } from '@/_typesBundle/productType';
 import { usedProduct } from '../../_example/example';
 import { BasicButton } from '@/components/button/BasicButton';
+import { validateUserData } from '@/_utils/utils';
 
 export const UsedHome = () => {
   const isSoldout = usedProduct.quantity < 1; // TEST
   const navigate = useNavigate();
+
   const user = useRecoilValue(userState);
   const [searchResult, setSearchResult] = useState<UsedProductType[]>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -27,13 +29,23 @@ export const UsedHome = () => {
     isError,
   } = useQuery<UsedProductType[], Error>({
     queryKey: ['usedProducts'],
-    queryFn: () => loadUsedProducts(),
+    queryFn: async() => await getUsedProducts(),
     retry: 3, // 쿼리옵션-> 요청 3번 재시도
     retryDelay: 1000, // 쿼리옵션-> 재시도 사이의 지연 시간
   });
 
+  console.log(usedProducts);
   const onClickBackToUsedHome = () => {
     setIsSearching(false);
+  };
+
+  const onClickMoveUploadPage = () => {
+    if (!validateUserData(user)) {
+      alert('유저 정보를 업데이트 해주세요.');
+      return navigate(`/my/profile/${user._id}`);
+    } else {
+      navigate('/used/new');
+    }
   };
 
   // ⭕ 로티이미지 추가 : 에러 페이지 데이터 새로고침 해주세요
@@ -70,7 +82,7 @@ export const UsedHome = () => {
         <div className='flex justify-end items-center'>
           <span className='mr-2'>{user?.username}님 반갑습니다!</span>
           <BasicButton
-            onClickFunc={() => navigate('/used/new')}
+            onClickFunc={onClickMoveUploadPage}
             text='제품등록'
             bg='bg-black'
             width='w-[100px]'

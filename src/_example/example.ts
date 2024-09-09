@@ -1,6 +1,21 @@
-import { UsedProductType } from "@/_typesBundle/productType";
+import { UsedProductType } from '@/_typesBundle/productType';
+import { UserDataType } from '@/_typesBundle/userType';
 
 export const defaultImage = 'https://via.placeholder.com/150';
+
+export const initUserData: UserDataType = {
+  _id: '',
+  username: '',
+  email: '',
+  avatar: '',
+  serviceJoinDate: '',
+  phone: '',
+  address: '',
+  listCarts: 0,
+  listMessages: 0,
+  listPurchases: 0,
+  listSells: 0,
+};
 
 export const initlUsedProduct: UsedProductType = {
   createdAt: '',

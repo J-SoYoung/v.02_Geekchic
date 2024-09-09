@@ -6,7 +6,6 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { UploadImage } from './UploadImage';
 import { FormInput } from './FormInput';
-import { validateProductData } from './utils';
 
 import { uploadCloudImagesArray } from '@/_apis/uploader';
 import { uploadUsedProducts } from '@/_apis/apis';
@@ -15,6 +14,7 @@ import { userState } from '@/_recoil/atoms';
 import { initlUsedProduct } from '@/_example/example';
 import { BasicButton } from '@/components/button/BasicButton';
 import { Layout } from '@/components/Layout';
+import { validateProductData } from '@/_utils/utils';
 
 export const UsedProductsUpload = () => {
   const navigate = useNavigate();
@@ -55,12 +55,12 @@ export const UsedProductsUpload = () => {
     },
   });
 
-  const productUploadMutation = useMutation({
+  const usedProductUploadMutation = useMutation({
     mutationFn: async (newUsedProducts: UsedProductType) => {
-      uploadUsedProducts(newUsedProducts);
+      await uploadUsedProducts(newUsedProducts);
     },
     onSuccess: () => {
-      navigate('/used');
+      // navigate('/used');
     },
     onError: (error) => {
       console.log('중고 제품 업로드 에러', error);
@@ -70,10 +70,10 @@ export const UsedProductsUpload = () => {
       setIsLoading(false);
     },
   });
-
+ 
+  // ⭕ 로딩State를 쓸 필요가 있나. mutation에서 나오는데 음. 
   // ⭕ 에러를 따로 표시할 필요가 있을까? 음 think, 알림으로만 해도 충분하지 않나
   // console.log('제품업로드 error', productUploadMutation.isError);
-
   const onClickUploadUsedProducts = async () => {
     setIsLoading(true);
 
@@ -81,10 +81,18 @@ export const UsedProductsUpload = () => {
       setIsLoading(false);
       return alert('모든 필수 필드를 입력해주세요');
     }
+    
+    const {
+      listCarts,
+      listMessages,
+      listPurchases,
+      listSells,
+      ...filteredUserData
+    } = user;
 
     const id = uuidv4();
     const createdAt = new Date().toISOString();
-    const seller = { ...user };
+    const seller = { ...filteredUserData };
 
     let newUsedProducts: UsedProductType = {
       ...usedProducts,
@@ -97,7 +105,7 @@ export const UsedProductsUpload = () => {
       imageUploadMutation.mutate(uploadImages, {
         onSuccess: (cloudImage) => {
           newUsedProducts = { ...newUsedProducts, images: cloudImage };
-          productUploadMutation.mutate(newUsedProducts);
+          usedProductUploadMutation.mutate(newUsedProducts);
         },
         onError: (error) => {
           console.log('이미지 업로드 에러', error);

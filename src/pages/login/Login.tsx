@@ -19,6 +19,7 @@ export const Login = () => {
     try {
       const user = await signInWithGoogle();
       if (user) {
+        // ⭕ userApis로 옮기기 
         // firebase 유저검색 및 저장, recoil저장
         const userRef = ref(database, `users/${user.uid}`);
         const userSnapshot = await get(userRef);
@@ -34,6 +35,10 @@ export const Login = () => {
             serviceJoinDate: new Date().toISOString(),
             phone: '',
             address: '',
+            listCarts: 0,
+            listMessages: 0,
+            listPurchases: 0,
+            listSells: 0,
           };
           await set(userRef, newUser);
           setUserData(newUser);
@@ -52,7 +57,7 @@ export const Login = () => {
         await signOutFromGoogle();
         setUserData(getEmptyUserData());
       } catch (error) {
-        console.error('Logout failed:', error);
+        console.error('로그아웃 실패:', error);
       }
     }
   };

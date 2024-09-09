@@ -10,6 +10,8 @@ export default defineConfig({
       { find: '@pages', replacement: '/src/pages' },
       { find: '@components', replacement: '/src/components' },
       { find: '@assets', replacement: '/src/_assets' },
+      { find: '@utils', replacement: '/src/_utils' },
+      { find: '@example', replacement: '/src/_example' },
       { find: '@apis', replacement: '/src/_apis' },
       { find: '@recoil', replacement: '/src/_recoil' },
       { find: '@typeBundle', replacement: '/src/_typeBundle' },
