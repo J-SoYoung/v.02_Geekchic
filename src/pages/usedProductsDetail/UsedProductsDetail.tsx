@@ -16,10 +16,10 @@ export const UsedProductsDetail = () => {
     isPending,
     isError,
   } = useQuery({
-    queryKey: ['usedProductDetail'],
+    queryKey: ['usedProductDetail', itemId],
     queryFn: () => getUsedProductDetail(itemId as string),
   });
-  console.log(usedProduct);
+
 
   if (isPending) {
     return <Skeleton />;
@@ -77,7 +77,7 @@ export const UsedProductsDetail = () => {
               <img
                 src={usedProduct.seller.avatar ?? defaultImage}
                 alt='유저'
-                className='rounded-full border'
+                className='w-full h-full object-cover rounded-full border'
               />
             </div>
             <div className='ml-4'>

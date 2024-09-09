@@ -1,9 +1,10 @@
 import { useRecoilState } from 'recoil';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { getEmptyUserData, userState } from '@/_recoil/atoms';
 import { signOutFromGoogle } from '@/_apis/userApis';
 import { Layout } from '@/components/Layout';
 import { BasicButton } from '@/components/button/BasicButton';
+import { PageMoveComp } from './PageMoveComp';
 
 // ⭕ 마이페이지 4개탭 -> 공통컴포넌트로
 export const Mypage = () => {
@@ -59,37 +60,26 @@ export const Mypage = () => {
         <div>
           {/* 내 상품 관리 */}
           <div className='space-y-4 pb-12 mb-8 border-b-2'>
-            <Link
-              to={`/my/purchasesList/${user?._id}`}
-              state={{ user: user }}
-              className='flex justify-between items-center p-4 bg-gray-100 rounded-md cursor-pointer'
-            >
-              <span className='text-lg'>구매내역</span>
-              {/* <span className='text-lg font-semibold'>{makeArr(user.orders).length}</span> */}
-            </Link>
-            <Link
-              to={`/my/salesList/${user?._id}`}
-              state={{ user }}
-              className='flex justify-between items-center p-4 bg-gray-100 rounded-md cursor-pointer'
-            >
-              <span className='text-lg'>판매목록</span>
-              {/* <span className='text-lg font-semibold'>{makeArr(user.sales).length}</span> */}
-            </Link>
-            <Link
-              to={`/my/carts/${user?._id}`}
-              className='flex justify-between items-center p-4 bg-gray-100 rounded-md cursor-pointer'
-            >
-              <span className='text-lg'>장바구니</span>
-              {/* <span className='text-lg font-semibold'>{makeArr(user.carts).length}</span> */}
-            </Link>
-            <Link
-              to={`/my/messagesList/${user?._id}`}
-              // state={{ messages: makeArr(user.messages) }}
-              className='flex justify-between items-center p-4 bg-gray-100 rounded-md cursor-pointer'
-            >
-              <span className='text-lg'>내 쪽지함</span>
-              {/* <span className='text-lg font-semibold'>{makeArr(user.messages).length}</span> */}
-            </Link>
+            <PageMoveComp
+              url={`/my/purchasesList/${user?._id}`}
+              title='구매내역'
+              listLength={user.listPurchases}
+            />
+            <PageMoveComp
+              url={`/my/sellsList/${user?._id}`}
+              title='판매목록'
+              listLength={user.listSells}
+            />
+            <PageMoveComp
+              url={`/my/carts/${user?._id}`}
+              title='장바구니'
+              listLength={user.listCarts}
+            />
+            <PageMoveComp
+              url={`/my/messagesList/${user?._id}`}
+              title='내 쪽지함'
+              listLength={user.listMessages}
+            />
           </div>
         </div>
       </div>
