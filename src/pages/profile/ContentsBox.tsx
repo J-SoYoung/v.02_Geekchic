@@ -5,6 +5,7 @@ interface InfoPropsType {
   isEditing: boolean;
   inputName: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 export const ContentsBox = ({
   title,
@@ -13,6 +14,7 @@ export const ContentsBox = ({
   isEditing,
   inputName,
   onChange,
+  onKeyDown,
 }: InfoPropsType) => {
   return (
     <div className={`pt-5 ${isEditing ? '' : 'border-b'}`}>
@@ -23,6 +25,7 @@ export const ContentsBox = ({
           name={inputName}
           value={value}
           onChange={onChange}
+          onKeyDown={onKeyDown}
           disabled={inputName === 'email'}
           className='block text-lg p-2 w-full border rounded'
         />

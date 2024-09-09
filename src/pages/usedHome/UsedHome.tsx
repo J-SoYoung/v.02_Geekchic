@@ -13,7 +13,7 @@ import { getUsedProducts } from '@/_apis/apis';
 import { UsedProductType } from '@/_typesBundle/productType';
 import { usedProduct } from '../../_example/example';
 import { BasicButton } from '@/components/button/BasicButton';
-import { validateUserData } from '../usedProductsUpload/utils';
+import { validateUserData } from '@/_utils/utils';
 
 export const UsedHome = () => {
   const isSoldout = usedProduct.quantity < 1; // TEST

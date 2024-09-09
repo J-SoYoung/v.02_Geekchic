@@ -13,7 +13,9 @@ import { useNavigate } from 'react-router-dom';
 import { Layout } from '@/components/Layout';
 
 // ⭕업로드 페이지에서 ContentsBox사용할 수 있지 않을까? think
-// onChangeEditInput데이터가 여러개인 input의 경우 (업로드페이지)에서 적용하기
+// ⭕프로필 수정하면 중고제품 판매자 정보도 같이 업로드 되게하기.
+// ⭕프로필 수정시 -> 전화번호. 주소 유효성검사 check
+// ⭕enter이벤트를 주소에만 하면 되나??
 export const Profile = () => {
   const navigate = useNavigate();
   const [user, setUser] = useRecoilState(userState);
@@ -121,6 +123,9 @@ export const Profile = () => {
             isEditing={isEditing}
             inputName={'address'}
             onChange={onChangeEditInput}
+            onKeyDown={(e: { key: string; }) => {
+              if (e.key === 'Enter') onClickSaveProfile();
+            }}
             isBlank={!user.address}
           />
         </div>

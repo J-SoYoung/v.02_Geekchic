@@ -6,7 +6,6 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { UploadImage } from './UploadImage';
 import { FormInput } from './FormInput';
-import { validateProductData } from './utils';
 
 import { uploadCloudImagesArray } from '@/_apis/uploader';
 import { uploadUsedProducts } from '@/_apis/apis';
@@ -15,6 +14,7 @@ import { userState } from '@/_recoil/atoms';
 import { initlUsedProduct } from '@/_example/example';
 import { BasicButton } from '@/components/button/BasicButton';
 import { Layout } from '@/components/Layout';
+import { validateProductData } from '@/_utils/utils';
 
 export const UsedProductsUpload = () => {
   const navigate = useNavigate();
@@ -60,7 +60,7 @@ export const UsedProductsUpload = () => {
       await uploadUsedProducts(newUsedProducts);
     },
     onSuccess: () => {
-      navigate('/used');
+      // navigate('/used');
     },
     onError: (error) => {
       console.log('중고 제품 업로드 에러', error);
@@ -70,7 +70,8 @@ export const UsedProductsUpload = () => {
       setIsLoading(false);
     },
   });
-
+ 
+  // ⭕ 로딩State를 쓸 필요가 있나. mutation에서 나오는데 음. 
   // ⭕ 에러를 따로 표시할 필요가 있을까? 음 think, 알림으로만 해도 충분하지 않나
   // console.log('제품업로드 error', productUploadMutation.isError);
   const onClickUploadUsedProducts = async () => {
