@@ -8,7 +8,7 @@ import { SearchList } from './SearchList';
 import { Skeleton } from './Skeleton';
 
 import { userState } from '@/_recoil/atoms';
-import { getUsedProducts } from '@/_apis/apis';
+import { getUsedProducts } from '@/_apis';
 import { UsedProductType } from '@/_typesBundle';
 import { validateUserData } from '@/_utils/utils';
 import { BasicButton } from '@/components/button/BasicButton';

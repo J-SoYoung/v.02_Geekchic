@@ -11,7 +11,7 @@ import {
   EditUsedCommentProps,
   removeUsedComment,
   removeUsedCommentProps,
-} from '@/_apis/apis';
+} from '@/_apis';
 import { validateUsedComment } from '@/_utils/utils';
 
 interface CommentProps {

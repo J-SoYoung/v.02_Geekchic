@@ -6,8 +6,7 @@ import { useRecoilState } from 'recoil';
 import { UserDataType } from '@/_typesBundle';
 import { LoginButton } from '@/components/button/LoginButton';
 import Loginlogo from '@assets/rootImage/loginLogo.png';
-import { database } from '@/_apis/firebase';
-import { signInWithGoogle, signOutFromGoogle } from '@/_apis/userApis';
+import { signInWithGoogle, signOutFromGoogle, database } from '@/_apis';
 import { getEmptyUserData, userState } from '@/_recoil/atoms';
 
 export const Login = () => {

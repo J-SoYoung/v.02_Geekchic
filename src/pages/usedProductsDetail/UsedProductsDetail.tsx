@@ -6,7 +6,7 @@ import { CommentsList } from './CommentsList';
 import { CommentInput } from './CommentInput';
 
 import Chevron_left from '@assets/icons/chevron_left.svg';
-import { getUsedProductDetail } from '@/_apis/apis';
+import { getUsedProductDetail } from '@/_apis';
 import { UserProfileInfoComp } from '@/components/UserProfileInfoComp';
 
 export const UsedProductsDetail = () => {

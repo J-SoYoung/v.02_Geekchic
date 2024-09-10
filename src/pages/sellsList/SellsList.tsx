@@ -1,11 +1,12 @@
-import { getMyPageInfo } from '@/_apis/apis';
+import { useQuery } from '@tanstack/react-query';
+import { Link, useParams } from 'react-router-dom';
+
+import { getMyPageInfo } from '@/_apis';
 import { SellsItemType } from '@/_typesBundle';
 import { Layout } from '@/components/Layout';
 import { UsedProductCard } from '@/components/UsedProductCard';
 
 
-import { useQuery } from '@tanstack/react-query';
-import { Link, useParams } from 'react-router-dom';
 
 export const SellsList = () => {
   const { userId } = useParams<string>();

@@ -7,8 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { UploadImage } from './UploadImage';
 import { FormInput } from './FormInput';
 
-import { uploadCloudImagesArray } from '@/_apis/uploader';
-import { uploadUsedProducts } from '@/_apis/apis';
+import { uploadCloudImagesArray, uploadUsedProducts } from '@/_apis';
 import { UsedProductType } from '@/_typesBundle';
 import { userState } from '@/_recoil/atoms';
 import { initlUsedProduct } from '@/_example/example';

@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 
 import { Comment } from './Comment';
 
-import { getUsedComment } from '@/_apis/apis';
+import { getUsedComment } from '@/_apis';
 import { CommentType } from '@/_typesBundle';
 
 export const CommentsList = () => {

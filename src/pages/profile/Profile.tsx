@@ -1,15 +1,13 @@
 import { useRef, useState } from 'react';
 import { useRecoilState } from 'recoil';
+import { useNavigate } from 'react-router-dom';
 
+import { ContentsBox } from './ContentsBox';
 import { userState } from '@/_recoil/atoms';
 import { UserDataType } from '@/_typesBundle';
-import { uploadCloudImage } from '@/_apis/uploader';
-import { editUserProfileData } from '@/_apis/userApis';
+import { uploadCloudImage, editUserProfileData } from '@/_apis';
 import Icon_Pencile from '@assets/icons/pencil.svg';
-import { ContentsBox } from './ContentsBox';
-
 import { BasicButton } from '@/components/button/BasicButton';
-import { useNavigate } from 'react-router-dom';
 import { Layout } from '@/components/Layout';
 
 // ⭕프로필 수정하면 중고제품 판매자 정보도 같이 업로드 되게하기.
