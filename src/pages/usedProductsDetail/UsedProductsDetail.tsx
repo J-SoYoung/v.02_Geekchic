@@ -2,24 +2,25 @@ import { useQuery } from '@tanstack/react-query';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
 import Skeleton from './Skeleton';
+import { CommentsList } from './CommentsList';
+import { CommentInput } from './CommentInput';
 
 import Chevron_left from '@assets/icons/chevron_left.svg';
 import { getUsedProductDetail } from '@/_apis/apis';
-import { defaultImage } from '../../_example/example';
+import { UserProfileInfoComp } from '@/components/UserProfileInfoComp';
 
 export const UsedProductsDetail = () => {
+  const { productId } = useParams<{ productId: string }>();
   const navigate = useNavigate();
-  const { itemId } = useParams<{ itemId: string }>();
 
   const {
     data: usedProduct,
     isPending,
     isError,
   } = useQuery({
-    queryKey: ['usedProductDetail', itemId],
-    queryFn: () => getUsedProductDetail(itemId as string),
+    queryKey: ['usedProductDetail', productId],
+    queryFn: () => getUsedProductDetail(productId as string),
   });
-
 
   if (isPending) {
     return <Skeleton />;
@@ -38,7 +39,6 @@ export const UsedProductsDetail = () => {
   return (
     <main className='text-left'>
       {/* image view*/}
-
       <section>
         <div className='w-full h-[100%]'>
           <div className='mb-6 bg-gray-200 border-red-400'>
@@ -69,35 +69,11 @@ export const UsedProductsDetail = () => {
       </section>
 
       <article className='p-8 pb-24'>
-        {/* seller */}
-        {/*⭕컴포넌트 만들기 : 유저정보 어디서 많이썼었는데.  */}
-        <section className='flex justify-between items-center border-b'>
-          <div className='flex pb-6'>
-            <div className='w-12 h-12 bg-gray-200 rounded-full'>
-              <img
-                src={usedProduct.seller.avatar ?? defaultImage}
-                alt='유저'
-                className='w-full h-full object-cover rounded-full border'
-              />
-            </div>
-            <div className='ml-4'>
-              <p className='text-lg font-semibold'>
-                {usedProduct.seller.username}
-              </p>
-              <p className='text-sm text-gray-500'>
-                {usedProduct.seller.address}
-              </p>
-            </div>
-          </div>
-          {/* {userId !== data.seller.sellerId && (
-            <button
-              className='w-40 inline-block text-center py-3 mb-4 bg-[#8F5BBD] text-white rounded-md '
-              onClick={onClickAddMessagePage}
-            >
-              {currentMessage ? '쪽지 이어하기' : '쪽지보내기'}
-            </button>
-          )} */}
-        </section>
+        <UserProfileInfoComp
+          avatar={usedProduct.seller.avatar}
+          username={usedProduct.seller.username}
+          address={usedProduct.seller.address}
+        />
 
         {/* used products item */}
         <section className='my-8 border-b'>
@@ -119,8 +95,8 @@ export const UsedProductsDetail = () => {
           <div className='py-8'>{usedProduct.description}</div>
         </section>
 
-        {/* comment */}
-        <section>댓글은 기다려. 왕창 고친다</section>
+        <CommentsList />
+        <CommentInput />
       </article>
     </main>
   );
