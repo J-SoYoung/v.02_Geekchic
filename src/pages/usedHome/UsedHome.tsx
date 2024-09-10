@@ -1,22 +1,20 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
+import { useQuery } from '@tanstack/react-query';
 
 import { SearchBar } from './SearchBar';
 import { SearchList } from './SearchList';
 import { Skeleton } from './Skeleton';
-import { ProductsList } from './ProductsList';
 
 import { userState } from '@/_recoil/atoms';
-import { useQuery } from '@tanstack/react-query';
 import { getUsedProducts } from '@/_apis/apis';
 import { UsedProductType } from '@/_typesBundle/productType';
-import { usedProduct } from '../../_example/example';
-import { BasicButton } from '@/components/button/BasicButton';
 import { validateUserData } from '@/_utils/utils';
+import { BasicButton } from '@/components/button/BasicButton';
+import { UsedProductCard } from '@/components/UsedProductCard';
 
 export const UsedHome = () => {
-  const isSoldout = usedProduct.quantity < 1; // TEST
   const navigate = useNavigate();
 
   const user = useRecoilValue(userState);
@@ -29,12 +27,11 @@ export const UsedHome = () => {
     isError,
   } = useQuery<UsedProductType[], Error>({
     queryKey: ['usedProducts'],
-    queryFn: async() => await getUsedProducts(),
+    queryFn: async () => await getUsedProducts(),
     retry: 3, // 쿼리옵션-> 요청 3번 재시도
     retryDelay: 1000, // 쿼리옵션-> 재시도 사이의 지연 시간
   });
 
-  console.log(usedProducts);
   const onClickBackToUsedHome = () => {
     setIsSearching(false);
   };
@@ -64,16 +61,6 @@ export const UsedHome = () => {
   }
 
   return (
-    // TEST
-    // <div className='border h-40 p-2 text-center'>
-    //   <p>데이터를 가져오는 동안 문제가 발생했습니다</p>
-    //   <button
-    //     className='cursor-pointer hover:font-bold'
-    //     onClick={() => window.location.reload()}
-    //   >
-    //     GeekChic 중고 메인 페이지 새로고침
-    //   </button>
-    // </div>
     <main className='p-11 pb-4 text-right'>
       <header>
         <h1 className='text-3xl font-bold text-left mb-5 '>
@@ -103,7 +90,21 @@ export const UsedHome = () => {
           onClickFunc={onClickBackToUsedHome}
         />
       ) : (
-        usedProducts && <ProductsList usedProducts={usedProducts} />
+        usedProducts && (
+          <div className='grid grid-cols-2 gap-4 mt-4 mb-24'>
+            {usedProducts?.map((usedProduct) => (
+              <UsedProductCard
+                key={usedProduct.id}
+                id={usedProduct.id}
+                name={usedProduct.productName}
+                price={usedProduct.price}
+                image={usedProduct.images[0]}
+                quantity={usedProduct.quantity}
+                isSoldOut={usedProduct.quantity < 1}
+              />
+            ))}
+          </div>
+        )
       )}
     </main>
   );

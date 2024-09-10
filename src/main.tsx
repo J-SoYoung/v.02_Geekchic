@@ -20,7 +20,7 @@ import UsedMessage from './pages/usedMessage';
 import Login from './pages/login';
 import Mypage from './pages/mypage';
 import Profile from './pages/profile';
-import SalesList from './pages/salesList';
+import SellsList from './pages/sellsList/index.ts';
 import PurchaseList from './pages/purchaseList';
 import Carts from './pages/carts';
 import UsedMessageList from './pages/usedMessageList';
@@ -48,7 +48,7 @@ const router = createBrowserRouter([
       { path: '/message/send/:itemId/:buyerId', element: <UsedMessage /> },
       { path: '/my/:userId', element: <Mypage /> },
       { path: '/my/profile/:userId', element: <Profile /> },
-      { path: '/my/salesList/:userId', element: <SalesList /> },
+      { path: '/my/sellsList/:userId', element: <SellsList /> },
       { path: '/my/purchasesList/:userId', element: <PurchaseList /> },
       { path: '/my/carts/:userId', element: <Carts /> },
       { path: '/my/messagesList/:userId', element: <UsedMessageList /> },
