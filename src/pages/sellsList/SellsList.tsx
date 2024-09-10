@@ -1,5 +1,5 @@
 import { getMyPageInfo } from '@/_apis/apis';
-import { SellsItemType } from '@/_typesBundle/productType';
+import { SellsItemType } from '@/_typesBundle';
 import { Layout } from '@/components/Layout';
 import { UsedProductCard } from '@/components/UsedProductCard';
 

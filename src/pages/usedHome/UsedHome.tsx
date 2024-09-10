@@ -9,7 +9,7 @@ import { Skeleton } from './Skeleton';
 
 import { userState } from '@/_recoil/atoms';
 import { getUsedProducts } from '@/_apis/apis';
-import { UsedProductType } from '@/_typesBundle/productType';
+import { UsedProductType } from '@/_typesBundle';
 import { validateUserData } from '@/_utils/utils';
 import { BasicButton } from '@/components/button/BasicButton';
 import { UsedProductCard } from '@/components/UsedProductCard';

@@ -3,12 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { get, ref, set } from 'firebase/database';
 import { useRecoilState } from 'recoil';
 
+import { UserDataType } from '@/_typesBundle';
+import { LoginButton } from '@/components/button/LoginButton';
 import Loginlogo from '@assets/rootImage/loginLogo.png';
+import { database } from '@/_apis/firebase';
 import { signInWithGoogle, signOutFromGoogle } from '@/_apis/userApis';
 import { getEmptyUserData, userState } from '@/_recoil/atoms';
-import { UserDataType } from '@/_typesBundle/userType';
-import { database } from '@/_apis/firebase';
-import { LoginButton } from '@/components/button/LoginButton';
 
 export const Login = () => {
   const navigate = useNavigate();

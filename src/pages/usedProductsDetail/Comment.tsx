@@ -5,7 +5,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { CommentButton } from './CommentButton';
 
 import { userState } from '@/_recoil/atoms';
-import { CommentType } from '@/_typesBundle/productType';
+import { CommentType } from '@/_typesBundle';
 import {
   editUsedComment,
   EditUsedCommentProps,

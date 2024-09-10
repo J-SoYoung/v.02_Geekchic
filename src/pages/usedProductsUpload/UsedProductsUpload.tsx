@@ -9,7 +9,7 @@ import { FormInput } from './FormInput';
 
 import { uploadCloudImagesArray } from '@/_apis/uploader';
 import { uploadUsedProducts } from '@/_apis/apis';
-import { UsedProductType } from '@/_typesBundle/productType';
+import { UsedProductType } from '@/_typesBundle';
 import { userState } from '@/_recoil/atoms';
 import { initlUsedProduct } from '@/_example/example';
 import { BasicButton } from '@/components/button/BasicButton';

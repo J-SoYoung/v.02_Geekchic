@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { Comment } from './Comment';
 
 import { getUsedComment } from '@/_apis/apis';
-import { CommentType } from '@/_typesBundle/productType';
+import { CommentType } from '@/_typesBundle';
 
 export const CommentsList = () => {
   const { productId } = useParams<string>();

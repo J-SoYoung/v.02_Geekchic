@@ -1,7 +1,8 @@
 import { useRecoilValue } from 'recoil';
-import { userState } from '@/_recoil/atoms';
-import { UserDataType } from '@/_typesBundle/userType';
+
 import { BottomNavLinkComp } from './BottomNavLinkComp';
+import { userState } from '@/_recoil/atoms';
+import { UserDataType } from '@/_typesBundle';
 
 // icon import
 import HomeIcon from '@assets/nav_icons/nav_home.svg';

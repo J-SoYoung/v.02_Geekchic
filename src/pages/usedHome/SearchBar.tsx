@@ -1,5 +1,5 @@
 import { searchUsedProducts } from '@/_apis/apis';
-import { UsedProductType } from '@/_typesBundle/productType';
+import { UsedProductType } from '@/_typesBundle';
 import { useState } from 'react';
 import { BsSearch } from 'react-icons/bs';
 

@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import { useRecoilState } from 'recoil';
 
 import { userState } from '@/_recoil/atoms';
-import { UserDataType } from '@/_typesBundle/userType';
+import { UserDataType } from '@/_typesBundle';
 import { uploadCloudImage } from '@/_apis/uploader';
 import { editUserProfileData } from '@/_apis/userApis';
 import Icon_Pencile from '@assets/icons/pencil.svg';
