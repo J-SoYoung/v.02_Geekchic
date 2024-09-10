@@ -3,16 +3,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { useQuery } from '@tanstack/react-query';
 
-import { SearchBar } from './SearchBar';
-import { SearchList } from './SearchList';
-import { Skeleton } from './Skeleton';
+import { SearchBar, SearchList, Skeleton } from './index';
 
-import { userState } from '@/_recoil/atoms';
+import { BasicButton, UsedProductCard } from '@/components';
+import { userState } from '@/_recoil';
 import { getUsedProducts } from '@/_apis';
 import { UsedProductType } from '@/_typesBundle';
-import { validateUserData } from '@/_utils/utils';
-import { BasicButton } from '@/components/button/BasicButton';
-import { UsedProductCard } from '@/components/UsedProductCard';
+import { validateUserData } from '@/_utils';
 
 export const UsedHome = () => {
   const navigate = useNavigate();

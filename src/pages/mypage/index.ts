@@ -1,3 +1,5 @@
-import { Mypage } from "./Mypage";
+import { Mypage } from './Mypage';
+import { PageMoveComp } from './PageMoveComp';
 
-export default Mypage
+export { PageMoveComp };
+export default Mypage;

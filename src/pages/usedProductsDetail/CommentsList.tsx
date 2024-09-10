@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 
-import { Comment } from './Comment';
+import { Comment } from './index';
 
 import { getUsedComment } from '@/_apis';
 import { CommentType } from '@/_typesBundle';

@@ -2,13 +2,13 @@ import { useRef, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import { useNavigate } from 'react-router-dom';
 
-import { ContentsBox } from './ContentsBox';
-import { userState } from '@/_recoil/atoms';
+import { ContentsBox } from './index';
+
+import { Layout, BasicButton } from '@/components';
+import { userState } from '@/_recoil';
 import { UserDataType } from '@/_typesBundle';
 import { uploadCloudImage, editUserProfileData } from '@/_apis';
-import Icon_Pencile from '@assets/icons/pencil.svg';
-import { BasicButton } from '@/components/button/BasicButton';
-import { Layout } from '@/components/Layout';
+import { Icon_Pencile } from '@/_assets';
 
 // ⭕프로필 수정하면 중고제품 판매자 정보도 같이 업로드 되게하기.
 // ⭕프로필 수정시 -> 전화번호. 주소 유효성검사 check

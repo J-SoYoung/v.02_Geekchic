@@ -3,11 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { get, ref, set } from 'firebase/database';
 import { useRecoilState } from 'recoil';
 
-import { UserDataType } from '@/_typesBundle';
 import { LoginButton } from '@/components/button/LoginButton';
-import Loginlogo from '@assets/rootImage/loginLogo.png';
+import { UserDataType } from '@/_typesBundle';
+import { loginLogo } from '@/_assets';
 import { signInWithGoogle, signOutFromGoogle, database } from '@/_apis';
-import { getEmptyUserData, userState } from '@/_recoil/atoms';
+import { getEmptyUserData, userState } from '@/_recoil';
 
 export const Login = () => {
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ export const Login = () => {
     try {
       const user = await signInWithGoogle();
       if (user) {
-        // ⭕ userApis로 옮기기 
+        // ⭕ userApis로 옮기기
         // firebase 유저검색 및 저장, recoil저장
         const userRef = ref(database, `users/${user.uid}`);
         const userSnapshot = await get(userRef);
@@ -66,7 +66,7 @@ export const Login = () => {
       <section className='flex justify-center'>
         <img
           className='w-[500px] h-[440px] my-16'
-          src={Loginlogo}
+          src={loginLogo}
           alt='loginLogo'
         />
       </section>

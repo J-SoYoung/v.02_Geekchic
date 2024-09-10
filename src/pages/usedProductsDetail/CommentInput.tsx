@@ -4,9 +4,9 @@ import { useParams } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { addUsedComment, addUsedCommentProps } from '@/_apis';
-import { userState } from '@/_recoil/atoms';
+import { userState } from '@/_recoil';
 import { CommentType } from '@/_typesBundle';
-import { validateUsedComment } from '@/_utils/utils';
+import { validateUsedComment } from '@/_utils';
 
 export const CommentInput = () => {
   const { productId } = useParams<{ productId: string }>();

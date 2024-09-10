@@ -1,22 +1,24 @@
 import { useRecoilValue } from 'recoil';
 
 import { BottomNavLinkComp } from './BottomNavLinkComp';
-import { userState } from '@/_recoil/atoms';
+import { userState } from '@/_recoil';
 import { UserDataType } from '@/_typesBundle';
 
 // icon import
-import HomeIcon from '@assets/nav_icons/nav_home.svg';
-import HomeActIcons from '@assets/nav_icons/nav_homeActive.svg';
-import ItemsIcon from '@assets/nav_icons/nav_items.svg';
-import ItemsActIcons from '@assets/nav_icons/nav_itemsActive.svg';
-import WishIcon from '@assets/nav_icons/nav_wish.svg';
-import WishActIcons from '@assets/nav_icons/nav_wishActive.svg';
-import UsedIcon from '@assets/nav_icons/nav_used.svg';
-import UsedActIcon from '@assets/nav_icons/nav_usedActive.svg';
-import MyIcon from '@assets/nav_icons/nav_my.svg';
-import MyActIcon from '@assets/nav_icons/nav_myActive.svg';
+import {
+  HomeIcon,
+  HomeActIcons,
+  ItemsIcon,
+  ItemsActIcons,
+  WishIcon,
+  WishActIcons,
+  UsedIcon,
+  UsedActIcon,
+  MyIcon,
+  MyActIcon,
+} from '@/_assets';
 
-const BottomNav = () => {
+export const BottomNav = () => {
   const user = useRecoilValue<UserDataType | null>(userState);
 
   return (
@@ -57,4 +59,3 @@ const BottomNav = () => {
   );
 };
 
-export default BottomNav;
