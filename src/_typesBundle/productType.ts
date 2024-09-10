@@ -32,3 +32,12 @@ export interface SellsItemType {
   userId: string;
   sellsQuantity: number;
 }
+
+export interface CommentType {
+  commentId?: string;
+  userId: string;
+  username: string;
+  avatar: string;
+  comment: string;
+  createdAt: string;
+}

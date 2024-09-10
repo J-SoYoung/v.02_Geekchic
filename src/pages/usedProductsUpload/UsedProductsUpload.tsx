@@ -60,7 +60,7 @@ export const UsedProductsUpload = () => {
       await uploadUsedProducts(newUsedProducts);
     },
     onSuccess: () => {
-      // navigate('/used');
+      navigate('/used');
     },
     onError: (error) => {
       console.log('중고 제품 업로드 에러', error);
@@ -71,8 +71,8 @@ export const UsedProductsUpload = () => {
     },
   });
  
-  // ⭕ 로딩State를 쓸 필요가 있나. mutation에서 나오는데 음. 
-  // ⭕ 에러를 따로 표시할 필요가 있을까? 음 think, 알림으로만 해도 충분하지 않나
+  // ⭕ 업로드 로딩State를 쓸 필요가 있나. mutation에서 나오는데 음. 
+  // ⭕ 업로드 에러를 따로 표시할 필요가 있을까? 음 think, 알림으로만 해도 충분하지 않나
   // console.log('제품업로드 error', productUploadMutation.isError);
   const onClickUploadUsedProducts = async () => {
     setIsLoading(true);
