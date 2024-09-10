@@ -22,14 +22,14 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-      "@pages/*": ["src/pages/*"],
-      "@components/*": ["src/components/*"],
-      "@assets/*": ["src/_assets/*"],
-      "@apis/*": ["src/_apis/*"],
-      "@example/*": ["src/_example/*"],
-      "@utils/*": ["src/_utils/*"],
-      "@recoil/*": ["src/_recoil/*"],
-      "@typesBundle/*": ["src/_typesBundle/*"]
+      "@/pages/*": ["src/pages/*"],
+      "@/components/*": ["src/components/*"],
+      "@/assets/*": ["src/_assets/*"],
+      "@/apis/*": ["src/_apis/*"],
+      "@/example/*": ["src/_example/*"],
+      "@/utils/*": ["src/_utils/*"],
+      "@/recoil/*": ["src/_recoil/*"],
+      "@/typesBundle/*": ["src/_typesBundle/*"]
     }
   },
   "include": ["vite.config.ts"]

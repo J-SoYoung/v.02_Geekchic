@@ -24,12 +24,12 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-      "@pages/*": ["src/pages/*"],
-      "@components/*": ["src/components/*"],
-      "@assets/*": ["src/_assets/*"],
-      "@apis/*": ["src/_apis/*"],
-      "@recoil/*": ["src/_recoil/*"],
-      "@typesBundle/*": ["src/_typesBundle/*"]
+      "@/pages/*": ["src/pages/*"],
+      "@/components/*": ["src/components/*"],
+      "@/assets/*": ["src/_assets/*"],
+      "@/apis/*": ["src/_apis/*"],
+      "@/recoil/*": ["src/_recoil/*"],
+      "@/typesBundle/*": ["src/_typesBundle/*"]
     }
   },
   "include": ["src"]
