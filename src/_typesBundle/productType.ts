@@ -19,7 +19,6 @@ interface UsedProductType {
   seller: UsedProductSellerType;
   size: string;
 }
-
 //⭕판매목록의 id랑 제품 id랑 같아도 되는거 아닌가?
 interface SellsItemType {
   image: string;
@@ -32,7 +31,6 @@ interface SellsItemType {
   userId: string;
   sellsQuantity: number;
 }
-
 interface CommentType {
   commentId?: string;
   userId: string;
@@ -41,5 +39,10 @@ interface CommentType {
   comment: string;
   createdAt: string;
 }
-
-export type { UsedProductType, CommentType, SellsItemType };
+interface MessageType {
+  messageId: string;
+  productId: string;
+  sellerId: string;
+  buyerId: string;
+}
+export type { UsedProductType, CommentType, SellsItemType, MessageType };
