@@ -1,7 +1,8 @@
-import { searchUsedProducts } from '@/_apis/apis';
-import { UsedProductType } from '@/_typesBundle/productType';
 import { useState } from 'react';
 import { BsSearch } from 'react-icons/bs';
+
+import { searchUsedProducts } from '@/_apis';
+import { UsedProductType } from '@/_typesBundle';
 
 interface SearchBarProps {
   setSearchResult: React.Dispatch<React.SetStateAction<UsedProductType[]>>;

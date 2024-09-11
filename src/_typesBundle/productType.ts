@@ -5,7 +5,7 @@ type UsedProductSellerType = Omit<
   'listCarts' | 'listMessages' | 'listPurchases' | 'listSells'
 >;
 
-export interface UsedProductType {
+interface UsedProductType {
   createdAt: string;
   description: string;
   id: string;
@@ -21,7 +21,7 @@ export interface UsedProductType {
 }
 
 //⭕판매목록의 id랑 제품 id랑 같아도 되는거 아닌가?
-export interface SellsItemType {
+interface SellsItemType {
   image: string;
   isSales: boolean;
   price: number;
@@ -32,3 +32,14 @@ export interface SellsItemType {
   userId: string;
   sellsQuantity: number;
 }
+
+interface CommentType {
+  commentId?: string;
+  userId: string;
+  username: string;
+  avatar: string;
+  comment: string;
+  createdAt: string;
+}
+
+export type { UsedProductType, CommentType, SellsItemType };

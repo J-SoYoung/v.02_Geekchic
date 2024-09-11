@@ -1,7 +1,8 @@
-import Chevron_left from '@/_assets/icons/chevron_left.svg';
-import { useRecoilValue } from 'recoil';
-import { userState } from '@/_recoil/atoms';
 import { useNavigate } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
+
+import { Icon_Chevron_left } from '@/_assets';
+import { userState } from '@/_recoil';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -20,7 +21,7 @@ export const Layout = ({ children, title, onClickFunc }: LayoutProps) => {
       <header className='p-8 text-left '>
         {location.pathname !== `/my/${user._id}` && (
           <img
-            src={Chevron_left}
+            src={Icon_Chevron_left}
             alt='이전 페이지로'
             className='w-10 h-10 cursor-pointer '
             onClick={onClickFunc ? onClickFunc : onClickMoveToBack}

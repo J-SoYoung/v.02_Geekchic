@@ -1,6 +1,10 @@
-import { get, ref, update } from 'firebase/database';
+import { get, push, ref, remove, set, update } from 'firebase/database';
 import { database } from './firebase';
-import { SellsItemType, UsedProductType } from '@/_typesBundle/productType';
+import {
+  CommentType,
+  SellsItemType,
+  UsedProductType,
+} from '@/_typesBundle';
 
 export const uploadUsedProducts = async (
   updateUsedProducts: UsedProductType,
@@ -80,10 +84,9 @@ export const getUsedProducts = async (): Promise<UsedProductType[]> => {
     return [];
   }
 };
-
-export const getUsedProductDetail = async (itemId: string) => {
+export const getUsedProductDetail = async (productId: string) => {
   try {
-    const snapshot = await get(ref(database, `usedProducts/${itemId}`));
+    const snapshot = await get(ref(database, `usedProducts/${productId}`));
     if (snapshot.exists()) return snapshot.val();
   } catch (error) {
     console.error('중고 상세 페이지 데이터 로드 에러', error);
@@ -91,8 +94,8 @@ export const getUsedProductDetail = async (itemId: string) => {
   }
 };
 
-// ⭕getAPI 공용 사용 가능할듯 => main데이터, 판매데이터 url만 다름!!
-// ⭕마이페이지 연결된 4개 데이터로드 공용으로 사용 가능할듯.
+// ⭕API getAPI 공용 사용하게 추상화하기
+// ⭕API 마이페이지 연결된 4개 데이터로드 공용으로 사용 가능할듯.
 export const getMyPageInfo = async (userId: string) => {
   try {
     const snapshot = await get(ref(database, `userSellList/${userId}`));
@@ -108,5 +111,75 @@ export const getMyPageInfo = async (userId: string) => {
   } catch (error) {
     console.error('중고 제품 로드 에러', error);
     return [];
+  }
+};
+
+// UsedComment API
+export interface addUsedCommentProps {
+  productId: string;
+  comment: CommentType;
+}
+export interface removeUsedCommentProps {
+  productId: string;
+  commentId: string;
+}
+export interface EditUsedCommentProps {
+  productId: string;
+  commentId: string;
+  editCommentData: CommentType;
+}
+
+export const getUsedComment = async (productId: string) => {
+  try {
+    const commentsSnapshot = await get(
+      ref(database, `usedComments/${productId}`),
+    );
+    if (commentsSnapshot.exists()) {
+      const data = Object.values(commentsSnapshot.val()) as CommentType[];
+      const sortedData = data.sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      );
+      return sortedData;
+    }
+    return [];
+  } catch (error) {
+    console.error('댓글 불러오기 에러', error);
+    return [];
+  }
+};
+
+export const addUsedComment = ({ productId, comment }: addUsedCommentProps) => {
+  try {
+    const commentRef = ref(database, `usedComments/${productId}`);
+    const newCommentRef = push(commentRef);
+    return set(newCommentRef, { ...comment, commentId: newCommentRef.key });
+  } catch (error) {
+    console.error('중고제품 댓글 추가 에러', error);
+  }
+};
+
+export const removeUsedComment = async ({
+  productId,
+  commentId,
+}: removeUsedCommentProps) => {
+  try {
+    const commentRef = ref(database, `usedComments/${productId}/${commentId}`);
+    return remove(commentRef);
+  } catch (error) {
+    console.error('중고제품 댓글삭제 에러', error);
+  }
+};
+
+export const editUsedComment = async ({
+  productId,
+  commentId,
+  editCommentData,
+}: EditUsedCommentProps) => {
+  try {
+    const commentRef = ref(database, `usedComments/${productId}/${commentId}`);
+    return await update(commentRef, editCommentData);
+  } catch (error) {
+    console.error('중고제품 댓글수정 에러', error);
   }
 };

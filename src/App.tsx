@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import { RecoilRoot } from 'recoil';
 
-import BottomNav from './components/navigation/BottomNav';
+import { BottomNav } from '@/components';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const queryClient = new QueryClient();

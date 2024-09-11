@@ -1,4 +1,4 @@
-import { UsedProductType } from '@/_typesBundle/productType';
+import { UsedProductType } from '@/_typesBundle';
 import { UsedProductCard } from '@/components/UsedProductCard';
 
 interface SearchListProps {

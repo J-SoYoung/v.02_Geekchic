@@ -1,21 +1,19 @@
 import { useRef, useState } from 'react';
 import { useRecoilState } from 'recoil';
-
-import { userState } from '@/_recoil/atoms';
-import { UserDataType } from '@/_typesBundle/userType';
-import { uploadCloudImage } from '@/_apis/uploader';
-import { editUserProfileData } from '@/_apis/userApis';
-import Icon_Pencile from '@assets/icons/pencil.svg';
-import { ContentsBox } from './ContentsBox';
-
-import { BasicButton } from '@/components/button/BasicButton';
 import { useNavigate } from 'react-router-dom';
-import { Layout } from '@/components/Layout';
 
-// ⭕업로드 페이지에서 ContentsBox사용할 수 있지 않을까? think
+import { ContentsBox } from './index';
+
+import { Layout, BasicButton } from '@/components';
+import { userState } from '@/_recoil';
+import { UserDataType } from '@/_typesBundle';
+import { uploadCloudImage, editUserProfileData } from '@/_apis';
+import { Icon_Pencile } from '@/_assets';
+
 // ⭕프로필 수정하면 중고제품 판매자 정보도 같이 업로드 되게하기.
 // ⭕프로필 수정시 -> 전화번호. 주소 유효성검사 check
-// ⭕enter이벤트를 주소에만 하면 되나??
+// ⭕프로필 enter이벤트는 언제 감지하는 게 좋을까? 아... 상위에서 감지하게 하는거.
+// ⭕프로필 업데이트도 mutaion으로 하기 -> 프로필 수정 로딩중 상태표시
 export const Profile = () => {
   const navigate = useNavigate();
   const [user, setUser] = useRecoilState(userState);
@@ -123,7 +121,7 @@ export const Profile = () => {
             isEditing={isEditing}
             inputName={'address'}
             onChange={onChangeEditInput}
-            onKeyDown={(e: { key: string; }) => {
+            onKeyDown={(e: { key: string }) => {
               if (e.key === 'Enter') onClickSaveProfile();
             }}
             isBlank={!user.address}

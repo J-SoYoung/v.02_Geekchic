@@ -1,4 +1,4 @@
-const Skeleton = () => {
+export const Skeleton = () => {
   return (
     <div className='animate-pulse'>
       <div>
