@@ -36,6 +36,13 @@ export const UsedProductsDetail = () => {
 
   return (
     <main className='text-left'>
+      <button
+        className='w-10 h-10 fixed top-2 cursor-pointer'
+        onClick={() => navigate(-1)}
+      >
+        <img src={Icon_Chevron_left} alt='이전 페이지로' className='w-full' />
+      </button>
+
       {/* image view*/}
       <section>
         <div className='w-full h-[100%]'>
@@ -57,24 +64,20 @@ export const UsedProductsDetail = () => {
             ))}
           </div>
         </div>
-
-        <button
-          className='w-10 h-10 fixed top-2 cursor-pointer'
-          onClick={() => navigate(-1)}
-        >
-          <img src={Icon_Chevron_left} alt='이전 페이지로' className='w-full' />
-        </button>
       </section>
 
-      <article className='p-8 pb-24'>
+      <section className='py-8 mx-8 border-b'>
         <UserProfileInfoComp
           avatar={usedProduct.seller.avatar}
           username={usedProduct.seller.username}
           address={usedProduct.seller.address}
         />
 
+      </section>
+
+      <article className='p-8 pb-24'>
         {/* used products item */}
-        <section className='my-8 border-b'>
+        <section className=' border-b'>
           <div className='text-xl font-bold'>{usedProduct.productName}</div>
           <div className='text-sm text-gray-500'>
             {usedProduct.createdAt.split('T')[0]}
