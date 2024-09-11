@@ -4,7 +4,7 @@ import {
   CommentType,
   SellsItemType,
   UsedProductType,
-} from '@/_typesBundle/productType';
+} from '@/_typesBundle';
 
 export const uploadUsedProducts = async (
   updateUsedProducts: UsedProductType,

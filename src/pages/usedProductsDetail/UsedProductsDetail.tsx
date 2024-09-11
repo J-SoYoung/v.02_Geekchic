@@ -1,13 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
-import Skeleton from './Skeleton';
-import { CommentsList } from './CommentsList';
-import { CommentInput } from './CommentInput';
+import { CommentInput, CommentsList, Skeleton } from './index';
 
-import Chevron_left from '@assets/icons/chevron_left.svg';
-import { getUsedProductDetail } from '@/_apis/apis';
-import { UserProfileInfoComp } from '@/components/UserProfileInfoComp';
+import { UserProfileInfoComp } from '@/components';
+import { Icon_Chevron_left } from '@/_assets';
+import { getUsedProductDetail } from '@/_apis';
 
 export const UsedProductsDetail = () => {
   const { productId } = useParams<{ productId: string }>();
@@ -64,7 +62,7 @@ export const UsedProductsDetail = () => {
           className='w-10 h-10 fixed top-2 cursor-pointer'
           onClick={() => navigate(-1)}
         >
-          <img src={Chevron_left} alt='이전 페이지로' className='w-full' />
+          <img src={Icon_Chevron_left} alt='이전 페이지로' className='w-full' />
         </button>
       </section>
 

@@ -1,5 +1,5 @@
 //⭕타입 : 날짜형식, phone 데이터형식 구체적으로
-export interface UserDataType {
+interface UserDataType {
   _id: string;
   username: string;
   email: string;
@@ -12,3 +12,6 @@ export interface UserDataType {
   listPurchases: number;
   listSells: number;
 }
+
+export type { UserDataType };
+ 

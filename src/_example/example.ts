@@ -1,5 +1,5 @@
-import { UsedProductType } from '@/_typesBundle/productType';
-import { UserDataType } from '@/_typesBundle/userType';
+import { UsedProductType } from '@/_typesBundle';
+import { UserDataType } from '@/_typesBundle';
 
 export const defaultImage = 'https://via.placeholder.com/150';
 
@@ -26,7 +26,7 @@ export const initlUsedProduct: UsedProductType = {
   productName: '',
   deliveryCharge: true, // false배송비 비포함, true배송비 포함
   conditions: 'new', // new새상품, used중고상품
-  price: '',
+  price: 0,
   quantity: 1,
   size: '',
   seller: {

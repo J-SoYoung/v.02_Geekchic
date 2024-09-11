@@ -1,6 +1,6 @@
 import { GoogleAuthProvider } from 'firebase/auth';
 import { auth, database, signInWithPopup, signOut } from './firebase';
-import { UserDataType } from '@/_typesBundle/userType';
+import { UserDataType } from '@/_typesBundle';
 import { get, ref, set } from 'firebase/database';
 import { SetterOrUpdater } from 'recoil';
 

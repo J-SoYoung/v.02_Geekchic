@@ -2,17 +2,17 @@ import { useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { CommentButton } from './CommentButton';
+import { CommentButton } from './index';
 
-import { userState } from '@/_recoil/atoms';
-import { CommentType } from '@/_typesBundle/productType';
+import { userState } from '@/_recoil';
+import { CommentType } from '@/_typesBundle';
 import {
   editUsedComment,
   EditUsedCommentProps,
   removeUsedComment,
   removeUsedCommentProps,
-} from '@/_apis/apis';
-import { validateUsedComment } from '@/_utils/utils';
+} from '@/_apis';
+import { validateUsedComment } from '@/_utils';
 
 interface CommentProps {
   comment: CommentType;

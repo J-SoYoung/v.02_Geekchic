@@ -1,5 +1,5 @@
-import { UsedProductType } from '@/_typesBundle/productType';
-import { UserDataType } from '@/_typesBundle/userType';
+import { UsedProductType } from '@/_typesBundle';
+import { UserDataType } from '@/_typesBundle';
 
 type ValidateProductInputType = Omit<
   UsedProductType,

@@ -4,17 +4,14 @@ import { useMutation } from '@tanstack/react-query';
 import { useRecoilValue } from 'recoil';
 import { v4 as uuidv4 } from 'uuid';
 
-import { UploadImage } from './UploadImage';
-import { FormInput } from './FormInput';
+import { UploadImage, FormInput } from './index';
 
-import { uploadCloudImagesArray } from '@/_apis/uploader';
-import { uploadUsedProducts } from '@/_apis/apis';
-import { UsedProductType } from '@/_typesBundle/productType';
-import { userState } from '@/_recoil/atoms';
-import { initlUsedProduct } from '@/_example/example';
-import { BasicButton } from '@/components/button/BasicButton';
-import { Layout } from '@/components/Layout';
-import { validateProductData } from '@/_utils/utils';
+import { Layout, BasicButton } from '@/components';
+import { uploadCloudImagesArray, uploadUsedProducts } from '@/_apis';
+import { UsedProductType } from '@/_typesBundle';
+import { userState } from '@/_recoil';
+import { initlUsedProduct } from '@/_example';
+import { validateProductData } from '@/_utils';
 
 export const UsedProductsUpload = () => {
   const navigate = useNavigate();
@@ -70,8 +67,8 @@ export const UsedProductsUpload = () => {
       setIsLoading(false);
     },
   });
- 
-  // ⭕ 업로드 로딩State를 쓸 필요가 있나. mutation에서 나오는데 음. 
+
+  // ⭕ 업로드 로딩State를 쓸 필요가 있나. mutation에서 나오는데 음.
   // ⭕ 업로드 에러를 따로 표시할 필요가 있을까? 음 think, 알림으로만 해도 충분하지 않나
   // console.log('제품업로드 error', productUploadMutation.isError);
   const onClickUploadUsedProducts = async () => {
@@ -81,7 +78,7 @@ export const UsedProductsUpload = () => {
       setIsLoading(false);
       return alert('모든 필수 필드를 입력해주세요');
     }
-    
+
     const {
       listCarts,
       listMessages,

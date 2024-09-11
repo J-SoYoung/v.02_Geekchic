@@ -19,17 +19,19 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    
+
     /* 절대경로 설정 */
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-      "@pages/*": ["src/pages/*"],
-      "@components/*": ["src/components/*"],
-      "@assets/*": ["src/_assets/*"],
-      "@apis/*": ["src/_apis/*"],
-      "@recoil/*": ["src/_recoil/*"],
-      "@typesBundle/*": ["src/_typesBundle/*"]
+      "@/pages/*": ["src/pages/*"],
+      "@/components/*": ["src/components/*"],
+      "@/_assets/*": ["src/_assets/*"],
+      "@/_apis/*": ["src/_apis/*"],
+      "@/_example/*": ["src/_example/*"],
+      "@/_utils/*": ["src/_utils/*"],
+      "@/_recoil/*": ["src/_recoil/*"],
+      "@/_typesBundle/*": ["src/_typesBundle/*"]
     }
   },
   "include": ["src"]

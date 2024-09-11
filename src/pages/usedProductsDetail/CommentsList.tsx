@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 
-import { Comment } from './Comment';
+import { Comment } from './index';
 
-import { getUsedComment } from '@/_apis/apis';
-import { CommentType } from '@/_typesBundle/productType';
+import { getUsedComment } from '@/_apis';
+import { CommentType } from '@/_typesBundle';
 
 export const CommentsList = () => {
   const { productId } = useParams<string>();
