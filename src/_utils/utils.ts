@@ -1,5 +1,5 @@
-import { UsedProductType } from '@/_typesBundle/productType';
-import { UserDataType } from '@/_typesBundle/userType';
+import { UsedProductType } from '@/_typesBundle';
+import { UserDataType } from '@/_typesBundle';
 
 type ValidateProductInputType = Omit<
   UsedProductType,
@@ -24,6 +24,14 @@ export const validateProductData = (usedProducts: ValidateProductInputType) => {
 export const validateUserData = (user: UserDataType) => {
   if (!user.address || !user.phone || !user.avatar) {
     return false;
+  } else {
+    return true;
+  }
+};
+
+export const validateUsedComment = (comment: string) => {
+  if (comment.length < 5) {
+    return alert('댓글은 5자 이상 입력해주세요');
   } else {
     return true;
   }

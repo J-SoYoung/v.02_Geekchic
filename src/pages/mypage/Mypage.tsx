@@ -1,10 +1,11 @@
 import { useRecoilState } from 'recoil';
 import { useNavigate } from 'react-router-dom';
-import { getEmptyUserData, userState } from '@/_recoil/atoms';
-import { signOutFromGoogle } from '@/_apis/userApis';
-import { Layout } from '@/components/Layout';
-import { BasicButton } from '@/components/button/BasicButton';
-import { PageMoveComp } from './PageMoveComp';
+
+import { PageMoveComp } from './index';
+
+import { Layout, BasicButton } from '@/components';
+import { getEmptyUserData, userState } from '@/_recoil';
+import { signOutFromGoogle } from '@/_apis';
 
 // ⭕ 마이페이지 4개탭 -> 공통컴포넌트로
 export const Mypage = () => {

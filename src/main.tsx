@@ -6,25 +6,28 @@ import './index.css';
 import App from './App.tsx';
 import ErrorPage from './ErrorPage.tsx';
 // url 생성 페이지
-import Home from './pages/home';
-import Products from './pages/products';
-import ProductsDetail from './pages/productsDetail';
-import ProductsUpolad from './pages/productsUpload';
-import WishList from './pages/wishList';
-import OrderDetail from './pages/orderDetail';
-import Payments from './pages/payments';
-import UsedHome from './pages/usedHome';
-import UsedProductsUpload from './pages/usedProductsUpload';
-import UsedProductsDetail from './pages/usedProductsDetail';
-import UsedMessage from './pages/usedMessage';
-import Login from './pages/login';
-import Mypage from './pages/mypage';
-import Profile from './pages/profile';
-import SellsList from './pages/sellsList/index.ts';
-import PurchaseList from './pages/purchaseList';
-import Carts from './pages/carts';
-import UsedMessageList from './pages/usedMessageList';
-import PurchaseDetail from './pages/purchaseDetail';
+import {
+  Carts,
+  Home,
+  Login,
+  Mypage,
+  OrderDetail,
+  Payments,
+  Products,
+  ProductsDetail,
+  ProductsUpload,
+  Profile,
+  PurchaseDetail,
+  PurchaseList,
+  SellsList,
+  UsedHome,
+  UsedMessage,
+  UsedMessageList,
+  UsedProductsDetail,
+  UsedProductsUpload,
+  WishList,
+} from './pages';
+
 
 // ⭕컴포넌트 : 에러컴포넌트를 만들어 적용해보자
 // 기본 라우터 뒤에 errorElement: <ErrorPage />, 추가하면 된데. 해당 문구랑 처리 가능한가>
@@ -37,15 +40,15 @@ const router = createBrowserRouter([
       { index: true, path: '/', element: <Home /> },
       { path: '/login', element: <Login /> },
       { path: '/products', element: <Products /> }, //⭕탭 있는 페이지
-      { path: '/products/new', element: <ProductsUpolad /> },
-      { path: '/products/detail/:itemId', element: <ProductsDetail /> },
+      { path: '/products/new', element: <ProductsUpload /> },
+      { path: '/products/detail/:productId', element: <ProductsDetail /> },
       { path: '/wishlist/:userId', element: <WishList /> },
       { path: '/orders/:orderId', element: <OrderDetail /> },
       { path: '/payments/:orderId', element: <Payments /> },
       { path: '/used', element: <UsedHome /> },
       { path: '/used/new', element: <UsedProductsUpload /> },
-      { path: '/used/detail/:itemId', element: <UsedProductsDetail /> },
-      { path: '/message/send/:itemId/:buyerId', element: <UsedMessage /> },
+      { path: '/used/detail/:productId', element: <UsedProductsDetail /> },
+      { path: '/message/send/:productId/:buyerId', element: <UsedMessage /> },
       { path: '/my/:userId', element: <Mypage /> },
       { path: '/my/profile/:userId', element: <Profile /> },
       { path: '/my/sellsList/:userId', element: <SellsList /> },

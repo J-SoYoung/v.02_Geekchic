@@ -1,6 +1,5 @@
-import { defaultImage } from '@/_example/example';
-import { Layout } from '@/components/Layout';
-import { MyProductCard } from '@/components/MyProductCard';
+import { defaultImage } from '@/_example';
+import { Layout, MyProductCard } from '@/components';
 
 const products = [
   {
