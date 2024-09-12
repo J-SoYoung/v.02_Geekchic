@@ -4,6 +4,7 @@ import {
   CommentType,
   MessageType,
   SellsItemType,
+  UsedProductSellerType,
   UsedProductType,
 } from '@/_typesBundle';
 
@@ -238,18 +239,70 @@ export const checkMessage = async ({
 
     // 모든 messageId에서 유저의 messages만 가져와 productId랑 같은지 확인하기
     for (const messageId of listMessages) {
-      const messageSnapshot = await get(ref(database, `usedMessages/${messageId}`));
+      const messageSnapshot = await get(
+        ref(database, `usedMessages/${messageId}`),
+      );
       if (messageSnapshot.exists()) {
         const messageData = messageSnapshot.val();
 
         if (messageData.productId === productId) {
-          return messageData; 
+          return messageData;
         }
       }
     }
-    return null
+    return null;
   } catch (error) {
     console.error('이전 메세지 확인 에러', error);
   }
 };
+export interface MessageResultType {
+  buyerId: string;
+  createdAt: string;
+  messageId: string;
+  price: number;
+  productId: string;
+  productName: string;
+  productImage: string;
+  quantity: number;
+  seller: UsedProductSellerType;
+  sellerId: string;
+}
+export const getMessageList = async (listMessages: string[]) => {
+  try {
+    let messagesDb = [];
+    let messageResults: MessageResultType[] = [];
 
+    // 유저의 메세지 리스트 가져옴
+    for (const messageId of listMessages) {
+      const messageSnapshot = await get(
+        ref(database, `usedMessages/${messageId}`),
+      );
+      if (messageSnapshot.exists()) messagesDb.push(messageSnapshot.val());
+    }
+
+    if (messagesDb.length > 0) {
+      for (const messages of messagesDb) {
+        const productSnapshot = await get(
+          ref(database, `usedProducts/${messages.productId}`)
+        );
+        if (productSnapshot.exists()) {
+          const { productName, price, quantity, seller, images  } = productSnapshot.val();
+          messageResults.push({
+            productName,
+            productImage:images[0],
+            price,
+            quantity,
+            seller,
+            ...messages,
+          });
+        }
+      }
+      console.log(messageResults);
+      return messageResults as MessageResultType[];
+    }
+    return [];
+  } catch (error) {
+    console.error('메세지 리스트 불러오기 에러', error);
+    return [];
+  }
+};
