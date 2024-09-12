@@ -1,6 +1,6 @@
 import { UserDataType } from './userType';
 
-type UsedProductSellerType = Omit<
+export type UsedProductSellerType = Omit<
   UserDataType,
   'listCarts' | 'listMessages' | 'listPurchases' | 'listSells'
 >;
@@ -44,5 +44,19 @@ interface MessageType {
   productId: string;
   sellerId: string;
   buyerId: string;
+  createdAt: string;
+  // ex :  messages 메세지 추가돼야함
+  // "messages": [
+  //   {
+  //     "senderId": "buyerId1",
+  //     "content": "안녕하세요, 제품 아직 있나요?",
+  //     "timestamp": 1234567890
+  //   },
+  //   {
+  //     "senderId": "sellerId1",
+  //     "content": "네, 아직 있습니다.",
+  //     "timestamp": 1234567891
+  //   }
+  // ]
 }
 export type { UsedProductType, CommentType, SellsItemType, MessageType };
