@@ -52,6 +52,7 @@ export const UsedProductsDetail = () => {
         productId: productId as string,
         sellerId: usedProduct.seller._id,
         buyerId: isLoginUser._id,
+        createdAt: new Date().toISOString(),
       };
       await addMessagesPage(messageData);
     }
@@ -63,7 +64,7 @@ export const UsedProductsDetail = () => {
   if (isPending) {
     return <Skeleton />;
   }
-
+  // ⭕에러 컴포넌트 -> 페이지 이동
   if (isError)
     return (
       <div className='border h-80 py-20 text-center'>

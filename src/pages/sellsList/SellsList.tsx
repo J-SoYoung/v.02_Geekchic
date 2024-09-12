@@ -19,7 +19,7 @@ export const SellsList = () => {
     queryFn: async () => await getMyPageInfo(userId as string),
   });
 
-  // ⭕ 로티이미지 추가 : 에러 페이지 데이터 새로고침 해주세요
+  // ⭕ 에러 컴포넌트, 로티이미지 추가 : 에러 페이지 데이터 새로고침 해주세요
   if (isError) {
     return (
       <div className='border h-40 p-2 text-center'>
@@ -28,7 +28,7 @@ export const SellsList = () => {
           className='cursor-pointer hover:font-bold'
           onClick={() => window.location.reload()}
         >
-          GeekChic MY 판매목록 페이지 새로고침
+          GeekChic 판매목록 페이지 새로고침
         </button>
       </div>
     );

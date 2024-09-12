@@ -79,7 +79,7 @@ export const Mypage = () => {
             <PageMoveComp
               url={`/my/messagesList/${user?._id}`}
               title='내 쪽지함'
-              listLength={user.listMessages}
+              listLength={user.listMessages.length}
             />
           </div>
         </div>
