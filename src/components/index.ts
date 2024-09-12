@@ -5,6 +5,7 @@ import { UserProfileInfoComp } from './UserProfileInfoComp';
 import { LoginButton } from './button';
 import { BasicButton } from './button';
 import { BottomNav } from './BottomNav';
+import { IsSeller } from './IsSeller';
 
 export {
   Layout,
@@ -14,4 +15,5 @@ export {
   LoginButton,
   BasicButton,
   BottomNav,
+  IsSeller,
 };
