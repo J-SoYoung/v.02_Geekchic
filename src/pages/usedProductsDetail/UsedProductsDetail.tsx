@@ -42,7 +42,6 @@ export const UsedProductsDetail = () => {
     checkPreviousMessage();
   }, []);
 
-  console.log(previousMessage);
 
   const onClickAddMessage = async () => {
     const messageId = uuidv4();
@@ -58,9 +57,23 @@ export const UsedProductsDetail = () => {
     }
     navigate(
       `/message/send/${previousMessage !== null ? previousMessage.messageId : messageId}`,
+      {
+        state: {
+          buyerId: isLoginUser._id,
+          createdAt: new Date().toISOString(),
+          messageId:
+            previousMessage !== null ? previousMessage.messageId : messageId,
+          price: usedProduct.price,
+          productId: usedProduct.productId,
+          productImage: usedProduct.images[0],
+          productName: usedProduct.productName,
+          quantity: usedProduct.quantity,
+          sellerId: usedProduct.seller._id,
+          sellerName: usedProduct.seller.username,
+        },
+      },
     );
   };
-
   if (isPending) {
     return <Skeleton />;
   }

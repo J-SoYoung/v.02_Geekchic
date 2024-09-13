@@ -73,6 +73,21 @@ export const UsedMessage = () => {
     });
   };
 
+  // ⭕ 에러 컴포넌트, 로티이미지 추가 : 에러 페이지 데이터 새로고침 해주세요
+  if (isError) {
+    return (
+      <div className='border h-40 p-2 text-center'>
+        <p>데이터를 가져오는 동안 문제가 발생했습니다</p>
+        <button
+          className='cursor-pointer hover:font-bold'
+          onClick={() => window.location.reload()}
+        >
+          GeekChic 메세지 가져오기 새로고침
+        </button>
+      </div>
+    );
+  }
+
   return (
     <Layout title={'쪽지 보내기'}>
       <div className='p-8 min-h-screen flex flex-col bg-gray-100'>
@@ -92,6 +107,7 @@ export const UsedMessage = () => {
           </div>
         </section>
 
+        {/* messages */}
         <section className='w-full flex flex-col'>
           <div>
             {isPending ? (
@@ -120,8 +136,8 @@ export const UsedMessage = () => {
           </div>
         </section>
 
+        {/* 대화 입력창 */}
         <section>
-          {/* 대화 입력창 */}
           <div className='w-[532px] flex items-center fixed bottom-24'>
             <textarea
               className='border w-full p-2 resize-none outline-0'

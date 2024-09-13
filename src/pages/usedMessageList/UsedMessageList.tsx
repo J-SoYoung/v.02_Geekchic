@@ -80,8 +80,7 @@ export const UsedMessageList = () => {
                       productName,
                       quantity,
                       sellerId,
-                      sellerName : seller.username,
-                      
+                      sellerName : seller.username, 
                     }}
                     className={`flex p-2 items-center hover:bg-[#eee]`}
                   >
