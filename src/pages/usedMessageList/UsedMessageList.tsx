@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { getMessageList, MessageResultType } from '@/_apis';
 import { userState } from '@/_recoil';
-import { Layout, IsSeller } from '@/components';
+import { Layout, SellerMark } from '@/components';
 
 export const UsedMessageList = () => {
   const { listMessages } = useRecoilValue(userState);
@@ -19,7 +19,7 @@ export const UsedMessageList = () => {
     retry: 3,
     retryDelay: 1000,
   });
-  console.log(messagesList);
+
   // ⭕에러 컴포넌트, 로티이미지
   if (isError)
     return (
@@ -38,7 +38,7 @@ export const UsedMessageList = () => {
     );
 
   return (
-    <Layout title='쪽지보내기'>
+    <Layout title='내 쪽지함'>
       {isPending ? (
         <p>로딩중</p>
       ) : (
@@ -91,7 +91,7 @@ export const UsedMessageList = () => {
                         alt='icon'
                         className='w-24 h-24 rounded-full object-cover mr-2 '
                       />
-                      <IsSeller sellerId={message?.seller._id} />
+                      <SellerMark sellerId={message?.seller._id} />
                     </div>
                     <div className='w-4/5 flex justify-between items-start '>
                       <div className='flex flex-col flex-1'>
