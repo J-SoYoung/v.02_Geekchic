@@ -45,18 +45,31 @@ interface MessageType {
   sellerId: string;
   buyerId: string;
   createdAt: string;
-  // ex :  messages 메세지 추가돼야함
-  // "messages": [
-  //   {
-  //     "senderId": "buyerId1",
-  //     "content": "안녕하세요, 제품 아직 있나요?",
-  //     "timestamp": 1234567890
-  //   },
-  //   {
-  //     "senderId": "sellerId1",
-  //     "content": "네, 아직 있습니다.",
-  //     "timestamp": 1234567891
-  //   }
-  // ]
+  messages?: MessagesInfoType[];
 }
-export type { UsedProductType, CommentType, SellsItemType, MessageType };
+interface MessagesInfoType {
+  senderId: string;
+  content: string;
+  timestamp: string;
+}
+interface MessageResultType {
+  buyerId: string;
+  createdAt: string;
+  messageId: string;
+  price: number;
+  productId: string;
+  productName: string;
+  productImage: string;
+  quantity: number;
+  seller: UsedProductSellerType;
+  sellerId: string;
+}
+
+export type {
+  UsedProductType,
+  CommentType,
+  SellsItemType,
+  MessageType,
+  MessageResultType,
+  MessagesInfoType,
+};
