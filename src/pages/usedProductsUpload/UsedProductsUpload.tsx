@@ -6,7 +6,12 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { UploadImage, FormInput } from './index';
 
-import { Layout, BasicButton } from '@/components';
+import {
+  Layout,
+  BasicButton,
+  ErrorPageReload,
+  LoadingSpinner,
+} from '@/components';
 import { uploadCloudImagesArray, uploadUsedProducts } from '@/_apis';
 import { UsedProductType } from '@/_typesBundle';
 import { userState } from '@/_recoil';
@@ -68,9 +73,6 @@ export const UsedProductsUpload = () => {
     },
   });
 
-  // ⭕ 업로드 로딩State를 쓸 필요가 있나. mutation에서 나오는데 음.
-  // ⭕ 업로드 에러를 따로 표시할 필요가 있을까? 음 think, 알림으로만 해도 충분하지 않나
-  // console.log('제품업로드 error', productUploadMutation.isError);
   const onClickUploadUsedProducts = async () => {
     setIsLoading(true);
 
@@ -106,21 +108,40 @@ export const UsedProductsUpload = () => {
         },
         onError: (error) => {
           console.log('이미지 업로드 에러', error);
-          alert('이미지 업로드 중 에러가 발생했습니다.');
+          alert('이미지 업로드 중 에러가 발생했습니다. 다시 시도해주세요 ');
           setIsLoading(false);
         },
       });
     }
   };
 
+  if (usedProductUploadMutation.isError) {
+    return (
+      <ErrorPageReload
+        content={
+          <p>
+            데이터를 업로드 하는 동안 문제가 발생했습니다.
+            <br /> 제품을 다시 업로드 해주세요
+          </p>
+        }
+        pageName={'업로드'}
+      />
+    );
+  }
+
   return (
     <>
       {isLoading && (
-        <div className='fixed top-80 left-[40%] text-3xl text-red-500'>
-          {/* ⭕로티이미지 - 제품 업로드 로딩 ( 로딩스피너 ) */}
-          Loading ...
+        <div className='m-auto'>
+          <div className='flex flex-col justify-center'>
+            <span className='mb-6 text-3xl text-[#8F5BBD] font-bold'>
+              Loading
+            </span>
+            <LoadingSpinner size='6' />
+          </div>
         </div>
       )}
+
       <Layout title='제품 등록' onClickFunc={onClickMoveUsedMain}>
         <div className='pb-36 p-8 text-left'>
           <UploadImage
@@ -142,7 +163,7 @@ export const UsedProductsUpload = () => {
             name='price'
             value={usedProducts.price}
             onChange={onChangeInput}
-            placeholder='가격을 입력하세요'
+            placeholder='최소 가격은 1000원 입니다'
             min={1000}
             step={1000}
           />
@@ -162,7 +183,14 @@ export const UsedProductsUpload = () => {
             value={usedProducts.size}
             onChange={onChangeInput}
             placeholder='사이즈를 선택해주세요'
-            options={['사이즈를 선택해주세요', 'S', 'M', 'L', 'XL', 'FREE']}
+            options={[
+              '사이즈를 선택해주세요',
+              'S',
+              'M',
+              'L',
+              'XL',
+              'FREE ( 설명란에 자세히 써주세요 )',
+            ]}
           />
           <div className='mb-8'>
             <label className='block text-sm font-medium text-gray-700 mb-2'>
