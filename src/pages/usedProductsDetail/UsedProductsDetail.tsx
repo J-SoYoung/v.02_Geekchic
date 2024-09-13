@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { CommentInput, CommentsList, Skeleton } from './index';
 
-import { ErrorPageReload, UserProfileInfoComp } from '@/components';
+import { ErrorPageReload, LoadingSpinner, UserProfileInfoComp } from '@/components';
 import { Icon_Chevron_left } from '@/_assets';
 import { addMessagesPage, checkMessage, getUsedProductDetail } from '@/_apis';
 import { userState } from '@/_recoil';
@@ -76,7 +76,7 @@ export const UsedProductsDetail = () => {
   if (isPending) {
     return <Skeleton />;
   }
-  // ⭕에러 컴포넌트 -> 페이지 이동
+
   if (isError)
     return (
       <ErrorPageReload
@@ -131,7 +131,7 @@ export const UsedProductsDetail = () => {
               {previousMessage !== null ? '쪽지 이어하기' : '쪽지보내기'}
             </button>
           ) : (
-            <div>Loading...</div>
+            <LoadingSpinner size='4' />
           ))}
       </section>
 

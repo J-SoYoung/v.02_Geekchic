@@ -6,7 +6,12 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { UploadImage, FormInput } from './index';
 
-import { Layout, BasicButton, ErrorPageReload } from '@/components';
+import {
+  Layout,
+  BasicButton,
+  ErrorPageReload,
+  LoadingSpinner,
+} from '@/components';
 import { uploadCloudImagesArray, uploadUsedProducts } from '@/_apis';
 import { UsedProductType } from '@/_typesBundle';
 import { userState } from '@/_recoil';
@@ -54,7 +59,7 @@ export const UsedProductsUpload = () => {
 
   const usedProductUploadMutation = useMutation({
     mutationFn: async (newUsedProducts: UsedProductType) => {
-      await uploadUsedProduc(newUsedProducts);
+      await uploadUsedProducts(newUsedProducts);
     },
     onSuccess: () => {
       navigate('/used');
@@ -68,9 +73,6 @@ export const UsedProductsUpload = () => {
     },
   });
 
-  // ⭕ 업로드 로딩State를 쓸 필요가 있나. mutation에서 나오는데 음.
-  // ⭕ 업로드 에러를 따로 표시할 필요가 있을까? 음 think, 알림으로만 해도 충분하지 않나
-  // console.log('제품업로드 error', productUploadMutation.isError);
   const onClickUploadUsedProducts = async () => {
     setIsLoading(true);
 
@@ -113,7 +115,6 @@ export const UsedProductsUpload = () => {
     }
   };
 
-  // ⭕ 에러 컴포넌트 및 로티 : 에러 페이지 데이터 새로고침 해주세요
   if (usedProductUploadMutation.isError) {
     return (
       <ErrorPageReload
@@ -127,13 +128,17 @@ export const UsedProductsUpload = () => {
       />
     );
   }
-  
+
   return (
     <>
       {isLoading && (
-        <div className='fixed top-80 left-[40%] text-3xl text-red-500'>
-          {/* ⭕로티이미지 - 제품 업로드 로딩 ( 로딩스피너 ) */}
-          Loading ...
+        <div className='m-auto'>
+          <div className='flex flex-col justify-center'>
+            <span className='mb-6 text-3xl text-[#8F5BBD] font-bold'>
+              Loading
+            </span>
+            <LoadingSpinner size='6' />
+          </div>
         </div>
       )}
 
