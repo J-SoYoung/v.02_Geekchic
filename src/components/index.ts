@@ -6,6 +6,7 @@ import { LoginButton } from './button';
 import { BasicButton } from './button';
 import { BottomNav } from './BottomNav';
 import { SellerMark } from './SellerMark';
+import { ErrorPageReload } from './ErrorPageReload';
 
 export {
   Layout,
@@ -16,4 +17,5 @@ export {
   BasicButton,
   BottomNav,
   SellerMark,
+  ErrorPageReload,
 };

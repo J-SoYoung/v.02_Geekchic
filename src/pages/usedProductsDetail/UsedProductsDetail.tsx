@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { CommentInput, CommentsList, Skeleton } from './index';
 
-import { UserProfileInfoComp } from '@/components';
+import { ErrorPageReload, UserProfileInfoComp } from '@/components';
 import { Icon_Chevron_left } from '@/_assets';
 import { addMessagesPage, checkMessage, getUsedProductDetail } from '@/_apis';
 import { userState } from '@/_recoil';
@@ -41,7 +41,6 @@ export const UsedProductsDetail = () => {
     };
     checkPreviousMessage();
   }, []);
-
 
   const onClickAddMessage = async () => {
     const messageId = uuidv4();
@@ -80,12 +79,12 @@ export const UsedProductsDetail = () => {
   // ⭕에러 컴포넌트 -> 페이지 이동
   if (isError)
     return (
-      <div className='border h-80 py-20 text-center'>
-        <div> 데이터가 없습니다. </div>
-        <Link to='/used' className='hover:font-bold'>
-          중고 메인페이지로 돌아가기
-        </Link>
-      </div>
+      <ErrorPageReload
+        content='데이터를 가져오는 동안 문제가 발생했습니다'
+        pageName={'중고 상세'}
+        linkTo={'/used'}
+        movePage='중고 메인 페이지'
+      />
     );
 
   return (
