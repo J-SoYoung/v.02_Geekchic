@@ -2,6 +2,9 @@ import { get, push, ref, remove, set, update } from 'firebase/database';
 import { database } from './firebase';
 import {
   CommentType,
+  MessageResultType,
+  MessagesInfoType,
+  MessageType,
   SellsItemType,
   UsedProductType,
 } from '@/_typesBundle';
@@ -84,6 +87,7 @@ export const getUsedProducts = async (): Promise<UsedProductType[]> => {
     return [];
   }
 };
+
 export const getUsedProductDetail = async (productId: string) => {
   try {
     const snapshot = await get(ref(database, `usedProducts/${productId}`));
@@ -128,7 +132,6 @@ export interface EditUsedCommentProps {
   commentId: string;
   editCommentData: CommentType;
 }
-
 export const getUsedComment = async (productId: string) => {
   try {
     const commentsSnapshot = await get(
@@ -181,5 +184,152 @@ export const editUsedComment = async ({
     return await update(commentRef, editCommentData);
   } catch (error) {
     console.error('중고제품 댓글수정 에러', error);
+  }
+};
+
+// Messages API
+interface checkMessageProps {
+  buyerId: string;
+  productId: string;
+}
+interface sendMessagesType {
+  currentMessages: MessagesInfoType;
+  messageId: string;
+}
+export const addMessagesPage = async (messageData: MessageType) => {
+  try {
+    const getUserMessageList = async (userId: string) => {
+      const snapshot = await get(ref(database, `users/${userId}`));
+      if (snapshot.exists()) {
+        const userData = snapshot.val();
+        return userData.listMessages || [];
+      }
+      return [];
+    };
+
+    // 판매자와 구매자의 기존 메시지 목록 가져오기
+    const sellerPrevMessages = await getUserMessageList(messageData.sellerId);
+    const buyerPrevMessages = await getUserMessageList(messageData.buyerId);
+
+    // 판매자와 구매자의 메시지에 새 메시지ID 추가
+    const sellerUpdatedMessages = [
+      ...sellerPrevMessages,
+      messageData.messageId,
+    ];
+    const buyerUpdatedMessages = [...buyerPrevMessages, messageData.messageId];
+
+    const updates = {
+      [`usedMessages/${messageData.messageId}`]: { ...messageData },
+      [`users/${messageData.sellerId}/listMessages`]: sellerUpdatedMessages,
+      [`users/${messageData.buyerId}/listMessages`]: buyerUpdatedMessages,
+    };
+    console.log('쪽지 페이지 생성 성공');
+    await update(ref(database), updates);
+  } catch (error) {
+    console.error('쪽지 페이지 생성실패', error);
+  }
+};
+
+export const checkMessage = async ({
+  buyerId,
+  productId,
+}: checkMessageProps) => {
+  try {
+    // 유저의 messageId가져오기
+    const buyerSnapshot = await get(ref(database, `users/${buyerId}`));
+    if (!buyerSnapshot.exists()) return null;
+
+    const { listMessages } = buyerSnapshot.val();
+    if (!listMessages || listMessages.length === 0) return null;
+
+    // 모든 messageId에서 유저의 messages만 가져와 productId랑 같은지 확인하기
+    for (const messageId of listMessages) {
+      const messageSnapshot = await get(
+        ref(database, `usedMessages/${messageId}`),
+      );
+      if (messageSnapshot.exists()) {
+        const messageData = messageSnapshot.val();
+
+        if (messageData.productId === productId) {
+          return messageData;
+        }
+      }
+    }
+    return null;
+  } catch (error) {
+    console.error('이전 메세지 확인 에러', error);
+  }
+};
+
+export const getMessageList = async (listMessages: string[]) => {
+  try {
+    let messagesDb = [];
+    let messageResults: MessageResultType[] = [];
+
+    // 유저의 메세지 리스트 가져옴
+    for (const messageId of listMessages) {
+      const messageSnapshot = await get(
+        ref(database, `usedMessages/${messageId}`),
+      );
+      if (messageSnapshot.exists()) messagesDb.push(messageSnapshot.val());
+    }
+
+    if (messagesDb.length > 0) {
+      for (const messages of messagesDb) {
+        const productSnapshot = await get(
+          ref(database, `usedProducts/${messages.productId}`),
+        );
+        if (productSnapshot.exists()) {
+          const { productName, price, quantity, seller, images } =
+            productSnapshot.val();
+          messageResults.push({
+            productName,
+            productImage: images[0],
+            price,
+            quantity,
+            seller,
+            ...messages,
+          });
+        }
+      }
+      return messageResults as MessageResultType[];
+    }
+    return [];
+  } catch (error) {
+    console.error('메세지 리스트 불러오기 에러', error);
+    return [];
+  }
+};
+
+export const sendMessages = async ({
+  currentMessages,
+  messageId,
+}: sendMessagesType) => {
+  try {
+    const messageRef = ref(database, `usedMessages/${messageId}/messages`);
+    const newMessageRef = push(messageRef);
+    return set(newMessageRef, currentMessages);
+  } catch (error) {
+    console.error('메세지 보내기 에러', error);
+  }
+};
+
+export const getMessages = async (messageId: string) => {
+  try {
+    const messagesSnapshot = await get(
+      ref(database, `usedMessages/${messageId}/messages`),
+    );
+    if (messagesSnapshot.exists()) {
+      const data = Object.values(messagesSnapshot.val()) as MessagesInfoType[];
+      const sortedData = data.sort(
+        (a, b) =>
+          new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
+      );
+      return sortedData;
+    }
+    return [];
+  } catch (error) {
+    console.error('메세지 불러오기 에러', error);
+    return [];
   }
 };

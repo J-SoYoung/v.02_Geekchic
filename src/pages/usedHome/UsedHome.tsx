@@ -42,7 +42,7 @@ export const UsedHome = () => {
     }
   };
 
-  // ⭕ 로티이미지 추가 : 에러 페이지 데이터 새로고침 해주세요
+  // ⭕ 에러 컴포넌트 및 로티 : 에러 페이지 데이터 새로고침 해주세요
   if (isError) {
     return (
       <div className='border h-40 p-2 text-center'>

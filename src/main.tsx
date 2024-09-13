@@ -48,7 +48,7 @@ const router = createBrowserRouter([
       { path: '/used', element: <UsedHome /> },
       { path: '/used/new', element: <UsedProductsUpload /> },
       { path: '/used/detail/:productId', element: <UsedProductsDetail /> },
-      { path: '/message/send/:productId/:buyerId', element: <UsedMessage /> },
+      { path: '/message/send/:messageId', element: <UsedMessage /> },
       { path: '/my/:userId', element: <Mypage /> },
       { path: '/my/profile/:userId', element: <Profile /> },
       { path: '/my/sellsList/:userId', element: <SellsList /> },
