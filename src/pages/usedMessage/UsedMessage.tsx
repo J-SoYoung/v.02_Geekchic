@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRecoilValue } from 'recoil';
 import { useLocation } from 'react-router-dom';
 
-import { ErrorPageReload, Layout } from '@/components';
+import { ErrorPageReload, Layout, LoadingSpinner } from '@/components';
 import { userState } from '@/_recoil';
 import { sendMessages, getMessages } from '@/_apis';
 import { MessagesInfoType } from '@/_typesBundle';
@@ -105,7 +105,7 @@ export const UsedMessage = () => {
         <section className='w-full flex flex-col'>
           <div>
             {isPending ? (
-              <p>로딩중 ⭕로딩 스켈레톤 적용</p>
+              <LoadingSpinner size='6'/>
             ) : (
               messages &&
               messages.map((message, idx) => {
