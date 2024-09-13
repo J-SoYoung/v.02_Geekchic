@@ -2,9 +2,10 @@ import { get, push, ref, remove, set, update } from 'firebase/database';
 import { database } from './firebase';
 import {
   CommentType,
+  MessageResultType,
+  MessagesInfoType,
   MessageType,
   SellsItemType,
-  UsedProductSellerType,
   UsedProductType,
 } from '@/_typesBundle';
 
@@ -191,6 +192,10 @@ interface checkMessageProps {
   buyerId: string;
   productId: string;
 }
+interface sendMessagesType {
+  currentMessages: MessagesInfoType;
+  messageId: string;
+}
 export const addMessagesPage = async (messageData: MessageType) => {
   try {
     const getUserMessageList = async (userId: string) => {
@@ -206,7 +211,7 @@ export const addMessagesPage = async (messageData: MessageType) => {
     const sellerPrevMessages = await getUserMessageList(messageData.sellerId);
     const buyerPrevMessages = await getUserMessageList(messageData.buyerId);
 
-    // 새로운 메시지 ID 추가
+    // 판매자와 구매자의 메시지에 새 메시지ID 추가
     const sellerUpdatedMessages = [
       ...sellerPrevMessages,
       messageData.messageId,
@@ -255,18 +260,7 @@ export const checkMessage = async ({
     console.error('이전 메세지 확인 에러', error);
   }
 };
-export interface MessageResultType {
-  buyerId: string;
-  createdAt: string;
-  messageId: string;
-  price: number;
-  productId: string;
-  productName: string;
-  productImage: string;
-  quantity: number;
-  seller: UsedProductSellerType;
-  sellerId: string;
-}
+
 export const getMessageList = async (listMessages: string[]) => {
   try {
     let messagesDb = [];
@@ -283,13 +277,14 @@ export const getMessageList = async (listMessages: string[]) => {
     if (messagesDb.length > 0) {
       for (const messages of messagesDb) {
         const productSnapshot = await get(
-          ref(database, `usedProducts/${messages.productId}`)
+          ref(database, `usedProducts/${messages.productId}`),
         );
         if (productSnapshot.exists()) {
-          const { productName, price, quantity, seller, images  } = productSnapshot.val();
+          const { productName, price, quantity, seller, images } =
+            productSnapshot.val();
           messageResults.push({
             productName,
-            productImage:images[0],
+            productImage: images[0],
             price,
             quantity,
             seller,
@@ -297,12 +292,44 @@ export const getMessageList = async (listMessages: string[]) => {
           });
         }
       }
-      console.log(messageResults);
       return messageResults as MessageResultType[];
     }
     return [];
   } catch (error) {
     console.error('메세지 리스트 불러오기 에러', error);
+    return [];
+  }
+};
+
+export const sendMessages = async ({
+  currentMessages,
+  messageId,
+}: sendMessagesType) => {
+  try {
+    const messageRef = ref(database, `usedMessages/${messageId}/messages`);
+    const newMessageRef = push(messageRef);
+    return set(newMessageRef, currentMessages);
+  } catch (error) {
+    console.error('메세지 보내기 에러', error);
+  }
+};
+
+export const getMessages = async (messageId: string) => {
+  try {
+    const messagesSnapshot = await get(
+      ref(database, `usedMessages/${messageId}/messages`),
+    );
+    if (messagesSnapshot.exists()) {
+      const data = Object.values(messagesSnapshot.val()) as MessagesInfoType[];
+      const sortedData = data.sort(
+        (a, b) =>
+          new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
+      );
+      return sortedData;
+    }
+    return [];
+  } catch (error) {
+    console.error('메세지 불러오기 에러', error);
     return [];
   }
 };
