@@ -35,7 +35,7 @@ export const Login = () => {
             phone: '',
             address: '',
             listCarts: 0,
-            listMessages: 0,
+            listMessages: [],
             listPurchases: 0,
             listSells: 0,
           };

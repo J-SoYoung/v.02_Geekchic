@@ -7,7 +7,6 @@ import { Layout, BasicButton } from '@/components';
 import { getEmptyUserData, userState } from '@/_recoil';
 import { signOutFromGoogle } from '@/_apis';
 
-// ⭕ 마이페이지 4개탭 -> 공통컴포넌트로
 export const Mypage = () => {
   const navigate = useNavigate();
   const [user, setUser] = useRecoilState(userState);

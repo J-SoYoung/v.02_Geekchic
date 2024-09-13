@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { SearchBar, SearchList, Skeleton } from './index';
 
-import { BasicButton, UsedProductCard } from '@/components';
+import { BasicButton, ErrorPageReload, UsedProductCard } from '@/components';
 import { userState } from '@/_recoil';
 import { getUsedProducts } from '@/_apis';
 import { UsedProductType } from '@/_typesBundle';
@@ -42,18 +42,12 @@ export const UsedHome = () => {
     }
   };
 
-  // ⭕ 에러 컴포넌트 및 로티 : 에러 페이지 데이터 새로고침 해주세요
   if (isError) {
     return (
-      <div className='border h-40 p-2 text-center'>
-        <p>데이터를 가져오는 동안 문제가 발생했습니다</p>
-        <button
-          className='cursor-pointer hover:font-bold'
-          onClick={() => window.location.reload()}
-        >
-          GeekChic 중고 메인 페이지 새로고침
-        </button>
-      </div>
+      <ErrorPageReload
+        content='데이터를 가져오는 동안 문제가 발생했습니다'
+        pageName={'중고 메인'}
+      />
     );
   }
 
