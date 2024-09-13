@@ -10,7 +10,7 @@ export const UserProfileInfoComp = ({
   address,
 }: UserInofCompProps) => {
   return (
-    <div className='flex pb-6'>
+    <div className='flex'>
       <div className='w-12 h-12 bg-gray-200 rounded-full'>
         <img
           src={avatar}

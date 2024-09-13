@@ -21,7 +21,7 @@ export const CommentsList = () => {
   if (isError) return <p>댓글 불러오기 에러 새로고침... </p>;
 
   return (
-    <section className='mb-20'>
+    <section className='mb-20 pt-8'>
       <div className='text-lg font-bold mb-4'>댓글 {comments.length}</div>
       {comments.map((comment: CommentType) => {
         return (

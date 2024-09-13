@@ -8,7 +8,7 @@ interface UserDataType {
   phone: string;
   address: string;
   listCarts: number;
-  listMessages: number;
+  listMessages: [];
   listPurchases: number;
   listSells: number;
 }

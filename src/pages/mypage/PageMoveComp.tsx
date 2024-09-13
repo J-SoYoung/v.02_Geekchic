@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 interface PageMoveCompType {
   url: string;
   title: string;
-  listLength: number;
+  listLength: number | [];
 }
 
 export const PageMoveComp = ({ url, title, listLength }: PageMoveCompType) => {
