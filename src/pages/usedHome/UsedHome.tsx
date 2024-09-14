@@ -34,6 +34,10 @@ export const UsedHome = () => {
   };
 
   const onClickMoveUploadPage = () => {
+    if (user._id === '') {
+      alert('로그인 한 유저만 업로드가 가능합니다. 로그인 페이지로 이동합니다');
+      return navigate(`/login`);
+    }
     if (!validateUserData(user)) {
       alert('유저 정보를 업데이트 해주세요.');
       return navigate(`/my/profile/${user._id}`);
