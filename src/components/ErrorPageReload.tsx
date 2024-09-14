@@ -13,7 +13,6 @@ export const ErrorPageReload = ({
   linkTo?: string;
   movePage?: string;
 }) => {
-  const navigate = useNavigate();
 
   return (
     <div className='min-h-screen px-8 flex flex-col justify-center text-center'>
