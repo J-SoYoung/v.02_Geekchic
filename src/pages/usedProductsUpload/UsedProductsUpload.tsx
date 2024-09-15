@@ -16,7 +16,7 @@ import { uploadCloudImagesArray, uploadUsedProducts } from '@/_apis';
 import { UsedProductType } from '@/_typesBundle';
 import { userState } from '@/_recoil';
 import { initlUsedProduct } from '@/_example';
-import { validateProductData } from '@/_utils';
+import { utcToKoreaTimes, validateProductData } from '@/_utils';
 
 export const UsedProductsUpload = () => {
   const navigate = useNavigate();
@@ -90,7 +90,7 @@ export const UsedProductsUpload = () => {
     } = user;
 
     const id = uuidv4();
-    const createdAt = new Date().toISOString();
+    const createdAt = utcToKoreaTimes()
     const seller = { ...filteredUserData };
 
     let newUsedProducts: UsedProductType = {

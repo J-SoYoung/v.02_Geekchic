@@ -11,6 +11,7 @@ import { Icon_Chevron_left } from '@/_assets';
 import { addMessagesPage, checkMessage, getUsedProductDetail } from '@/_apis';
 import { userState } from '@/_recoil';
 import { MessageType } from '@/_typesBundle';
+import { utcToKoreaTimes } from '@/_utils';
 
 export const UsedProductsDetail = () => {
   const { productId } = useParams<{ productId: string }>();
@@ -50,7 +51,7 @@ export const UsedProductsDetail = () => {
         productId: productId as string,
         sellerId: usedProduct.seller._id,
         buyerId: isLoginUser._id,
-        createdAt: new Date().toISOString(),
+        createdAt: utcToKoreaTimes(),
       };
       await addMessagesPage(messageData);
     }
@@ -59,7 +60,7 @@ export const UsedProductsDetail = () => {
       {
         state: {
           buyerId: isLoginUser._id,
-          createdAt: new Date().toISOString(),
+          createdAt: utcToKoreaTimes(),
           messageId:
             previousMessage !== null ? previousMessage.messageId : messageId,
           price: usedProduct.price,

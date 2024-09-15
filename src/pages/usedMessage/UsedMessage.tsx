@@ -7,6 +7,7 @@ import { ErrorPageReload, Layout, LoadingSpinner } from '@/components';
 import { userState } from '@/_recoil';
 import { sendMessages, getMessages } from '@/_apis';
 import { MessagesInfoType } from '@/_typesBundle';
+import { utcToKoreaTimes } from '@/_utils';
 
 export const UsedMessage = () => {
   const queryClient = useQueryClient();
@@ -65,7 +66,7 @@ export const UsedMessage = () => {
     const currentMessages: MessagesInfoType = {
       senderId: loginUser._id,
       content: newMessage,
-      timestamp: new Date().toISOString(),
+      timestamp: utcToKoreaTimes(),
     };
     sendMessagesMutation.mutate({
       currentMessages,
@@ -121,7 +122,7 @@ export const UsedMessage = () => {
                   >
                     <div>{message.content}</div>
                     <div className='text-xs'>
-                      {message.timestamp.split('T')[0]}
+                      {message.timestamp[0]}
                     </div>
                   </div>
                 );
