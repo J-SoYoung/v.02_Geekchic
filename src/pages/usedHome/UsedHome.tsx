@@ -10,6 +10,7 @@ import { userState } from '@/_recoil';
 import { getUsedProducts } from '@/_apis';
 import { UsedProductType } from '@/_typesBundle';
 import { validateUserData } from '@/_utils';
+import { utcToKoreaTimes } from '@/_utils/utils';
 
 export const UsedHome = () => {
   const navigate = useNavigate();
@@ -34,6 +35,10 @@ export const UsedHome = () => {
   };
 
   const onClickMoveUploadPage = () => {
+    if (user._id === '') {
+      alert('로그인 한 유저만 업로드가 가능합니다. 로그인 페이지로 이동합니다');
+      return navigate(`/login`);
+    }
     if (!validateUserData(user)) {
       alert('유저 정보를 업데이트 해주세요.');
       return navigate(`/my/profile/${user._id}`);
@@ -50,6 +55,8 @@ export const UsedHome = () => {
       />
     );
   }
+
+  console.log( utcToKoreaTimes() )
 
   return (
     <main className='p-11 pb-4 text-right'>

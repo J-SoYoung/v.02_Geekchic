@@ -28,7 +28,6 @@ export async function getUserData(uid: string): Promise<UserDataType | null> {
   const userRef = ref(database, `users/${uid}`);
   const snapshot = await get(userRef);
   if (snapshot.exists()) {
-    console.log(snapshot.val());
     return snapshot.val() as UserDataType;
   } else {
     return null;
@@ -55,3 +54,13 @@ export async function editUserProfileData(
     console.error('Error 유저 프로필 수정');
   }
 }
+// export async function editUserProfileDatas(
+//   updatedUser: UserDataType,
+// ) {
+//   try {
+//     const userEditRef = ref(database, `users/${updatedUser._id}`);
+//     await set(userEditRef, updatedUser);
+//   } catch (err) {
+//     console.error('Error 유저 프로필 수정');
+//   }
+// }

@@ -6,7 +6,7 @@ export type UsedProductSellerType = Omit<
 >;
 
 interface UsedProductType {
-  createdAt: string;
+  createdAt: string[];
   description: string;
   id: string;
   images: string[];
@@ -37,24 +37,24 @@ interface CommentType {
   username: string;
   avatar: string;
   comment: string;
-  createdAt: string;
+  createdAt: string[];
 }
 interface MessageType {
   messageId: string;
   productId: string;
   sellerId: string;
   buyerId: string;
-  createdAt: string;
+  createdAt: string[];
   messages?: MessagesInfoType[];
 }
 interface MessagesInfoType {
   senderId: string;
   content: string;
-  timestamp: string;
+  timestamp: string[];
 }
 interface MessageResultType {
   buyerId: string;
-  createdAt: string;
+  createdAt: string[];
   messageId: string;
   price: number;
   productId: string;

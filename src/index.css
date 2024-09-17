@@ -13,17 +13,3 @@
   box-shadow: 0px 0px 5px #cccccc;
   text-align: center;
 }
-
-@keyframes bounce-custom {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-50px); 
-    /* 여기서 높이를 조절할 수 있습니다. */
-  }
-}
-
-.bounce-custom {
-  animation: bounce-custom 1s infinite;
-}
