@@ -11,7 +11,7 @@ export const getEmptyUserData = (): UserDataType => ({
   serviceJoinDate: '',
   username: '',
   listCarts: 0,
-  listMessages: 0,
+  listMessages: [],
   listPurchases: 0,
   listSells: 0,
 });
@@ -27,7 +27,7 @@ export const userState = atom<UserDataType>({
     serviceJoinDate: '',
     username: '',
     listCarts: 0,
-    listMessages: 0,
+    listMessages: [],
     listPurchases: 0,
     listSells: 0,
   },

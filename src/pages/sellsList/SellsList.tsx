@@ -1,11 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link, useParams } from 'react-router-dom';
 
-import { Layout, UsedProductCard } from '@/components';
+import { ErrorPageReload, Layout, UsedProductCard } from '@/components';
 import { getMyPageInfo } from '@/_apis';
 import { SellsItemType } from '@/_typesBundle';
-
-
 
 export const SellsList = () => {
   const { userId } = useParams<string>();
@@ -19,18 +17,12 @@ export const SellsList = () => {
     queryFn: async () => await getMyPageInfo(userId as string),
   });
 
-  // ⭕ 에러 컴포넌트, 로티이미지 추가 : 에러 페이지 데이터 새로고침 해주세요
   if (isError) {
     return (
-      <div className='border h-40 p-2 text-center'>
-        <p>데이터를 가져오는 동안 문제가 발생했습니다</p>
-        <button
-          className='cursor-pointer hover:font-bold'
-          onClick={() => window.location.reload()}
-        >
-          GeekChic 판매목록 페이지 새로고침
-        </button>
-      </div>
+      <ErrorPageReload
+        content='데이터를 가져오는 동안 문제가 발생했습니다'
+        pageName={'판매목록'}
+      />
     );
   }
 

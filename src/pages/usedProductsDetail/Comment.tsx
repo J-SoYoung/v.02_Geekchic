@@ -26,7 +26,7 @@ export const Comment = ({ comment, productId }: CommentProps) => {
 
   const queryClient = useQueryClient();
 
-  const ecitCommentMutation = useMutation({
+  const editCommentMutation = useMutation({
     mutationFn: async ({
       productId,
       commentId,
@@ -53,7 +53,7 @@ export const Comment = ({ comment, productId }: CommentProps) => {
       ...comment,
       comment: editComment,
     };
-    ecitCommentMutation.mutate({
+    editCommentMutation.mutate({
       productId: productId as string,
       commentId,
       editCommentData,
@@ -125,7 +125,7 @@ export const Comment = ({ comment, productId }: CommentProps) => {
               ))}
           </div>
           <div className='text-sm text-gray-500'>
-            {comment.createdAt.split('T')[0]}
+            {comment.createdAt[0]}
           </div>
         </div>
 

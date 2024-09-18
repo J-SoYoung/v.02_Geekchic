@@ -6,7 +6,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { addUsedComment, addUsedCommentProps } from '@/_apis';
 import { userState } from '@/_recoil';
 import { CommentType } from '@/_typesBundle';
-import { validateUsedComment } from '@/_utils';
+import { utcToKoreaTimes, validateUsedComment } from '@/_utils';
 
 export const CommentInput = () => {
   const { productId } = useParams<{ productId: string }>();
@@ -38,7 +38,7 @@ export const CommentInput = () => {
       username: user.username,
       avatar: user.avatar,
       comment: newComment,
-      createdAt: new Date().toISOString(),
+      createdAt: utcToKoreaTimes(),
     };
     addCommentMutation.mutate({
       productId: productId as string,

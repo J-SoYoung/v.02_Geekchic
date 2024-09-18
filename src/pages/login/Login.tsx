@@ -1,49 +1,44 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { get, ref, set } from 'firebase/database';
 import { useRecoilState } from 'recoil';
+import { useQuery } from '@tanstack/react-query';
+import { User } from 'firebase/auth';
 
 import { LoginButton } from '@/components/button/LoginButton';
 import { UserDataType } from '@/_typesBundle';
 import { loginLogo } from '@/_assets';
-import { signInWithGoogle, signOutFromGoogle, database } from '@/_apis';
+import { signInWithGoogle, signOutFromGoogle, getUserData } from '@/_apis';
 import { getEmptyUserData, userState } from '@/_recoil';
 
 export const Login = () => {
   const navigate = useNavigate();
-  const [userData, setUserData] = useRecoilState<UserDataType>(userState);
+  const [isTriggerQuery, setIsTriggerQuery] = useState(false);
+  const [googleUser, setGoogleUser] = useState<User | null>(null);
+  const [userData, setRecoilUserData] = useRecoilState<UserDataType>(userState);
   const [loginError, setLoginError] = useState(false);
+
+  const { data: user, isPending } = useQuery({
+    queryKey: ['user', googleUser?.uid],
+    queryFn: async () => {
+      if (googleUser) {
+        return await getUserData(googleUser);
+      }
+    },
+    enabled: isTriggerQuery && !!googleUser,
+  });
+
+  useEffect(() => {
+    if (user && !isPending) {
+      setRecoilUserData(user);
+      navigate('/used');
+    }
+  }, [user, isPending, setRecoilUserData]);
 
   const onClickLogin = async () => {
     try {
-      const user = await signInWithGoogle();
-      if (user) {
-        // ⭕ userApis로 옮기기
-        // firebase 유저검색 및 저장, recoil저장
-        const userRef = ref(database, `users/${user.uid}`);
-        const userSnapshot = await get(userRef);
-
-        if (userSnapshot.exists()) {
-          setUserData(userSnapshot.val());
-        } else {
-          const newUser: UserDataType = {
-            _id: user.uid,
-            username: user.displayName || '',
-            email: user.email || '',
-            avatar: user.photoURL || '',
-            serviceJoinDate: new Date().toISOString(),
-            phone: '',
-            address: '',
-            listCarts: 0,
-            listMessages: 0,
-            listPurchases: 0,
-            listSells: 0,
-          };
-          await set(userRef, newUser);
-          setUserData(newUser);
-        }
-      }
-      navigate('/used');
+      const googleLogin = await signInWithGoogle();
+      googleLogin && setGoogleUser(googleLogin);
+      setIsTriggerQuery(true);
     } catch (error) {
       console.error('Logout failed:', error);
       setLoginError(true);
@@ -54,7 +49,7 @@ export const Login = () => {
     if (confirm('정말 로그아웃 하시겠습니까?>')) {
       try {
         await signOutFromGoogle();
-        setUserData(getEmptyUserData());
+        setRecoilUserData(getEmptyUserData());
       } catch (error) {
         console.error('로그아웃 실패:', error);
       }

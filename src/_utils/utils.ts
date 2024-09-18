@@ -36,3 +36,13 @@ export const validateUsedComment = (comment: string) => {
     return true;
   }
 };
+
+export const utcToKoreaTimes = () => {
+  const currentDateUTC = new Date();
+  const koreaTime = new Date(currentDateUTC.getTime() + 9 * 60 * 60 * 1000);
+  const koreaFullTime = koreaTime.toISOString().split('T');
+
+  const [createdDate, timeWithMilliseconds] = koreaFullTime;
+  const createdTime = timeWithMilliseconds.split('.')[0]
+  return [ createdDate, createdTime ];
+};

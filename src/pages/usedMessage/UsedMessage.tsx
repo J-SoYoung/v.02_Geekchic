@@ -3,10 +3,11 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRecoilValue } from 'recoil';
 import { useLocation } from 'react-router-dom';
 
-import { Layout } from '@/components';
+import { ErrorPageReload, Layout, LoadingSpinner } from '@/components';
 import { userState } from '@/_recoil';
 import { sendMessages, getMessages } from '@/_apis';
 import { MessagesInfoType } from '@/_typesBundle';
+import { utcToKoreaTimes } from '@/_utils';
 
 export const UsedMessage = () => {
   const queryClient = useQueryClient();
@@ -65,7 +66,7 @@ export const UsedMessage = () => {
     const currentMessages: MessagesInfoType = {
       senderId: loginUser._id,
       content: newMessage,
-      timestamp: new Date().toISOString(),
+      timestamp: utcToKoreaTimes(),
     };
     sendMessagesMutation.mutate({
       currentMessages,
@@ -73,18 +74,12 @@ export const UsedMessage = () => {
     });
   };
 
-  // ⭕ 에러 컴포넌트, 로티이미지 추가 : 에러 페이지 데이터 새로고침 해주세요
   if (isError) {
     return (
-      <div className='border h-40 p-2 text-center'>
-        <p>데이터를 가져오는 동안 문제가 발생했습니다</p>
-        <button
-          className='cursor-pointer hover:font-bold'
-          onClick={() => window.location.reload()}
-        >
-          GeekChic 메세지 가져오기 새로고침
-        </button>
-      </div>
+      <ErrorPageReload
+        content='데이터를 가져오는 동안 문제가 발생했습니다'
+        pageName={'메세지'}
+      />
     );
   }
 
@@ -111,7 +106,7 @@ export const UsedMessage = () => {
         <section className='w-full flex flex-col'>
           <div>
             {isPending ? (
-              <p>로딩중 ⭕로딩 스켈레톤 적용</p>
+              <LoadingSpinner size='6'/>
             ) : (
               messages &&
               messages.map((message, idx) => {
@@ -127,7 +122,7 @@ export const UsedMessage = () => {
                   >
                     <div>{message.content}</div>
                     <div className='text-xs'>
-                      {message.timestamp.split('T')[0]}
+                      {message.timestamp[0]}
                     </div>
                   </div>
                 );

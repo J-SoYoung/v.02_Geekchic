@@ -2,9 +2,10 @@ import { useRecoilValue } from 'recoil';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 
-import { getMessageList, MessageResultType } from '@/_apis';
+import { getMessageList } from '@/_apis';
 import { userState } from '@/_recoil';
-import { Layout, SellerMark } from '@/components';
+import { ErrorPageReload, Layout, SellerMark } from '@/components';
+import { MessageResultType } from '@/_typesBundle';
 
 export const UsedMessageList = () => {
   const { listMessages } = useRecoilValue(userState);
@@ -20,22 +21,16 @@ export const UsedMessageList = () => {
     retryDelay: 1000,
   });
 
-  // ⭕에러 컴포넌트, 로티이미지
-  if (isError)
-    return (
-      <div className='border h-80 py-20 text-center'>
-        <div> 쪽지함 데이터를 가져오지 못했습니다. </div>
-        <button
-          className='cursor-pointer hover:font-bold'
-          onClick={() => window.location.reload()}
-        >
-          GeekChic 중고 쪽지함 데이터 새로고침
-        </button>
-        {/* <Link to={`/my/${_id}`} className='hover:font-bold'>
-          마이페이지로 돌아가기
-        </Link> */}
-      </div>
-    );
+    if (isError) {
+      return (
+        <ErrorPageReload
+          content='데이터를 가져오는 동안 문제가 발생했습니다'
+          pageName={'쪽지함 리스트'}
+        />
+      );
+    }
+
+
 
   return (
     <Layout title='내 쪽지함'>
@@ -106,7 +101,7 @@ export const UsedMessageList = () => {
                         </div>
                       </div>
                       <p className='text-s text-gray-400'>
-                        {message.createdAt.split('T')[0]}
+                        {message.createdAt[0]}
                       </p>
                     </div>
                   </Link>

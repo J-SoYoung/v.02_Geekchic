@@ -4,7 +4,7 @@ interface UserDataType {
   username: string;
   email: string;
   avatar: string;
-  serviceJoinDate: string;
+  serviceJoinDate: string[];
   phone: string;
   address: string;
   listCarts: number;

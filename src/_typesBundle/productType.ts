@@ -6,7 +6,7 @@ export type UsedProductSellerType = Omit<
 >;
 
 interface UsedProductType {
-  createdAt: string;
+  createdAt: string[];
   description: string;
   id: string;
   images: string[];
@@ -19,14 +19,13 @@ interface UsedProductType {
   seller: UsedProductSellerType;
   size: string;
 }
-//⭕판매목록의 id랑 제품 id랑 같아도 되는거 아닌가?
 interface SellsItemType {
   image: string;
   isSales: boolean;
   price: number;
   productName: string;
   quantity: number;
-  uploadDate: string;
+  uploadDate: string[];
   usedProductId: string; // 판매목록id === 제품id
   userId: string;
   sellsQuantity: number;
@@ -37,24 +36,24 @@ interface CommentType {
   username: string;
   avatar: string;
   comment: string;
-  createdAt: string;
+  createdAt: string[];
 }
 interface MessageType {
   messageId: string;
   productId: string;
   sellerId: string;
   buyerId: string;
-  createdAt: string;
+  createdAt: string[];
   messages?: MessagesInfoType[];
 }
 interface MessagesInfoType {
   senderId: string;
   content: string;
-  timestamp: string;
+  timestamp: string[];
 }
 interface MessageResultType {
   buyerId: string;
-  createdAt: string;
+  createdAt: string[];
   messageId: string;
   price: number;
   productId: string;
