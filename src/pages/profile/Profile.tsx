@@ -4,18 +4,18 @@ import { useNavigate } from 'react-router-dom';
 
 import { ContentsBox } from './index';
 
-import { Layout, BasicButton } from '@/components';
+import { Layout, BasicButton, LoadingSpinner } from '@/components';
 import { userState } from '@/_recoil';
 import { UserDataType } from '@/_typesBundle';
 import { uploadCloudImage, editUserProfileData } from '@/_apis';
 import { Icon_Pencile } from '@/_assets';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-// ⭕프로필 수정하면 중고제품 판매자 정보도 같이 업로드 되게하기.
 // ⭕프로필 수정시 -> 전화번호. 주소 유효성검사 check
-// ⭕프로필 enter이벤트는 언제 감지하는 게 좋을까? 아... 상위에서 감지하게 하는거.
-// ⭕프로필 업데이트도 mutaion으로 하기 -> 프로필 수정 로딩중 상태표시
 export const Profile = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
   const [user, setUser] = useRecoilState(userState);
   const [isEditing, setIsEditing] = useState(false);
   const [editUser, setEditUser] = useState<UserDataType>(user);
@@ -46,14 +46,32 @@ export const Profile = () => {
     setPreviewImage(user.avatar ?? '');
   };
 
+  const saveProfileMutation = useMutation({
+    mutationFn: async (updatedUser: UserDataType) => {
+      await editUserProfileData(updatedUser, setUser);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(
+        {
+          queryKey: ['user', user._id],
+          refetchType: 'active',
+          exact: true,
+        },
+        { throwOnError: true, cancelRefetch: true },
+      );
+    },
+    onSettled: () => {
+      setIsEditing(false);
+    },
+  });
+
   const onClickSaveProfile = async () => {
     let updatedUser: UserDataType = { ...editUser };
     if (imageFile) {
       const cloudImage = await uploadCloudImage(imageFile);
       updatedUser = { ...editUser, avatar: cloudImage };
     }
-    await editUserProfileData(updatedUser, setUser);
-    setIsEditing(false);
+    saveProfileMutation.mutate(updatedUser);
   };
 
   return (
@@ -63,7 +81,12 @@ export const Profile = () => {
         navigate(-1);
       }}
     >
-      <div className='p-8'>
+      <div className='p-8 relative'>
+        {saveProfileMutation.isPending && (
+          <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
+            <LoadingSpinner size='8' />
+          </div>
+        )}
         <div>
           <div className='w-24 h-24 bg-gray-200 rounded-full mx-auto mb-10 relative border'>
             <img
