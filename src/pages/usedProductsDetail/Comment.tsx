@@ -125,7 +125,7 @@ export const Comment = ({ comment, productId }: CommentProps) => {
               ))}
           </div>
           <div className='text-sm text-gray-500'>
-            {comment.createdAt.split('T')[0]}
+            {comment.createdAt[0]}
           </div>
         </div>
 

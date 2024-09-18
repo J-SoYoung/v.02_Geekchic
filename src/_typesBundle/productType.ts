@@ -19,14 +19,13 @@ interface UsedProductType {
   seller: UsedProductSellerType;
   size: string;
 }
-//⭕판매목록의 id랑 제품 id랑 같아도 되는거 아닌가?
 interface SellsItemType {
   image: string;
   isSales: boolean;
   price: number;
   productName: string;
   quantity: number;
-  uploadDate: string;
+  uploadDate: string[];
   usedProductId: string; // 판매목록id === 제품id
   userId: string;
   sellsQuantity: number;
