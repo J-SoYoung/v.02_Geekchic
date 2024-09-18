@@ -77,7 +77,7 @@ export const getUsedProducts = async (): Promise<UsedProductType[]> => {
       const data = Object.values(snapshot.val()) as UsedProductType[];
       const sortedData = data.sort(
         (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+          new Date(b.createdAt.join(' ')).getTime() - new Date(a.createdAt.join(' ')).getTime(),
       );
       return sortedData;
     }
@@ -107,7 +107,7 @@ export const getMyPageInfo = async (userId: string) => {
       const data = Object.values(snapshot.val()) as SellsItemType[];
       const sortedData = data.sort(
         (a, b) =>
-          new Date(b.uploadDate).getTime() - new Date(a.uploadDate).getTime(),
+          new Date(b.uploadDate.join(' ')).getTime() - new Date(a.uploadDate.join(' ')).getTime(),
       );
       return sortedData;
     }
@@ -141,7 +141,7 @@ export const getUsedComment = async (productId: string) => {
       const data = Object.values(commentsSnapshot.val()) as CommentType[];
       const sortedData = data.sort(
         (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+          new Date(b.createdAt.join(' ')).getTime() - new Date(a.createdAt.join(' ')).getTime(),
       );
       return sortedData;
     }
@@ -323,7 +323,7 @@ export const getMessages = async (messageId: string) => {
       const data = Object.values(messagesSnapshot.val()) as MessagesInfoType[];
       const sortedData = data.sort(
         (a, b) =>
-          new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
+          new Date(b.timestamp.join(' ')).getTime() - new Date(a.timestamp.join(' ')).getTime(),
       );
       return sortedData;
     }

@@ -141,7 +141,7 @@ export const UsedProductsDetail = () => {
         <section className=' border-b'>
           <div className='text-xl font-bold'>{usedProduct.productName}</div>
           <div className='text-sm text-gray-500'>
-            {usedProduct.createdAt.split('T')[0]}
+            {usedProduct.createdAt[0]}
           </div>
           <div className='text-xl font-bold mt-2'>
             {usedProduct.price.toLocaleString()}원

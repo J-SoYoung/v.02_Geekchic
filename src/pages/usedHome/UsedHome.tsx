@@ -10,7 +10,6 @@ import { userState } from '@/_recoil';
 import { getUsedProducts } from '@/_apis';
 import { UsedProductType } from '@/_typesBundle';
 import { validateUserData } from '@/_utils';
-import { utcToKoreaTimes } from '@/_utils/utils';
 
 export const UsedHome = () => {
   const navigate = useNavigate();
@@ -56,7 +55,6 @@ export const UsedHome = () => {
     );
   }
 
-  console.log( utcToKoreaTimes() )
 
   return (
     <main className='p-11 pb-4 text-right'>

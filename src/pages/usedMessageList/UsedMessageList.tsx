@@ -101,7 +101,7 @@ export const UsedMessageList = () => {
                         </div>
                       </div>
                       <p className='text-s text-gray-400'>
-                        {message.createdAt.split('T')[0]}
+                        {message.createdAt[0]}
                       </p>
                     </div>
                   </Link>
