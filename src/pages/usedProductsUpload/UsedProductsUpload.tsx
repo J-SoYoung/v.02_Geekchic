@@ -17,6 +17,7 @@ import { UsedProductType } from '@/_typesBundle';
 import { userState } from '@/_recoil';
 import { initlUsedProduct } from '@/_example';
 import { utcToKoreaTimes, validateProductData } from '@/_utils';
+import { FormRadio } from './FormRadio';
 
 export const UsedProductsUpload = () => {
   const navigate = useNavigate();
@@ -34,13 +35,8 @@ export const UsedProductsUpload = () => {
     >,
   ) => {
     if (e.target) {
-      const { name, value, type } = e.target;
-      if (type === 'radio' && name === 'deliveryCharge') {
-        const booleanValue = value === 'true';
-        setUsedProducts({ ...usedProducts, [name]: booleanValue });
-      } else {
-        setUsedProducts({ ...usedProducts, [name]: value });
-      }
+      const { name, value } = e.target;
+      setUsedProducts({ ...usedProducts, [name]: value });
     }
   };
 
@@ -90,7 +86,7 @@ export const UsedProductsUpload = () => {
     } = user;
 
     const id = uuidv4();
-    const createdAt = utcToKoreaTimes()
+    const createdAt = utcToKoreaTimes();
     const seller = { ...filteredUserData };
 
     let newUsedProducts: UsedProductType = {
@@ -132,7 +128,7 @@ export const UsedProductsUpload = () => {
   return (
     <>
       {isLoading && (
-        <div className='m-auto'>
+        <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
           <div className='flex flex-col justify-center'>
             <span className='mb-6 text-3xl text-[#8F5BBD] font-bold'>
               Loading
@@ -196,59 +192,29 @@ export const UsedProductsUpload = () => {
             <label className='block text-sm font-medium text-gray-700 mb-2'>
               배송비
             </label>
-            <div className='flex space-x-4'>
-              <label className='flex items-center'>
-                <input
-                  type='radio'
-                  name='deliveryCharge'
-                  value='true'
-                  onChange={onChangeInput}
-                  className='form-radio'
-                  checked={usedProducts.deliveryCharge === true}
-                />
-                <span className='ml-2'>배송비 포함</span>
-              </label>
-              <label className='flex items-center'>
-                <input
-                  type='radio'
-                  name='deliveryCharge'
-                  value='false'
-                  onChange={onChangeInput}
-                  className='form-radio'
-                  checked={usedProducts.deliveryCharge === false}
-                />
-                <span className='ml-2'>배송비 비포함</span>
-              </label>
-            </div>
+            <FormRadio
+              name='deliveryCharge'
+              options={[
+                { label: '배송비 포함', value: 'include' },
+                { label: '배송비 비포함', value: 'notInclude' },
+              ]}
+              selectedValue={usedProducts.deliveryCharge}
+              onChange={onChangeInput}
+            />
           </div>
           <div className='mb-8'>
             <label className='block text-sm font-medium text-gray-700 mb-2'>
               물품 상태
             </label>
-            <div className='flex space-x-4'>
-              <label className='flex items-center'>
-                <input
-                  type='radio'
-                  name='conditions'
-                  value='new'
-                  onChange={onChangeInput}
-                  className='form-radio'
-                  checked={usedProducts.conditions === 'new'}
-                />
-                <span className='ml-2'>새상품</span>
-              </label>
-              <label className='flex items-center'>
-                <input
-                  type='radio'
-                  name='conditions'
-                  value='used'
-                  onChange={onChangeInput}
-                  className='form-radio'
-                  checked={usedProducts.conditions === 'used'}
-                />
-                <span className='ml-2'>중고상품</span>
-              </label>
-            </div>
+            <FormRadio
+              name='conditions'
+              options={[
+                { label: '새상품', value: 'new' },
+                { label: '중고상품', value: 'used' },
+              ]}
+              selectedValue={usedProducts.conditions}
+              onChange={onChangeInput}
+            />
           </div>
           <FormInput
             label='설명'
