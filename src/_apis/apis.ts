@@ -77,7 +77,8 @@ export const getUsedProducts = async (): Promise<UsedProductType[]> => {
       const data = Object.values(snapshot.val()) as UsedProductType[];
       const sortedData = data.sort(
         (a, b) =>
-          new Date(b.createdAt.join(' ')).getTime() - new Date(a.createdAt.join(' ')).getTime(),
+          new Date(b.createdAt.join(' ')).getTime() -
+          new Date(a.createdAt.join(' ')).getTime(),
       );
       return sortedData;
     }
@@ -98,6 +99,29 @@ export const getUsedProductDetail = async (productId: string) => {
   }
 };
 
+export const editUsedProducts = async (editUsedProducts: UsedProductType) => {
+  try {
+    const { productName, price, quantity } = editUsedProducts;
+    const productsSnapshot = await get(
+      ref(
+        database,
+        `userSellList/${editUsedProducts.seller._id}/${editUsedProducts.id}`,
+      ),
+    );
+    if (productsSnapshot.exists()) {
+      const userSellListInfo = productsSnapshot.val();
+      const updates = {
+        [`usedProducts/${editUsedProducts.id}`]: editUsedProducts,
+        [`userSellList/${editUsedProducts.seller._id}/${editUsedProducts.id}`]:
+          { ...userSellListInfo, productName, price, quantity },
+      };
+      await update(ref(database), updates);
+    }
+  } catch (error) {
+    console.error('중고제품 업로드 에러', error);
+  }
+};
+
 // ⭕API getAPI 공용 사용하게 추상화하기
 // ⭕API 마이페이지 연결된 4개 데이터로드 공용으로 사용 가능할듯.
 export const getMyPageInfo = async (userId: string) => {
@@ -107,7 +131,8 @@ export const getMyPageInfo = async (userId: string) => {
       const data = Object.values(snapshot.val()) as SellsItemType[];
       const sortedData = data.sort(
         (a, b) =>
-          new Date(b.uploadDate.join(' ')).getTime() - new Date(a.uploadDate.join(' ')).getTime(),
+          new Date(b.uploadDate.join(' ')).getTime() -
+          new Date(a.uploadDate.join(' ')).getTime(),
       );
       return sortedData;
     }
@@ -132,6 +157,7 @@ export interface EditUsedCommentProps {
   commentId: string;
   editCommentData: CommentType;
 }
+
 export const getUsedComment = async (productId: string) => {
   try {
     const commentsSnapshot = await get(
@@ -139,9 +165,11 @@ export const getUsedComment = async (productId: string) => {
     );
     if (commentsSnapshot.exists()) {
       const data = Object.values(commentsSnapshot.val()) as CommentType[];
+      console.log(data);
       const sortedData = data.sort(
         (a, b) =>
-          new Date(b.createdAt.join(' ')).getTime() - new Date(a.createdAt.join(' ')).getTime(),
+          new Date(b.createdAt.join(' ')).getTime() -
+          new Date(a.createdAt.join(' ')).getTime(),
       );
       return sortedData;
     }
@@ -323,7 +351,8 @@ export const getMessages = async (messageId: string) => {
       const data = Object.values(messagesSnapshot.val()) as MessagesInfoType[];
       const sortedData = data.sort(
         (a, b) =>
-          new Date(b.timestamp.join(' ')).getTime() - new Date(a.timestamp.join(' ')).getTime(),
+          new Date(b.timestamp.join(' ')).getTime() -
+          new Date(a.timestamp.join(' ')).getTime(),
       );
       return sortedData;
     }
