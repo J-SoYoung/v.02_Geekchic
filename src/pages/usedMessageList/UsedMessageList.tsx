@@ -45,7 +45,7 @@ export const UsedMessageList = () => {
             {messagesList.length === 0 ? (
               <div>
                 <p>쪽지가 없습니다</p>
-                <Link to={'/usedHome'}>중고 제품을 둘러보세요</Link>
+                <Link to={'/used'}>중고 제품을 둘러보세요</Link>
               </div>
             ) : (
               messagesList.map((message) => {
