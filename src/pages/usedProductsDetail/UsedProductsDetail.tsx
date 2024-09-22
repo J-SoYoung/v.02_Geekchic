@@ -6,7 +6,11 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { CommentInput, CommentsList, Skeleton } from './index';
 
-import { ErrorPageReload, LoadingSpinner, UserProfileInfoComp } from '@/components';
+import {
+  ErrorPageReload,
+  LoadingSpinner,
+  UserProfileInfoComp,
+} from '@/components';
 import { Icon_Chevron_left } from '@/_assets';
 import { addMessagesPage, checkMessage, getUsedProductDetail } from '@/_apis';
 import { userState } from '@/_recoil';
@@ -25,7 +29,9 @@ export const UsedProductsDetail = () => {
     queryKey: ['usedProductDetail', productId],
     queryFn: () => getUsedProductDetail(productId as string),
   });
-  const buyer = isLoginUser?._id !== usedProduct?.seller._id;
+
+  const seller = isLoginUser?._id === usedProduct?.seller._id;
+
   const [previousMessage, setPreviousMessage] = useState<MessageType | null>(
     null,
   );
@@ -74,6 +80,7 @@ export const UsedProductsDetail = () => {
       },
     );
   };
+  
   if (isPending) {
     return <Skeleton />;
   }
@@ -126,18 +133,20 @@ export const UsedProductsDetail = () => {
           username={usedProduct.seller.username}
           address={usedProduct.seller.address}
         />
-        {buyer &&
-          (!isLoadingMessage ? (
-            <button onClick={onClickAddMessage} className='p-2 border'>
-              {previousMessage !== null ? '쪽지 이어하기' : '쪽지보내기'}
-            </button>
-          ) : (
-            <LoadingSpinner size='4' />
-          ))}
+
+        {seller ? (
+          <button onClick={()=>navigate(`/used/edit/${productId}`)}>수정하기</button>
+        ) : !isLoadingMessage ? (
+          <button onClick={onClickAddMessage} className='p-2 border'>
+            {previousMessage === null ? '쪽지보내기' : '쪽지 이어하기'}
+          </button>
+        ) : (
+          <LoadingSpinner size='4' />
+        )}
       </section>
 
+      {/* used products item */}
       <article className='p-8 pb-24'>
-        {/* used products item */}
         <section className=' border-b'>
           <div className='text-xl font-bold'>{usedProduct.productName}</div>
           <div className='text-sm text-gray-500'>
@@ -148,7 +157,7 @@ export const UsedProductsDetail = () => {
           </div>
           <div className='flex space-x-2 mt-2'>
             <span className='px-2 py-1 bg-gray-200 rounded-full text-s'>
-              {usedProduct.deliveryCharge ? '배송비 포함' : '배송비 비포함'}
+              {usedProduct.deliveryCharge ==='include' ? '배송비 포함' : '배송비 비포함'}
             </span>
             <span className='px-2 py-1 bg-gray-200 rounded-full text-s'>
               {usedProduct.conditions === 'new' ? '새상품' : '중고상품'}

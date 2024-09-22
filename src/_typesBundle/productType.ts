@@ -12,7 +12,7 @@ interface UsedProductType {
   images: string[];
   isSales: boolean;
   productName: string;
-  deliveryCharge: boolean; // false배송비 비포함, true배송비 포함
+  deliveryCharge: string; // false배송비 비포함, true배송비 포함
   conditions: 'new' | 'used'; // new새상품, used중고상품
   price: number;
   quantity: number;

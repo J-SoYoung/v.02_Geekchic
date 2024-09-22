@@ -24,6 +24,7 @@ import {
   UsedMessage,
   UsedMessageList,
   UsedProductsDetail,
+  UsedProductsEdit,
   UsedProductsUpload,
   WishList,
 } from './pages';
@@ -44,6 +45,7 @@ const router = createBrowserRouter([
       { path: '/payments/:orderId', element: <Payments /> },
       { path: '/used', element: <UsedHome /> },
       { path: '/used/new', element: <UsedProductsUpload /> },
+      { path: '/used/edit/:productId', element: <UsedProductsEdit /> },
       { path: '/used/detail/:productId', element: <UsedProductsDetail /> },
       { path: '/message/send/:messageId', element: <UsedMessage /> },
       { path: '/my/:userId', element: <Mypage /> },

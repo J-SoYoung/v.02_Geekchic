@@ -1,6 +1,5 @@
 import { Link, useRouteError } from 'react-router-dom';
 
-// ⭕로티이미지 에러 
 export default function ErrorPage() {
   const error: unknown = useRouteError();
   console.error(error);

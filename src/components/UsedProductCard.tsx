@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { SellerMark } from './SellerMark';
 
 interface UsedProductCardProps {
   id: string;
@@ -12,7 +13,7 @@ interface UsedProductCardProps {
   sellsQuantity?: number; // 판매 수량 (판매목록에서 사용)
 }
 
-// ⭕컴포넌트 나누기 : object-cover 이미지 검색되는 것 avatar, user, 정보 
+// ⭕컴포넌트 나누기 : object-cover 이미지 검색되는 것 avatar, user, 정보
 export const UsedProductCard = ({
   id,
   name,
@@ -22,12 +23,13 @@ export const UsedProductCard = ({
   isSoldOut,
   showSellerInfo = false,
   sellsQuantity,
+  sellerId,
 }: UsedProductCardProps) => {
   return (
     <section>
       <Link
         to={`/used/detail/${id}`}
-        className={`rounded-lg cursor-pointer relative ${isSoldOut && 'opacity-50'}`}
+        className={`relative rounded-lg cursor-pointer ${isSoldOut && 'opacity-50'} `}
       >
         {image ? (
           <img
@@ -41,7 +43,8 @@ export const UsedProductCard = ({
             className='w-full h-48 object-cover rounded-md mb-2 border'
           />
         )}
-        <div className='px-2'>
+        <div className='px-2 relative'>
+          {sellerId && <SellerMark sellerId={sellerId} />}
           <div className='flex'>
             <h2 className='text-lg font-bold mr-1'>{name}</h2>
           </div>
