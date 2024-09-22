@@ -16,6 +16,7 @@ import UsedMessage from './usedMessage';
 import UsedMessageList from './usedMessageList';
 import UsedProductsDetail from './usedProductsDetail';
 import UsedProductsUpload from './usedProductsUpload';
+import UsedProductsEdit from './usedProductsEdit';
 import WishList from './wishList';
 
 export {
@@ -37,5 +38,6 @@ export {
   UsedMessageList,
   UsedProductsDetail,
   UsedProductsUpload,
+  UsedProductsEdit,
   WishList,
 };

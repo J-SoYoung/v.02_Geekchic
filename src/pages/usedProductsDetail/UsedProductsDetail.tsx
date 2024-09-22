@@ -29,7 +29,7 @@ export const UsedProductsDetail = () => {
     queryKey: ['usedProductDetail', productId],
     queryFn: () => getUsedProductDetail(productId as string),
   });
-  const buyer = isLoginUser?._id !== usedProduct?.seller._id;
+
   const seller = isLoginUser?._id === usedProduct?.seller._id;
 
   const [previousMessage, setPreviousMessage] = useState<MessageType | null>(
@@ -80,10 +80,7 @@ export const UsedProductsDetail = () => {
       },
     );
   };
-
-  const onClickEditUsedProducts = () =>{
-    navigate(`/used/edit/${productId}`)
-  }
+  
   if (isPending) {
     return <Skeleton />;
   }
@@ -138,7 +135,7 @@ export const UsedProductsDetail = () => {
         />
 
         {seller ? (
-          <button onClick={onClickEditUsedProducts}>수정하기</button>
+          <button onClick={()=>navigate(`/used/edit/${productId}`)}>수정하기</button>
         ) : !isLoadingMessage ? (
           <button onClick={onClickAddMessage} className='p-2 border'>
             {previousMessage === null ? '쪽지보내기' : '쪽지 이어하기'}
@@ -160,7 +157,7 @@ export const UsedProductsDetail = () => {
           </div>
           <div className='flex space-x-2 mt-2'>
             <span className='px-2 py-1 bg-gray-200 rounded-full text-s'>
-              {usedProduct.deliveryCharge ? '배송비 포함' : '배송비 비포함'}
+              {usedProduct.deliveryCharge ==='include' ? '배송비 포함' : '배송비 비포함'}
             </span>
             <span className='px-2 py-1 bg-gray-200 rounded-full text-s'>
               {usedProduct.conditions === 'new' ? '새상품' : '중고상품'}
