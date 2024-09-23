@@ -11,6 +11,14 @@ interface UsedProductCardProps {
   showSellerInfo?: boolean; // 판매목록에서는 판매량 정보 보여주기
   sellerId?: string;
   sellsQuantity?: number; // 판매 수량 (판매목록에서 사용)
+  buyerInfo?: {
+    // 구매자정보
+    address: string;
+    buyerId: string;
+    phone: string;
+    email: string;
+    username: string;
+  }[];
 }
 
 // ⭕컴포넌트 나누기 : object-cover 이미지 검색되는 것 avatar, user, 정보
@@ -24,6 +32,7 @@ export const UsedProductCard = ({
   showSellerInfo = false,
   sellsQuantity,
   sellerId,
+  buyerInfo,
 }: UsedProductCardProps) => {
   return (
     <section>
@@ -63,6 +72,10 @@ export const UsedProductCard = ({
           </div>
         </div>
       </Link>
+      <div className='border'>
+        <p>구매자 정보</p>
+        <ul>{buyerInfo?.map((buyer) => <li>{buyer.username}</li>)}</ul>
+      </div>
     </section>
   );
 };
