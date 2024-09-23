@@ -407,7 +407,11 @@ export interface SalesInfoProps {
   price: number;
   createdAt: string[];
 }
-export const salesProducts = async (salesInfo: SalesInfoProps) => {
+export const salesProducts = async (
+  salesInfo: SalesInfoProps,
+  setLoginUser: SetterOrUpdater<UserDataType>,
+  loginUser: UserDataType,
+) => {
   const {
     buyerId,
     sellerId,
@@ -476,12 +480,15 @@ export const salesProducts = async (salesInfo: SalesInfoProps) => {
       const updates = {
         [`usedProducts/${productId}/quantity`]: currentUsedProductQuantity, // 제품 재고 수량 업데이트
         [`usedPurchaseList/${buyerId}/${purchaseId}`]: buyerPurchaseInfo, // 구매자 구매 리스트 생성
-        [`userSellList/${sellerId}/${productId}/quantity`]: currentUsedProductQuantity, // 판매자 제품 재고수량
-        [`userSellList/${sellerId}/${productId}/sellsQuantity`]:updatedSellQuantity,// 판매자 판매수량
+        [`userSellList/${sellerId}/${productId}/quantity`]:
+          currentUsedProductQuantity, // 판매자 제품 재고수량
+        [`userSellList/${sellerId}/${productId}/sellsQuantity`]:
+          updatedSellQuantity, // 판매자 판매수량
         [`userSellList/${sellerId}/${productId}/buyerInfo`]: updatedBuyerInfo, //판매자 제품에 구매자 정보 추가
         [`users/${buyerId}/listPurchases`]: updatedListPurchases, // 구매자의 구매목록 갯수 추가
       };
       await update(ref(database), updates);
+      setLoginUser({ ...loginUser, listPurchases: updatedListPurchases });
     }
     alert('판매완료');
   } catch (error) {
