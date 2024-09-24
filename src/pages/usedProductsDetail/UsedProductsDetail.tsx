@@ -20,7 +20,7 @@ import { utcToKoreaTimes } from '@/_utils';
 export const UsedProductsDetail = () => {
   const { productId } = useParams<{ productId: string }>();
   const navigate = useNavigate();
-  const [loginUser, setLoginUser] = useRecoilState(userState)
+  const [loginUser, setLoginUser] = useRecoilState(userState);
 
   const {
     data: usedProduct,
@@ -50,7 +50,7 @@ export const UsedProductsDetail = () => {
     checkPreviousMessage();
   }, []);
 
-  const onClickAddMessage = async () => {
+  const onClickAddMessagePage = async () => {
     const messageId = uuidv4();
     if (previousMessage === null) {
       const messageData = {
@@ -59,6 +59,7 @@ export const UsedProductsDetail = () => {
         sellerId: usedProduct.seller._id,
         buyerId: loginUser._id,
         createdAt: utcToKoreaTimes(),
+        salesStatus: 'initialized',
       };
       await addMessagesPage(messageData, loginUser, setLoginUser);
     }
@@ -81,7 +82,7 @@ export const UsedProductsDetail = () => {
       },
     );
   };
-  
+
   if (isPending) {
     return <Skeleton />;
   }
@@ -136,9 +137,11 @@ export const UsedProductsDetail = () => {
         />
 
         {seller ? (
-          <button onClick={()=>navigate(`/used/edit/${productId}`)}>수정하기</button>
+          <button onClick={() => navigate(`/used/edit/${productId}`)}>
+            수정하기
+          </button>
         ) : !isLoadingMessage ? (
-          <button onClick={onClickAddMessage} className='p-2 border'>
+          <button onClick={onClickAddMessagePage} className='p-2 border'>
             {previousMessage === null ? '쪽지보내기' : '쪽지 이어하기'}
           </button>
         ) : (
@@ -158,7 +161,9 @@ export const UsedProductsDetail = () => {
           </div>
           <div className='flex space-x-2 mt-2'>
             <span className='px-2 py-1 bg-gray-200 rounded-full text-s'>
-              {usedProduct.deliveryCharge ==='include' ? '배송비 포함' : '배송비 비포함'}
+              {usedProduct.deliveryCharge === 'include'
+                ? '배송비 포함'
+                : '배송비 비포함'}
             </span>
             <span className='px-2 py-1 bg-gray-200 rounded-full text-s'>
               {usedProduct.conditions === 'new' ? '새상품' : '중고상품'}

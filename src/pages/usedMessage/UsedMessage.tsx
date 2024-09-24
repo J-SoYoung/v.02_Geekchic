@@ -15,6 +15,7 @@ import {
   getMessages,
   salesProducts,
   SalesInfoProps,
+  getUsedMessageInfo,
 } from '@/_apis';
 import { MessagesInfoType } from '@/_typesBundle';
 import { utcToKoreaTimes } from '@/_utils';
@@ -38,6 +39,14 @@ export const UsedMessage = () => {
 
   const [newMessage, setNewMessage] = useState('');
   const [productsQuantity, setProductsQuantity] = useState<number>(1);
+
+  const { data: messageInfo } = useQuery({
+    queryKey: ['usedMessageInfo', messageId],
+    queryFn: async () => await getUsedMessageInfo(messageId),
+  });
+  const isSalesCompleted = messageInfo?.salesStatus === 'completed';
+
+
   const {
     data: messages,
     isPending,
@@ -85,7 +94,7 @@ export const UsedMessage = () => {
     });
   };
 
-  const onClickProductsSale = () => {
+  const onClickSalesProducts = () => {
     const salesInfo: SalesInfoProps = {
       buyerId,
       sellerId,
@@ -129,7 +138,7 @@ export const UsedMessage = () => {
               </div>
             </div>
           </div>
-          {loginUser._id === sellerId && (
+          {(loginUser._id === sellerId) && (!isSalesCompleted) && (
             <div>
               <input
                 className='w-10 border text-center'
@@ -139,7 +148,7 @@ export const UsedMessage = () => {
                 min={1}
                 max={quantity}
               />
-              <button className='p-2' onClick={onClickProductsSale}>
+              <button className='p-2' onClick={onClickSalesProducts}>
                 판매하기
               </button>
             </div>
@@ -177,6 +186,12 @@ export const UsedMessage = () => {
               })
             )}
           </div>
+          {isSalesCompleted && (
+              <div className="py-8">
+                -------------------------- 판매 완료 되었습니다
+                --------------------------
+              </div>
+            )}
         </section>
 
         {/* 대화 입력창 */}
@@ -187,15 +202,14 @@ export const UsedMessage = () => {
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
               placeholder='메시지를 입력하세요'
-              // disabled={isSalesCompleted}
+              disabled={isSalesCompleted}
             />
             <button
-              className='text-white px-4 py-2 rounded bg-[#8F5BBD]'
               onClick={onClickSendMessage}
-              // className={`text-white px-4 py-2 rounded ${
-              //   isSalesCompleted ? 'bg-gray-400' : 'bg-[#8F5BBD]'
-              // }`}
-              // disabled={isSalesCompleted}
+              className={`text-white px-4 py-2 rounded ${
+                isSalesCompleted ? 'bg-gray-400' : 'bg-[#8F5BBD]'
+              }`}
+              disabled={isSalesCompleted}
             >
               전송
             </button>
