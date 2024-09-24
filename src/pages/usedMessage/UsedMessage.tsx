@@ -1,17 +1,27 @@
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { useLocation } from 'react-router-dom';
 
-import { ErrorPageReload, Layout, LoadingSpinner } from '@/components';
+import {
+  ErrorPageReload,
+  Layout,
+  LoadingSpinner,
+  UserProfileInfoComp,
+} from '@/components';
 import { userState } from '@/_recoil';
-import { sendMessages, getMessages } from '@/_apis';
+import {
+  sendMessages,
+  getMessages,
+  salesProducts,
+  SalesInfoProps,
+} from '@/_apis';
 import { MessagesInfoType } from '@/_typesBundle';
 import { utcToKoreaTimes } from '@/_utils';
 
 export const UsedMessage = () => {
   const queryClient = useQueryClient();
-  const loginUser = useRecoilValue(userState);
+  const [loginUser, setLoginUser] = useRecoilState(userState);
   const location = useLocation();
   const {
     buyerId,
@@ -27,6 +37,7 @@ export const UsedMessage = () => {
   } = location.state || {};
 
   const [newMessage, setNewMessage] = useState('');
+  const [productsQuantity, setProductsQuantity] = useState<number>(1);
   const {
     data: messages,
     isPending,
@@ -74,6 +85,22 @@ export const UsedMessage = () => {
     });
   };
 
+  const onClickProductsSale = () => {
+    const salesInfo: SalesInfoProps = {
+      buyerId,
+      sellerId,
+      sellerName,
+      productsQuantity,
+      quantity,
+      productId,
+      productImage,
+      productName,
+      price,
+      createdAt: utcToKoreaTimes(),
+    };
+    salesProducts(salesInfo, setLoginUser, loginUser);
+  };
+
   if (isError) {
     return (
       <ErrorPageReload
@@ -87,26 +114,43 @@ export const UsedMessage = () => {
     <Layout title={'쪽지 보내기'}>
       <div className='p-8 min-h-screen flex flex-col bg-gray-100'>
         {/* 판매자정보 */}
-        <section className='border p-4 mb-8 flex bg-white'>
-          <img
-            src={productImage}
-            alt='Product'
-            className='w-20 h-20 mr-4 rounded-md object-cover'
-          />
-          <div className='text-left'>
-            <div className='text-lg font-bold'>판매자 : {sellerName}</div>
-            <div className='text-gray-500'>{productName}</div>
-            <div className='text-lg font-semibold text-[#8F5BBD]'>
-              {price.toLocaleString()}원
+        <section className='border p-4 mb-8 flex justify-between items-center bg-white'>
+          <div className='flex'>
+            <img
+              src={productImage}
+              alt='Product'
+              className='w-20 h-20 mr-4 rounded-md object-cover'
+            />
+            <div className='text-left'>
+              <div className='text-lg font-bold'>판매자 : {sellerName}</div>
+              <div className='text-gray-500'>{productName}</div>
+              <div className='text-lg font-semibold text-[#8F5BBD]'>
+                {price.toLocaleString()}원
+              </div>
             </div>
           </div>
+          {loginUser._id === sellerId && (
+            <div>
+              <input
+                className='w-10 border text-center'
+                type='number'
+                value={productsQuantity}
+                onChange={(e) => setProductsQuantity(Number(e.target.value))}
+                min={1}
+                max={quantity}
+              />
+              <button className='p-2' onClick={onClickProductsSale}>
+                판매하기
+              </button>
+            </div>
+          )}
         </section>
 
         {/* messages */}
         <section className='w-full flex flex-col'>
           <div>
             {isPending ? (
-              <LoadingSpinner size='6'/>
+              <LoadingSpinner size='6' />
             ) : (
               messages &&
               messages.map((message, idx) => {
@@ -120,10 +164,14 @@ export const UsedMessage = () => {
                         : 'mr-auto bg-gray-200 text-left'
                     }`}
                   >
-                    <div>{message.content}</div>
-                    <div className='text-xs'>
-                      {message.timestamp[0]}
+                    <div>
+                      <UserProfileInfoComp
+                        avatar={message.avatar}
+                        username={message.username}
+                      />
+                      <p>{message.content}</p>
                     </div>
+                    <div className='text-xs'>{message.timestamp[0]}</div>
                   </div>
                 );
               })

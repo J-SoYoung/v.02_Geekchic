@@ -29,6 +29,13 @@ interface SellsItemType {
   usedProductId: string; // 판매목록id === 제품id
   userId: string;
   sellsQuantity: number;
+  buyerInfo?: { // 구매자정보
+    address: string;
+    buyerId: string;
+    phone: string;
+    email: string;
+    username: string;
+  }[];
 }
 interface CommentType {
   commentId?: string;

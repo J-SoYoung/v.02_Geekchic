@@ -1,5 +1,6 @@
 import { get, push, ref, remove, set, update } from 'firebase/database';
 import { database } from './firebase';
+import { v4 as uuidv4 } from 'uuid';
 import {
   CommentType,
   MessageResultType,
@@ -140,8 +141,8 @@ export const getMyPageInfo = async (userId: string) => {
       const data = Object.values(snapshot.val()) as SellsItemType[];
       const sortedData = data.sort(
         (a, b) =>
-          new Date(b.uploadDate.join(' ')).getTime() -
-          new Date(a.uploadDate.join(' ')).getTime(),
+          new Date(b.uploadDate.join('')).getTime() -
+          new Date(a.uploadDate.join('')).getTime(),
       );
       return sortedData;
     }
@@ -365,11 +366,25 @@ export const getMessages = async (messageId: string) => {
       ref(database, `usedMessages/${messageId}/messages`),
     );
     if (messagesSnapshot.exists()) {
-      const data = Object.values(messagesSnapshot.val()) as MessagesInfoType[];
-      const sortedData = data.sort(
+      const messageData = Object.values(
+        messagesSnapshot.val(),
+      ) as MessagesInfoType[];
+
+      const messagesWithUserInfo = await Promise.all(
+        messageData.map(async (message) => {
+          const userSnapshot = await get(
+            ref(database, `users/${message.senderId}`),
+          );
+          const userInfo = userSnapshot.val();
+          const { _id, avatar, username } = userInfo;
+          return { ...message, _id, avatar, username };
+        }),
+      );
+
+      const sortedData = messagesWithUserInfo.sort(
         (a, b) =>
-          new Date(b.timestamp.join(' ')).getTime() -
-          new Date(a.timestamp.join(' ')).getTime(),
+          new Date(a.timestamp.join(' ')).getTime() -
+          new Date(b.timestamp.join(' ')).getTime(),
       );
       return sortedData;
     }
@@ -377,5 +392,106 @@ export const getMessages = async (messageId: string) => {
   } catch (error) {
     console.error('메세지 불러오기 에러', error);
     return [];
+  }
+};
+
+export interface SalesInfoProps {
+  buyerId: string;
+  sellerId: string;
+  sellerName: string;
+  productsQuantity: number;
+  quantity: number;
+  productId: string;
+  productImage: string;
+  productName: string;
+  price: number;
+  createdAt: string[];
+}
+export const salesProducts = async (
+  salesInfo: SalesInfoProps,
+  setLoginUser: SetterOrUpdater<UserDataType>,
+  loginUser: UserDataType,
+) => {
+  const {
+    buyerId,
+    sellerId,
+    sellerName,
+    productsQuantity, // 현재 판매 수량
+    quantity, // 재고 수량
+    productId,
+    productImage,
+    productName,
+    price,
+    createdAt,
+  } = salesInfo;
+  const purchaseId = uuidv4();
+
+  try {
+    // 제품 수량 업데이트, 구매수량 업데이트
+    const currentUsedProductQuantity = quantity - productsQuantity;
+
+    const usedProductSnapshot = await get(
+      ref(database, `userSellList/${sellerId}/${productId}/sellsQuantity`),
+    );
+    let existingSellQuantity;
+    if (usedProductSnapshot.exists()) {
+      existingSellQuantity = usedProductSnapshot.val();
+    }
+
+    const updatedSellQuantity = existingSellQuantity + productsQuantity;
+
+    const buyerSnapshot = await get(ref(database, `users/${buyerId}`));
+    if (buyerSnapshot.exists()) {
+      const buyer = buyerSnapshot.val();
+
+      // 구매자의 구매 수량 업데이트 ( 마이페이지 )
+      const updatedListPurchases = (buyer.listPurchases || 0) + 1;
+      // 구매자의 구내 내역 업데이트 ( db추가 )
+      const buyerPurchaseInfo = {
+        sellerId,
+        sellerName,
+        purchaseId,
+        productImage,
+        productName,
+        price,
+        createdAt,
+        productId,
+        productsQuantity,
+      };
+
+      // 판매 제품의 구매자 정보 추가
+      const sellerProductSnapshot = await get(
+        ref(database, `userSellList/${sellerId}/${productId}/buyerInfo`),
+      );
+      let existingBuyerInfo = [];
+
+      if (sellerProductSnapshot.exists()) {
+        existingBuyerInfo = sellerProductSnapshot.val(); // 기존 buyerInfo 배열
+      }
+      const buyerInfo = {
+        buyerId,
+        address: buyer.address,
+        email: buyer.email,
+        phone: buyer.phone,
+        username: buyer.username,
+      };
+      const updatedBuyerInfo = [...existingBuyerInfo, buyerInfo];
+
+      const updates = {
+        [`usedProducts/${productId}/quantity`]: currentUsedProductQuantity, // 제품 재고 수량 업데이트
+        [`usedPurchaseList/${buyerId}/${purchaseId}`]: buyerPurchaseInfo, // 구매자 구매 리스트 생성
+        [`userSellList/${sellerId}/${productId}/quantity`]:
+          currentUsedProductQuantity, // 판매자 제품 재고수량
+        [`userSellList/${sellerId}/${productId}/sellsQuantity`]:
+          updatedSellQuantity, // 판매자 판매수량
+        [`userSellList/${sellerId}/${productId}/buyerInfo`]: updatedBuyerInfo, //판매자 제품에 구매자 정보 추가
+        [`users/${buyerId}/listPurchases`]: updatedListPurchases, // 구매자의 구매목록 갯수 추가
+      };
+      await update(ref(database), updates);
+      setLoginUser({ ...loginUser, listPurchases: updatedListPurchases });
+    }
+    alert('판매완료');
+  } catch (error) {
+    console.error('중고제품 판매 에러', error);
   }
 };
