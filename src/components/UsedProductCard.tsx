@@ -74,7 +74,7 @@ export const UsedProductCard = ({
       </Link>
       <div className='border'>
         <p>구매자 정보</p>
-        <ul>{buyerInfo?.map((buyer) => <li>{buyer.username}</li>)}</ul>
+        <ul>{buyerInfo?.map((buyer) => <li key={buyer.buyerId}>{buyer.username}</li>)}</ul>
       </div>
     </section>
   );
