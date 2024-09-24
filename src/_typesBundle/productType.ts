@@ -69,6 +69,7 @@ interface MessageResultType {
   quantity: number;
   seller: UsedProductSellerType;
   sellerId: string;
+  salesStatus: 'initialized' | 'inProgress' | 'completed';
 }
 
 export type {
