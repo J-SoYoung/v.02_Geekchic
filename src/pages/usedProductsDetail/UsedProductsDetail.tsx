@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { useQuery } from '@tanstack/react-query';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -20,7 +20,8 @@ import { utcToKoreaTimes } from '@/_utils';
 export const UsedProductsDetail = () => {
   const { productId } = useParams<{ productId: string }>();
   const navigate = useNavigate();
-  const isLoginUser = useRecoilValue(userState);
+  const [loginUser, setLoginUser] = useRecoilState(userState)
+
   const {
     data: usedProduct,
     isPending,
@@ -30,7 +31,7 @@ export const UsedProductsDetail = () => {
     queryFn: () => getUsedProductDetail(productId as string),
   });
 
-  const seller = isLoginUser?._id === usedProduct?.seller._id;
+  const seller = loginUser?._id === usedProduct?.seller._id;
 
   const [previousMessage, setPreviousMessage] = useState<MessageType | null>(
     null,
@@ -40,7 +41,7 @@ export const UsedProductsDetail = () => {
   useEffect(() => {
     const checkPreviousMessage = async () => {
       const result = await checkMessage({
-        buyerId: isLoginUser._id,
+        buyerId: loginUser._id,
         productId: productId as string,
       });
       if (result !== null) setPreviousMessage(result);
@@ -56,16 +57,16 @@ export const UsedProductsDetail = () => {
         messageId: messageId,
         productId: productId as string,
         sellerId: usedProduct.seller._id,
-        buyerId: isLoginUser._id,
+        buyerId: loginUser._id,
         createdAt: utcToKoreaTimes(),
       };
-      await addMessagesPage(messageData);
+      await addMessagesPage(messageData, loginUser, setLoginUser);
     }
     navigate(
       `/message/send/${previousMessage !== null ? previousMessage.messageId : messageId}`,
       {
         state: {
-          buyerId: isLoginUser._id,
+          buyerId: loginUser._id,
           createdAt: utcToKoreaTimes(),
           messageId:
             previousMessage !== null ? previousMessage.messageId : messageId,

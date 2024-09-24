@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { v4 as uuidv4 } from 'uuid';
 
 import { UploadImage, FormInput } from './index';
@@ -20,8 +20,8 @@ import { utcToKoreaTimes, validateProductData } from '@/_utils';
 import { FormRadio } from './FormRadio';
 
 export const UsedProductsUpload = () => {
-  const navigate = useNavigate();
-  const user = useRecoilValue(userState);
+  const navigate = useNavigate();;
+  const [user, setUser] = useRecoilState(userState)
 
   const [usedProducts, setUsedProducts] =
     useState<UsedProductType>(initlUsedProduct);
@@ -55,7 +55,7 @@ export const UsedProductsUpload = () => {
 
   const usedProductUploadMutation = useMutation({
     mutationFn: async (newUsedProducts: UsedProductType) => {
-      await uploadUsedProducts(newUsedProducts);
+      await uploadUsedProducts(newUsedProducts, user, setUser );
     },
     onSuccess: () => {
       navigate('/used');

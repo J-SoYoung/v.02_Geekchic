@@ -8,10 +8,9 @@ interface UserDataType {
   phone: string;
   address: string;
   listCarts: number;
-  listMessages: [];
+  listMessages: string[];
   listPurchases: number;
   listSells: number;
 }
 
 export type { UserDataType };
- 

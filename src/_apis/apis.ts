@@ -7,10 +7,14 @@ import {
   MessageType,
   SellsItemType,
   UsedProductType,
+  UserDataType,
 } from '@/_typesBundle';
+import { SetterOrUpdater } from 'recoil';
 
 export const uploadUsedProducts = async (
   updateUsedProducts: UsedProductType,
+  user: UserDataType,
+  setUser: SetterOrUpdater<UserDataType>,
 ) => {
   const { id, createdAt, seller, images, productName, price, quantity } =
     updateUsedProducts;
@@ -41,6 +45,7 @@ export const uploadUsedProducts = async (
           userSellsData,
         [`users/${updateUsedProducts.seller._id}/listSells`]: updatedListSells, // 판매목록 개수 업데이트
       };
+      setUser({ ...user, listSells: updatedListSells });
       await update(ref(database), updates);
     } catch (error) {
       console.error('중고제품 업로드 에러', error);
@@ -120,6 +125,10 @@ export const editUsedProducts = async (editUsedProducts: UsedProductType) => {
   } catch (error) {
     console.error('중고제품 업로드 에러', error);
   }
+};
+
+export const removeUsedProducts = async () => {
+  // 제품삭제는 생각해보자. 꼭 필요한 기능인지
 };
 
 // ⭕API getAPI 공용 사용하게 추상화하기
@@ -224,7 +233,11 @@ interface sendMessagesType {
   currentMessages: MessagesInfoType;
   messageId: string;
 }
-export const addMessagesPage = async (messageData: MessageType) => {
+export const addMessagesPage = async (
+  messageData: MessageType,
+  loginUser: UserDataType,
+  setLoginUser: SetterOrUpdater<UserDataType>,
+) => {
   try {
     const getUserMessageList = async (userId: string) => {
       const snapshot = await get(ref(database, `users/${userId}`));
@@ -252,6 +265,10 @@ export const addMessagesPage = async (messageData: MessageType) => {
       [`users/${messageData.buyerId}/listMessages`]: buyerUpdatedMessages,
     };
     console.log('쪽지 페이지 생성 성공');
+    setLoginUser({
+      ...loginUser,
+      listMessages: buyerUpdatedMessages,
+    });
     await update(ref(database), updates);
   } catch (error) {
     console.error('쪽지 페이지 생성실패', error);
