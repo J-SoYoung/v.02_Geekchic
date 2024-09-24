@@ -234,6 +234,7 @@ interface sendMessagesType {
   currentMessages: MessagesInfoType;
   messageId: string;
 }
+
 export const addMessagesPage = async (
   messageData: MessageType,
   loginUser: UserDataType,
@@ -493,5 +494,54 @@ export const salesProducts = async (
     alert('판매완료');
   } catch (error) {
     console.error('중고제품 판매 에러', error);
+  }
+};
+
+export const getUsedMessageInfo = async (messageId: string) => {
+  try {
+    const messageStatusSnapshot = await get(
+      ref(database, `usedMessages/${messageId}`),
+    );
+    if (messageStatusSnapshot.exists()) {
+      return messageStatusSnapshot.val();
+    }
+    return null;
+  } catch (error) {
+    console.error('쪽지방 상태 불러오기 에러', error);
+    return null;
+  }
+};
+
+interface RemoveMessageProps {
+  messageId: string;
+  setUser: SetterOrUpdater<UserDataType>;
+  user: UserDataType;
+}
+export const removeMessage = async ({
+  messageId,
+  setUser,
+  user,
+}: RemoveMessageProps) => {
+  try {
+    const userSnapshot = await get(
+      ref(database, `users/${user._id}/listMessages`),
+    );
+    let updatedListMessages = [];
+    if (userSnapshot.exists()) {
+      const listMessages = userSnapshot.val();
+      updatedListMessages = listMessages.filter(
+        (id: string) => id !== messageId,
+      );
+    }
+    const updates = {
+      [`usedMessages/${messageId}`]: null,
+      [`users/${user._id}/listMessages`]: updatedListMessages, // 유저 메시지 리스트 업데이트
+    };
+
+    setUser({ ...user, listMessages: updatedListMessages });
+    await update(ref(database), updates);
+
+  } catch (error) {
+    console.error('쪽지 삭제 에러', error);
   }
 };
