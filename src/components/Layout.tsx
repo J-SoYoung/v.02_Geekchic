@@ -36,7 +36,7 @@ export const Layout = ({ children, title, onClickFunc }: LayoutProps) => {
         </h1>
       </header>
 
-      <main>{children}</main>
+      <main className='p-8'>{children}</main>
     </>
   );
 };

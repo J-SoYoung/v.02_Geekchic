@@ -61,7 +61,7 @@ export const UsedMessageList = () => {
         <p>로딩중</p>
       ) : (
         <div className='text-left'>
-          <div className='p-10 text-left'>
+          <div className='text-left'>
             <div className='text-m text-gray-600 mb-4 pb-4 border-b'>
               <span className='font-bold'>전체 {messagesList?.length}</span>
             </div>

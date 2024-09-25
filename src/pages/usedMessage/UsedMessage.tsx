@@ -121,7 +121,7 @@ export const UsedMessage = () => {
 
   return (
     <Layout title={'쪽지 보내기'}>
-      <div className='p-8 min-h-screen flex flex-col bg-gray-100'>
+      <div className='min-h-screen flex flex-col'>
         {/* 판매자정보 */}
         <section className='border p-4 mb-8 flex justify-between items-center bg-white'>
           <div className='flex'>

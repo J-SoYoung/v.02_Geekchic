@@ -25,7 +25,7 @@ export const Mypage = () => {
 
   return (
     <Layout title='마이페이지'>
-      <div className='m-16 p-4'>
+      <div className='p-8'>
         {/* 프로필 관리 */}
         <div className='mb-12 border-b-2'>
           <div className='flex items-center mb-8 mx-auto'>
@@ -62,7 +62,7 @@ export const Mypage = () => {
           <div className='space-y-4 pb-12 mb-8 border-b-2'>
             <PageMoveComp
               url={`/my/purchasesList/${user?._id}`}
-              title='구매내역'
+              title='구매목록'
               listLength={user.listPurchases}
             />
             <PageMoveComp
