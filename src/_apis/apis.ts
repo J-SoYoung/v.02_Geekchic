@@ -8,6 +8,7 @@ import {
   MessageType,
   SellsItemType,
   UsedProductType,
+  UsedPurchaseListType,
   UserDataType,
 } from '@/_typesBundle';
 import { SetterOrUpdater } from 'recoil';
@@ -29,7 +30,7 @@ export const uploadUsedProducts = async (
     const userSellsData = {
       userId: seller._id,
       usedProductId: id,
-      uploadDate: createdAt,
+      createdAt: createdAt,
       isSales: true, // 판매중(true), 품절(false)
       image: images[0],
       productName,
@@ -132,17 +133,28 @@ export const removeUsedProducts = async () => {
   // 제품삭제는 생각해보자. 꼭 필요한 기능인지
 };
 
-// ⭕API getAPI 공용 사용하게 추상화하기
-// ⭕API 마이페이지 연결된 4개 데이터로드 공용으로 사용 가능할듯.
-export const getMyPageInfo = async (userId: string) => {
+interface GetMyPageDataProps<T> {
+  userId: string;
+  table: string;
+  type?: T;
+}
+interface HasCreatedType { // 제네릭에 필수 타입을 추가해줌
+  createdAt: string[];
+}
+
+export const getMyPageData = async <T extends HasCreatedType>({
+  userId,
+  table,
+}: GetMyPageDataProps<T>): Promise<T[]> => {
   try {
-    const snapshot = await get(ref(database, `userSellList/${userId}`));
+    const snapshot = await get(ref(database, `${table}/${userId}`));
     if (snapshot.exists()) {
-      const data = Object.values(snapshot.val()) as SellsItemType[];
-      const sortedData = data.sort(
+      const data = Object.values(snapshot.val()) as T[];
+      console.log(data);
+      const sortedData: T[] = data.sort(
         (a, b) =>
-          new Date(b.uploadDate.join('')).getTime() -
-          new Date(a.uploadDate.join('')).getTime(),
+          new Date(b.createdAt.join('')).getTime() -
+          new Date(a.createdAt.join('')).getTime(),
       );
       return sortedData;
     }
@@ -175,7 +187,6 @@ export const getUsedComment = async (productId: string) => {
     );
     if (commentsSnapshot.exists()) {
       const data = Object.values(commentsSnapshot.val()) as CommentType[];
-      console.log(data);
       const sortedData = data.sort(
         (a, b) =>
           new Date(b.createdAt.join(' ')).getTime() -
@@ -233,6 +244,23 @@ interface checkMessageProps {
 interface sendMessagesType {
   currentMessages: MessagesInfoType;
   messageId: string;
+}
+interface RemoveMessageProps {
+  messageId: string;
+  setUser: SetterOrUpdater<UserDataType>;
+  user: UserDataType;
+}
+export interface SalesInfoProps {
+  buyerId: string;
+  sellerId: string;
+  sellerName: string;
+  productsQuantity: number;
+  quantity: number;
+  productId: string;
+  productImage: string;
+  productName: string;
+  price: number;
+  createdAt: string[];
 }
 
 export const addMessagesPage = async (
@@ -396,18 +424,6 @@ export const getMessages = async (messageId: string) => {
   }
 };
 
-export interface SalesInfoProps {
-  buyerId: string;
-  sellerId: string;
-  sellerName: string;
-  productsQuantity: number;
-  quantity: number;
-  productId: string;
-  productImage: string;
-  productName: string;
-  price: number;
-  createdAt: string[];
-}
 export const salesProducts = async (
   salesInfo: SalesInfoProps,
   setLoginUser: SetterOrUpdater<UserDataType>,
@@ -512,11 +528,6 @@ export const getUsedMessageInfo = async (messageId: string) => {
   }
 };
 
-interface RemoveMessageProps {
-  messageId: string;
-  setUser: SetterOrUpdater<UserDataType>;
-  user: UserDataType;
-}
 export const removeMessage = async ({
   messageId,
   setUser,
@@ -540,7 +551,6 @@ export const removeMessage = async ({
 
     setUser({ ...user, listMessages: updatedListMessages });
     await update(ref(database), updates);
-
   } catch (error) {
     console.error('쪽지 삭제 에러', error);
   }

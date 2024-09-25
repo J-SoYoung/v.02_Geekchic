@@ -25,11 +25,13 @@ interface SellsItemType {
   price: number;
   productName: string;
   quantity: number;
-  uploadDate: string[];
+  createdAt: string[];
   usedProductId: string; // 판매목록id === 제품id
   userId: string;
   sellsQuantity: number;
-  buyerInfo?: { // 구매자정보
+  size:string
+  buyerInfo?: {
+    // 구매자정보
     address: string;
     buyerId: string;
     phone: string;
@@ -64,14 +66,25 @@ interface MessageResultType {
   messageId: string;
   price: number;
   productId: string;
-  productName: string;
   productImage: string;
+  productName: string;
   quantity: number;
   seller: UsedProductSellerType;
   sellerId: string;
   salesStatus: 'initialized' | 'inProgress' | 'completed';
 }
-
+interface UsedPurchaseListType {
+  createdAt: string[];
+  price: number;
+  productId: string;
+  productImage: string;
+  productName: string;
+  productsQuantity: number;
+  purchaseId: string;
+  sellerId: string;
+  sellerName: string;
+  size:string
+}
 export type {
   UsedProductType,
   CommentType,
@@ -79,4 +92,5 @@ export type {
   MessageType,
   MessageResultType,
   MessagesInfoType,
+  UsedPurchaseListType,
 };

@@ -90,7 +90,7 @@ export const UsedProductsEdit = () => {
         </div>
       )}
       <Layout title='제품 수정' onClickFunc={onClickMoveUsedMain}>
-        <div className='pb-36 p-8 text-left'>
+        <div className='pb-36 text-left'>
           <div className='mb-8'>
             <label className='block text-sm font-medium text-gray-700 mb-2'>
               사진은 수정이 불가합니다

@@ -133,13 +133,13 @@ export const UsedProductsUpload = () => {
             <span className='mb-6 text-3xl text-[#8F5BBD] font-bold'>
               Loading
             </span>
-            <LoadingSpinner size='6' />
+            <LoadingSpinner size='6'/>
           </div>
         </div>
       )}
 
       <Layout title='제품 등록' onClickFunc={onClickMoveUsedMain}>
-        <div className='pb-36 p-8 text-left'>
+        <div className='pb-36 text-left'>
           <UploadImage
             previewImages={previewImages}
             setPreviewImages={setPreviewImages}

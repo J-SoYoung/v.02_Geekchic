@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Link, useParams } from 'react-router-dom';
 
 import { ErrorPageReload, Layout, UsedProductCard } from '@/components';
-import { getMyPageInfo } from '@/_apis';
+import { getMyPageData } from '@/_apis';
 import { SellsItemType } from '@/_typesBundle';
 
 export const SellsList = () => {
@@ -12,9 +12,10 @@ export const SellsList = () => {
     data: sellsItem,
     isPending,
     isError,
-  } = useQuery<SellsItemType[]>({
-    queryKey: ['sellsItem'],
-    queryFn: async () => await getMyPageInfo(userId as string),
+  } = useQuery({
+    queryKey: ['sellsItem', userId],
+    queryFn: async () =>
+      await getMyPageData<SellsItemType>({ userId: userId as string, table: 'userSellList' }),
   });
 
   if (isError) {
@@ -32,10 +33,10 @@ export const SellsList = () => {
         <p>로딩중</p>
       ) : (
         <div className='text-left'>
-          <div className=' text-m text-gray-600 m-8 mb-4 pb-4 border-b'>
+          <div className=' text-m text-gray-600 mb-4 pb-4 border-b'>
             <span className='font-bold'>전체 {sellsItem?.length}</span>
           </div>
-          <div className='p-8 pt-4 grid grid-cols-2 gap-4 mb-24'>
+          <div className='pt-4 grid grid-cols-2 gap-4 mb-24'>
             {sellsItem?.length === 0 ? (
               <div>
                 판매중인 상품이 없습니다.
@@ -56,6 +57,7 @@ export const SellsList = () => {
                     isSoldOut={item.quantity < 1}
                     showSellerInfo={true}
                     sellsQuantity={item.sellsQuantity}
+                    buyerInfo={item.buyerInfo}
                   />
                 );
               })
