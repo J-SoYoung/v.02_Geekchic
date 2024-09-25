@@ -14,6 +14,7 @@ export const ErrorPageReload = ({
   movePage?: string;
 }) => {
 
+  // ⭕이미지용량 겁나큼.....바꿔랔
   return (
     <div className='min-h-screen px-8 flex flex-col justify-center text-center'>
       <p className='mb-4 text-[#8b3ecf] text-5xl font-bold'>ERROR</p>

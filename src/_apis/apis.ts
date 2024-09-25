@@ -1,5 +1,6 @@
 import { get, push, ref, remove, set, update } from 'firebase/database';
 import { database } from './firebase';
+import { v4 as uuidv4 } from 'uuid';
 import {
   CommentType,
   MessageResultType,
@@ -7,10 +8,15 @@ import {
   MessageType,
   SellsItemType,
   UsedProductType,
+  UsedPurchaseListType,
+  UserDataType,
 } from '@/_typesBundle';
+import { SetterOrUpdater } from 'recoil';
 
 export const uploadUsedProducts = async (
   updateUsedProducts: UsedProductType,
+  user: UserDataType,
+  setUser: SetterOrUpdater<UserDataType>,
 ) => {
   const { id, createdAt, seller, images, productName, price, quantity } =
     updateUsedProducts;
@@ -24,7 +30,7 @@ export const uploadUsedProducts = async (
     const userSellsData = {
       userId: seller._id,
       usedProductId: id,
-      uploadDate: createdAt,
+      createdAt: createdAt,
       isSales: true, // 판매중(true), 품절(false)
       image: images[0],
       productName,
@@ -41,6 +47,7 @@ export const uploadUsedProducts = async (
           userSellsData,
         [`users/${updateUsedProducts.seller._id}/listSells`]: updatedListSells, // 판매목록 개수 업데이트
       };
+      setUser({ ...user, listSells: updatedListSells });
       await update(ref(database), updates);
     } catch (error) {
       console.error('중고제품 업로드 에러', error);
@@ -77,7 +84,8 @@ export const getUsedProducts = async (): Promise<UsedProductType[]> => {
       const data = Object.values(snapshot.val()) as UsedProductType[];
       const sortedData = data.sort(
         (a, b) =>
-          new Date(b.createdAt.join(' ')).getTime() - new Date(a.createdAt.join(' ')).getTime(),
+          new Date(b.createdAt.join(' ')).getTime() -
+          new Date(a.createdAt.join(' ')).getTime(),
       );
       return sortedData;
     }
@@ -98,16 +106,55 @@ export const getUsedProductDetail = async (productId: string) => {
   }
 };
 
-// ⭕API getAPI 공용 사용하게 추상화하기
-// ⭕API 마이페이지 연결된 4개 데이터로드 공용으로 사용 가능할듯.
-export const getMyPageInfo = async (userId: string) => {
+export const editUsedProducts = async (editUsedProducts: UsedProductType) => {
   try {
-    const snapshot = await get(ref(database, `userSellList/${userId}`));
+    const { productName, price, quantity } = editUsedProducts;
+    const productsSnapshot = await get(
+      ref(
+        database,
+        `userSellList/${editUsedProducts.seller._id}/${editUsedProducts.id}`,
+      ),
+    );
+    if (productsSnapshot.exists()) {
+      const userSellListInfo = productsSnapshot.val();
+      const updates = {
+        [`usedProducts/${editUsedProducts.id}`]: editUsedProducts,
+        [`userSellList/${editUsedProducts.seller._id}/${editUsedProducts.id}`]:
+          { ...userSellListInfo, productName, price, quantity },
+      };
+      await update(ref(database), updates);
+    }
+  } catch (error) {
+    console.error('중고제품 업로드 에러', error);
+  }
+};
+
+export const removeUsedProducts = async () => {
+  // 제품삭제는 생각해보자. 꼭 필요한 기능인지
+};
+
+interface GetMyPageDataProps<T> {
+  userId: string;
+  table: string;
+  type?: T;
+}
+interface HasCreatedType { // 제네릭에 필수 타입을 추가해줌
+  createdAt: string[];
+}
+
+export const getMyPageData = async <T extends HasCreatedType>({
+  userId,
+  table,
+}: GetMyPageDataProps<T>): Promise<T[]> => {
+  try {
+    const snapshot = await get(ref(database, `${table}/${userId}`));
     if (snapshot.exists()) {
-      const data = Object.values(snapshot.val()) as SellsItemType[];
-      const sortedData = data.sort(
+      const data = Object.values(snapshot.val()) as T[];
+      console.log(data);
+      const sortedData: T[] = data.sort(
         (a, b) =>
-          new Date(b.uploadDate.join(' ')).getTime() - new Date(a.uploadDate.join(' ')).getTime(),
+          new Date(b.createdAt.join('')).getTime() -
+          new Date(a.createdAt.join('')).getTime(),
       );
       return sortedData;
     }
@@ -132,6 +179,7 @@ export interface EditUsedCommentProps {
   commentId: string;
   editCommentData: CommentType;
 }
+
 export const getUsedComment = async (productId: string) => {
   try {
     const commentsSnapshot = await get(
@@ -141,7 +189,8 @@ export const getUsedComment = async (productId: string) => {
       const data = Object.values(commentsSnapshot.val()) as CommentType[];
       const sortedData = data.sort(
         (a, b) =>
-          new Date(b.createdAt.join(' ')).getTime() - new Date(a.createdAt.join(' ')).getTime(),
+          new Date(b.createdAt.join(' ')).getTime() -
+          new Date(a.createdAt.join(' ')).getTime(),
       );
       return sortedData;
     }
@@ -196,7 +245,29 @@ interface sendMessagesType {
   currentMessages: MessagesInfoType;
   messageId: string;
 }
-export const addMessagesPage = async (messageData: MessageType) => {
+interface RemoveMessageProps {
+  messageId: string;
+  setUser: SetterOrUpdater<UserDataType>;
+  user: UserDataType;
+}
+export interface SalesInfoProps {
+  buyerId: string;
+  sellerId: string;
+  sellerName: string;
+  productsQuantity: number;
+  quantity: number;
+  productId: string;
+  productImage: string;
+  productName: string;
+  price: number;
+  createdAt: string[];
+}
+
+export const addMessagesPage = async (
+  messageData: MessageType,
+  loginUser: UserDataType,
+  setLoginUser: SetterOrUpdater<UserDataType>,
+) => {
   try {
     const getUserMessageList = async (userId: string) => {
       const snapshot = await get(ref(database, `users/${userId}`));
@@ -224,6 +295,10 @@ export const addMessagesPage = async (messageData: MessageType) => {
       [`users/${messageData.buyerId}/listMessages`]: buyerUpdatedMessages,
     };
     console.log('쪽지 페이지 생성 성공');
+    setLoginUser({
+      ...loginUser,
+      listMessages: buyerUpdatedMessages,
+    });
     await update(ref(database), updates);
   } catch (error) {
     console.error('쪽지 페이지 생성실패', error);
@@ -320,10 +395,25 @@ export const getMessages = async (messageId: string) => {
       ref(database, `usedMessages/${messageId}/messages`),
     );
     if (messagesSnapshot.exists()) {
-      const data = Object.values(messagesSnapshot.val()) as MessagesInfoType[];
-      const sortedData = data.sort(
+      const messageData = Object.values(
+        messagesSnapshot.val(),
+      ) as MessagesInfoType[];
+
+      const messagesWithUserInfo = await Promise.all(
+        messageData.map(async (message) => {
+          const userSnapshot = await get(
+            ref(database, `users/${message.senderId}`),
+          );
+          const userInfo = userSnapshot.val();
+          const { _id, avatar, username } = userInfo;
+          return { ...message, _id, avatar, username };
+        }),
+      );
+
+      const sortedData = messagesWithUserInfo.sort(
         (a, b) =>
-          new Date(b.timestamp.join(' ')).getTime() - new Date(a.timestamp.join(' ')).getTime(),
+          new Date(a.timestamp.join(' ')).getTime() -
+          new Date(b.timestamp.join(' ')).getTime(),
       );
       return sortedData;
     }
@@ -331,5 +421,137 @@ export const getMessages = async (messageId: string) => {
   } catch (error) {
     console.error('메세지 불러오기 에러', error);
     return [];
+  }
+};
+
+export const salesProducts = async (
+  salesInfo: SalesInfoProps,
+  setLoginUser: SetterOrUpdater<UserDataType>,
+  loginUser: UserDataType,
+) => {
+  const {
+    buyerId,
+    sellerId,
+    sellerName,
+    productsQuantity, // 현재 판매 수량
+    quantity, // 재고 수량
+    productId,
+    productImage,
+    productName,
+    price,
+    createdAt,
+  } = salesInfo;
+  const purchaseId = uuidv4();
+
+  try {
+    // 제품 수량 업데이트, 구매수량 업데이트
+    const currentUsedProductQuantity = quantity - productsQuantity;
+
+    const usedProductSnapshot = await get(
+      ref(database, `userSellList/${sellerId}/${productId}/sellsQuantity`),
+    );
+    let existingSellQuantity;
+    if (usedProductSnapshot.exists()) {
+      existingSellQuantity = usedProductSnapshot.val();
+    }
+
+    const updatedSellQuantity = existingSellQuantity + productsQuantity;
+
+    const buyerSnapshot = await get(ref(database, `users/${buyerId}`));
+    if (buyerSnapshot.exists()) {
+      const buyer = buyerSnapshot.val();
+
+      // 구매자의 구매 수량 업데이트 ( 마이페이지 )
+      const updatedListPurchases = (buyer.listPurchases || 0) + 1;
+      // 구매자의 구내 내역 업데이트 ( db추가 )
+      const buyerPurchaseInfo = {
+        sellerId,
+        sellerName,
+        purchaseId,
+        productImage,
+        productName,
+        price,
+        createdAt,
+        productId,
+        productsQuantity,
+      };
+
+      // 판매 제품의 구매자 정보 추가
+      const sellerProductSnapshot = await get(
+        ref(database, `userSellList/${sellerId}/${productId}/buyerInfo`),
+      );
+      let existingBuyerInfo = [];
+
+      if (sellerProductSnapshot.exists()) {
+        existingBuyerInfo = sellerProductSnapshot.val(); // 기존 buyerInfo 배열
+      }
+      const buyerInfo = {
+        buyerId,
+        address: buyer.address,
+        email: buyer.email,
+        phone: buyer.phone,
+        username: buyer.username,
+      };
+      const updatedBuyerInfo = [...existingBuyerInfo, buyerInfo];
+
+      const updates = {
+        [`usedProducts/${productId}/quantity`]: currentUsedProductQuantity, // 제품 재고 수량 업데이트
+        [`usedPurchaseList/${buyerId}/${purchaseId}`]: buyerPurchaseInfo, // 구매자 구매 리스트 생성
+        [`userSellList/${sellerId}/${productId}/quantity`]:
+          currentUsedProductQuantity, // 판매자 제품 재고수량
+        [`userSellList/${sellerId}/${productId}/sellsQuantity`]:
+          updatedSellQuantity, // 판매자 판매수량
+        [`userSellList/${sellerId}/${productId}/buyerInfo`]: updatedBuyerInfo, //판매자 제품에 구매자 정보 추가
+        [`users/${buyerId}/listPurchases`]: updatedListPurchases, // 구매자의 구매목록 갯수 추가
+      };
+      await update(ref(database), updates);
+      setLoginUser({ ...loginUser, listPurchases: updatedListPurchases });
+    }
+    alert('판매완료');
+  } catch (error) {
+    console.error('중고제품 판매 에러', error);
+  }
+};
+
+export const getUsedMessageInfo = async (messageId: string) => {
+  try {
+    const messageStatusSnapshot = await get(
+      ref(database, `usedMessages/${messageId}`),
+    );
+    if (messageStatusSnapshot.exists()) {
+      return messageStatusSnapshot.val();
+    }
+    return null;
+  } catch (error) {
+    console.error('쪽지방 상태 불러오기 에러', error);
+    return null;
+  }
+};
+
+export const removeMessage = async ({
+  messageId,
+  setUser,
+  user,
+}: RemoveMessageProps) => {
+  try {
+    const userSnapshot = await get(
+      ref(database, `users/${user._id}/listMessages`),
+    );
+    let updatedListMessages = [];
+    if (userSnapshot.exists()) {
+      const listMessages = userSnapshot.val();
+      updatedListMessages = listMessages.filter(
+        (id: string) => id !== messageId,
+      );
+    }
+    const updates = {
+      [`usedMessages/${messageId}`]: null,
+      [`users/${user._id}/listMessages`]: updatedListMessages, // 유저 메시지 리스트 업데이트
+    };
+
+    setUser({ ...user, listMessages: updatedListMessages });
+    await update(ref(database), updates);
+  } catch (error) {
+    console.error('쪽지 삭제 에러', error);
   }
 };

@@ -24,7 +24,7 @@ export const initlUsedProduct: UsedProductType = {
   images: [],
   isSales: false,
   productName: '',
-  deliveryCharge: true, // false배송비 비포함, true배송비 포함
+  deliveryCharge: 'include', // notInclude 배송비 비포함, include 배송비 포함
   conditions: 'new', // new새상품, used중고상품
   price: 0,
   quantity: 1,

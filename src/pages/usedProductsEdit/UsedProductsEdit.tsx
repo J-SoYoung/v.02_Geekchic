@@ -1,33 +1,42 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useMutation } from '@tanstack/react-query';
-import { useRecoilState } from 'recoil';
-import { v4 as uuidv4 } from 'uuid';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { useRecoilValue } from 'recoil';
 
-import { UploadImage, FormInput } from './index';
+import { BasicButton, Layout, LoadingSpinner } from '@/components';
+import { FormInput, FormRadio } from '../usedProductsUpload';
 
-import {
-  Layout,
-  BasicButton,
-  ErrorPageReload,
-  LoadingSpinner,
-} from '@/components';
-import { uploadCloudImagesArray, uploadUsedProducts } from '@/_apis';
+import { editUsedProducts, getUsedProductDetail } from '@/_apis';
+import { initlUsedProduct } from '@/_example';
 import { UsedProductType } from '@/_typesBundle';
 import { userState } from '@/_recoil';
-import { initlUsedProduct } from '@/_example';
-import { utcToKoreaTimes, validateProductData } from '@/_utils';
-import { FormRadio } from './FormRadio';
+import { validateProductData } from '@/_utils';
 
-export const UsedProductsUpload = () => {
-  const navigate = useNavigate();;
-  const [user, setUser] = useRecoilState(userState)
+export const UsedProductsEdit = () => {
+  const navigate = useNavigate();
+  const { productId } = useParams();
+  const user = useRecoilValue(userState);
 
-  const [usedProducts, setUsedProducts] =
-    useState<UsedProductType>(initlUsedProduct);
-  const [previewImages, setPreviewImages] = useState<string[]>([]);
-  const [uploadImages, setUploadImages] = useState<File[]>([]);
+  const {
+    data: usedProductData,
+    isPending,
+    isError,
+  } = useQuery({
+    queryKey: ['usedProductDetail', productId],
+    queryFn: () => getUsedProductDetail(productId as string),
+  });
+
+  const [usedEditProducts, setUsedEditProducts] =
+    useState<UsedProductType>(usedProductData);
+
   const [isLoading, setIsLoading] = useState(false);
+
+  const onClickMoveUsedMain = () => {
+    if (confirm('중고 제품 수정을 취소하겠습니까?')) {
+      setUsedEditProducts(initlUsedProduct);
+      navigate(`/used/detail/${productId}`);
+    }
+  };
 
   const onChangeInput = (
     e: React.ChangeEvent<
@@ -36,28 +45,16 @@ export const UsedProductsUpload = () => {
   ) => {
     if (e.target) {
       const { name, value } = e.target;
-      setUsedProducts({ ...usedProducts, [name]: value });
+      setUsedEditProducts((prev) => (prev ? { ...prev, [name]: value } : prev));
     }
   };
 
-  const onClickMoveUsedMain = () => {
-    if (confirm('중고 제품 업로드를 취소하겠습니까?')) {
-      setUsedProducts(initlUsedProduct);
-      navigate('/used');
-    }
-  };
-
-  const imageUploadMutation = useMutation({
-    mutationFn: async (uploadImages: File[]) => {
-      return uploadCloudImagesArray(uploadImages);
-    },
-  });
-
-  const usedProductUploadMutation = useMutation({
+  const editUsedProductMutation = useMutation({
     mutationFn: async (newUsedProducts: UsedProductType) => {
-      await uploadUsedProducts(newUsedProducts, user, setUser );
+      await editUsedProducts(newUsedProducts);
     },
     onSuccess: () => {
+      alert('수정완료')
       navigate('/used');
     },
     onError: (error) => {
@@ -69,87 +66,56 @@ export const UsedProductsUpload = () => {
     },
   });
 
-  const onClickUploadUsedProducts = async () => {
-    setIsLoading(true);
+  const onClickEditUsedProducts = async () => {
+    console.log(usedEditProducts);
 
-    if (!validateProductData(usedProducts)) {
+    setIsLoading(true);
+    if (!validateProductData(usedEditProducts)) {
       setIsLoading(false);
       return alert('모든 필수 필드를 입력해주세요');
     }
-
-    const {
-      listCarts,
-      listMessages,
-      listPurchases,
-      listSells,
-      ...filteredUserData
-    } = user;
-
-    const id = uuidv4();
-    const createdAt = utcToKoreaTimes();
-    const seller = { ...filteredUserData };
-
-    let newUsedProducts: UsedProductType = {
-      ...usedProducts,
-      id,
-      createdAt,
-      seller,
-    };
-
-    if (uploadImages) {
-      imageUploadMutation.mutate(uploadImages, {
-        onSuccess: (cloudImage) => {
-          newUsedProducts = { ...newUsedProducts, images: cloudImage };
-          usedProductUploadMutation.mutate(newUsedProducts);
-        },
-        onError: (error) => {
-          console.log('이미지 업로드 에러', error);
-          alert('이미지 업로드 중 에러가 발생했습니다. 다시 시도해주세요 ');
-          setIsLoading(false);
-        },
-      });
-    }
+      editUsedProductMutation.mutate(usedEditProducts);
   };
-
-  if (usedProductUploadMutation.isError) {
-    return (
-      <ErrorPageReload
-        content={
-          <p>
-            데이터를 업로드 하는 동안 문제가 발생했습니다.
-            <br /> 제품을 다시 업로드 해주세요
-          </p>
-        }
-        pageName={'업로드'}
-      />
-    );
-  }
 
   return (
     <>
-      {isLoading && (
+      {isPending && (
         <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
           <div className='flex flex-col justify-center'>
             <span className='mb-6 text-3xl text-[#8F5BBD] font-bold'>
               Loading
             </span>
-            <LoadingSpinner size='6'/>
+            <LoadingSpinner size='6' />
           </div>
         </div>
       )}
-
-      <Layout title='제품 등록' onClickFunc={onClickMoveUsedMain}>
+      <Layout title='제품 수정' onClickFunc={onClickMoveUsedMain}>
         <div className='pb-36 text-left'>
-          <UploadImage
-            previewImages={previewImages}
-            setPreviewImages={setPreviewImages}
-            setUploadImages={setUploadImages}
-          />
+          <div className='mb-8'>
+            <label className='block text-sm font-medium text-gray-700 mb-2'>
+              사진은 수정이 불가합니다
+            </label>
+            <div className='flex space-x-2'>
+              {usedEditProducts.images.map((image, index) => (
+                <div
+                  key={index}
+                  className='w-20 h-20 bg-gray-200 relative flex items-center justify-center'
+                >
+                  <img
+                    src={image}
+                    alt={`uploaded ${index}`}
+                    className='object-cover w-full h-full'
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
           <FormInput
             label='상품명'
             type='text'
             name='productName'
-            value={usedProducts.productName}
+            value={usedEditProducts.productName}
             onChange={onChangeInput}
             placeholder='상품명을 입력하세요'
           />
@@ -157,7 +123,7 @@ export const UsedProductsUpload = () => {
             label='가격'
             type='number'
             name='price'
-            value={usedProducts.price}
+            value={usedEditProducts.price}
             onChange={onChangeInput}
             placeholder='최소 가격은 1000원 입니다'
             min={1000}
@@ -167,7 +133,7 @@ export const UsedProductsUpload = () => {
             label='수량'
             type='number'
             name='quantity'
-            value={usedProducts.quantity}
+            value={usedEditProducts.quantity}
             onChange={onChangeInput}
             placeholder='최소 수량은 1개 입니다'
             min={1}
@@ -176,7 +142,7 @@ export const UsedProductsUpload = () => {
             label='사이즈'
             type='select'
             name='size'
-            value={usedProducts.size}
+            value={usedEditProducts.size}
             onChange={onChangeInput}
             placeholder='사이즈를 선택해주세요'
             options={[
@@ -198,7 +164,7 @@ export const UsedProductsUpload = () => {
                 { label: '배송비 포함', value: 'include' },
                 { label: '배송비 비포함', value: 'notInclude' },
               ]}
-              selectedValue={usedProducts.deliveryCharge}
+              selectedValue={usedEditProducts.deliveryCharge}
               onChange={onChangeInput}
             />
           </div>
@@ -212,7 +178,7 @@ export const UsedProductsUpload = () => {
                 { label: '새상품', value: 'new' },
                 { label: '중고상품', value: 'used' },
               ]}
-              selectedValue={usedProducts.conditions}
+              selectedValue={usedEditProducts.conditions}
               onChange={onChangeInput}
             />
           </div>
@@ -220,13 +186,13 @@ export const UsedProductsUpload = () => {
             label='설명'
             type='textarea'
             name='description'
-            value={usedProducts.description}
+            value={usedEditProducts.description}
             onChange={onChangeInput}
             placeholder='상품의 자세한 설명을 입력해 주세요'
           />
           <BasicButton
-            onClickFunc={onClickUploadUsedProducts}
-            text='등록하기'
+            onClickFunc={onClickEditUsedProducts}
+            text='수정하기'
             bg='bg-[#8F5BBD]'
           />
         </div>

@@ -1,7 +1,7 @@
 interface UserInofCompProps {
   avatar: string;
   username: string;
-  address: string;
+  address?: string;
 }
 
 export const UserProfileInfoComp = ({

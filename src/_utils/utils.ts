@@ -43,6 +43,6 @@ export const utcToKoreaTimes = () => {
   const koreaFullTime = koreaTime.toISOString().split('T');
 
   const [createdDate, timeWithMilliseconds] = koreaFullTime;
-  const createdTime = timeWithMilliseconds.split('.')[0]
-  return [ createdDate, createdTime ];
+  const createdTime = timeWithMilliseconds.split('.')[0];
+  return [createdDate, createdTime];
 };

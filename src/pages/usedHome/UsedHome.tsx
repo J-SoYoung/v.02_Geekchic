@@ -97,6 +97,7 @@ export const UsedHome = () => {
                 image={usedProduct.images[0]}
                 quantity={usedProduct.quantity}
                 isSoldOut={usedProduct.quantity < 1}
+                sellerId={usedProduct.seller._id}
               />
             ))}
           </div>
