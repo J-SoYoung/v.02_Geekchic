@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
+import { useRecoilState } from 'recoil';
 import { v4 as uuidv4 } from 'uuid';
 
 import { CommentInput, CommentsList, Skeleton } from './index';
@@ -41,7 +41,6 @@ export const UsedProductsDetail = () => {
 
   const seller = loginUser?._id === usedProduct?.seller._id;
   const isSoldOut = usedProduct && usedProduct.quantity < 1;
-  console.log(usedProduct, isSoldOut);
 
   useEffect(() => {
     const checkPreviousMessage = async () => {
