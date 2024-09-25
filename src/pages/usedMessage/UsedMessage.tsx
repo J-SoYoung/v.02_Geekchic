@@ -15,9 +15,9 @@ import {
   getMessages,
   salesProducts,
   SalesInfoProps,
-  getUsedMessageInfo,
+  getUsedPageMainInfo,
 } from '@/_apis';
-import { MessagesInfoType } from '@/_typesBundle';
+import { MessageResultType, MessagesInfoType } from '@/_typesBundle';
 import { utcToKoreaTimes } from '@/_utils';
 
 export const UsedMessage = () => {
@@ -42,10 +42,14 @@ export const UsedMessage = () => {
 
   const { data: messageInfo } = useQuery({
     queryKey: ['usedMessageInfo', messageId],
-    queryFn: async () => await getUsedMessageInfo(messageId),
+    queryFn: async () =>
+      await getUsedPageMainInfo<MessageResultType>({
+        table: 'usedMessages',
+        id: messageId as string,
+      }),
   });
-  const isSalesCompleted = messageInfo?.salesStatus === 'completed';
 
+  const isSalesCompleted = messageInfo?.salesStatus === 'completed';
 
   const {
     data: messages,
@@ -138,7 +142,7 @@ export const UsedMessage = () => {
               </div>
             </div>
           </div>
-          {(loginUser._id === sellerId) && (!isSalesCompleted) && (
+          {loginUser._id === sellerId && !isSalesCompleted && (
             <div>
               <input
                 className='w-10 border text-center'
@@ -187,11 +191,11 @@ export const UsedMessage = () => {
             )}
           </div>
           {isSalesCompleted && (
-              <div className="py-8">
-                -------------------------- 판매 완료 되었습니다
-                --------------------------
-              </div>
-            )}
+            <div className='py-8'>
+              -------------------------- 판매 완료 되었습니다
+              --------------------------
+            </div>
+          )}
         </section>
 
         {/* 대화 입력창 */}
