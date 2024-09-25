@@ -96,15 +96,6 @@ export const getUsedProducts = async (): Promise<UsedProductType[]> => {
   }
 };
 
-export const getUsedProductDetail = async (productId: string) => {
-  try {
-    const snapshot = await get(ref(database, `usedProducts/${productId}`));
-    if (snapshot.exists()) return snapshot.val();
-  } catch (error) {
-    console.error('중고 상세 페이지 데이터 로드 에러', error);
-    return {};
-  }
-};
 
 export const editUsedProducts = async (editUsedProducts: UsedProductType) => {
   try {
@@ -138,7 +129,8 @@ interface GetMyPageDataProps<T> {
   table: string;
   type?: T;
 }
-interface HasCreatedType { // 제네릭에 필수 타입을 추가해줌
+interface HasCreatedType {
+  // 제네릭에 필수 타입을 추가해줌
   createdAt: string[];
 }
 
@@ -150,7 +142,7 @@ export const getMyPageData = async <T extends HasCreatedType>({
     const snapshot = await get(ref(database, `${table}/${userId}`));
     if (snapshot.exists()) {
       const data = Object.values(snapshot.val()) as T[];
-      console.log(data);
+
       const sortedData: T[] = data.sort(
         (a, b) =>
           new Date(b.createdAt.join('')).getTime() -
@@ -513,20 +505,6 @@ export const salesProducts = async (
   }
 };
 
-export const getUsedMessageInfo = async (messageId: string) => {
-  try {
-    const messageStatusSnapshot = await get(
-      ref(database, `usedMessages/${messageId}`),
-    );
-    if (messageStatusSnapshot.exists()) {
-      return messageStatusSnapshot.val();
-    }
-    return null;
-  } catch (error) {
-    console.error('쪽지방 상태 불러오기 에러', error);
-    return null;
-  }
-};
 
 export const removeMessage = async ({
   messageId,
@@ -553,5 +531,27 @@ export const removeMessage = async ({
     await update(ref(database), updates);
   } catch (error) {
     console.error('쪽지 삭제 에러', error);
+  }
+};
+
+
+interface GetUsedPageMainInfoType {
+  table: string;
+  id: string;
+}
+export const getUsedPageMainInfo = async <T>({  // GET 중고 상세, 쪽지 정보  
+  table,
+  id,
+}: GetUsedPageMainInfoType) => {
+  try {
+    const snapshot = await get(ref(database, `${table}/${id}`));
+    if (snapshot.exists()) {
+      return snapshot.val() as T;
+    } else {
+      throw new Error(`${table}/${id} 데이터가 존재하지 않습니다.`);
+    }
+  } catch (error) {
+    console.error(`${table} 데이터 불러오기 에러`, error);
+    return null;
   }
 };
