@@ -1,35 +1,36 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { useRecoilValue } from 'recoil';
 
 import { BasicButton, Layout, LoadingSpinner } from '@/components';
 import { FormInput, FormRadio } from '../usedProductsUpload';
 
-import { editUsedProducts, getUsedProductDetail } from '@/_apis';
+import { editUsedProducts, getUsedPageMainInfo } from '@/_apis';
 import { initlUsedProduct } from '@/_example';
 import { UsedProductType } from '@/_typesBundle';
-import { userState } from '@/_recoil';
 import { validateProductData } from '@/_utils';
 
 export const UsedProductsEdit = () => {
   const navigate = useNavigate();
   const { productId } = useParams();
-  const user = useRecoilValue(userState);
+  const [usedEditProducts, setUsedEditProducts] =
+    useState<UsedProductType | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const {
-    data: usedProductData,
-    isPending,
-    isError,
-  } = useQuery({
+  const { data: usedProductData } = useQuery({
     queryKey: ['usedProductDetail', productId],
-    queryFn: () => getUsedProductDetail(productId as string),
+    queryFn: () =>
+      getUsedPageMainInfo<UsedProductType>({
+        table: 'usedProducts',
+        id: productId as string,
+      }),
   });
 
-  const [usedEditProducts, setUsedEditProducts] =
-    useState<UsedProductType>(usedProductData);
-
-  const [isLoading, setIsLoading] = useState(false);
+  useEffect(() => {
+    if (usedProductData) {
+      setUsedEditProducts(usedProductData);
+    }
+  }, [usedProductData]);
 
   const onClickMoveUsedMain = () => {
     if (confirm('중고 제품 수정을 취소하겠습니까?')) {
@@ -54,7 +55,7 @@ export const UsedProductsEdit = () => {
       await editUsedProducts(newUsedProducts);
     },
     onSuccess: () => {
-      alert('수정완료')
+      alert('수정완료');
       navigate('/used');
     },
     onError: (error) => {
@@ -67,19 +68,21 @@ export const UsedProductsEdit = () => {
   });
 
   const onClickEditUsedProducts = async () => {
-    console.log(usedEditProducts);
-
     setIsLoading(true);
-    if (!validateProductData(usedEditProducts)) {
-      setIsLoading(false);
-      return alert('모든 필수 필드를 입력해주세요');
-    }
+    if (usedEditProducts !== null) {
+      if (!validateProductData(usedEditProducts)) {
+        setIsLoading(false);
+        return alert('모든 필수 필드를 입력해주세요');
+      }
       editUsedProductMutation.mutate(usedEditProducts);
+    }
   };
+
+  if (!usedEditProducts) return null;
 
   return (
     <>
-      {isPending && (
+      {isLoading && (
         <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
           <div className='flex flex-col justify-center'>
             <span className='mb-6 text-3xl text-[#8F5BBD] font-bold'>
