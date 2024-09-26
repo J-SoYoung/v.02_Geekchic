@@ -37,7 +37,6 @@ const router = createBrowserRouter([
     children: [
       { index: true, path: '/', element: <Home /> },
       { path: '/login', element: <Login /> },
-      { path: '/products', element: <Products /> }, //⭕탭 있는 페이지
       { path: '/products/new', element: <ProductsUpload /> },
       { path: '/products/detail/:productId', element: <ProductsDetail /> },
       { path: '/wishlist/:userId', element: <WishList /> },

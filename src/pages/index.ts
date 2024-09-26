@@ -4,7 +4,6 @@ import Login from './login';
 import Mypage from './mypage';
 import OrderDetail from './orderDetail';
 import Payments from './payments';
-import Products from './products';
 import ProductsDetail from './productsDetail';
 import ProductsUpload from './productsUpload';
 import Profile from './profile';
@@ -26,7 +25,6 @@ export {
   Mypage,
   OrderDetail,
   Payments,
-  Products,
   ProductsDetail,
   ProductsUpload,
   Profile,
