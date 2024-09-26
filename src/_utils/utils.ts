@@ -1,12 +1,19 @@
-import { UsedProductType } from '@/_typesBundle';
+import { ProductType, UsedProductType } from '@/_typesBundle';
 import { UserDataType } from '@/_typesBundle';
 
-type ValidateProductInputType = Omit<
+type ValidateUsedProductInputType = Omit<
   UsedProductType,
   'id' | 'seller' | 'createdAt' | 'isSales' | 'deliveryCharge' | 'images'
 >;
 
-export const validateProductData = (usedProducts: ValidateProductInputType) => {
+type ValidateProductInputType = Omit<
+  ProductType,
+  'id' | 'createdAt' | 'images'
+>;
+
+export const validateUsedProductData = (
+  usedProducts: ValidateUsedProductInputType,
+) => {
   if (
     !usedProducts.description ||
     !usedProducts.productName ||
@@ -14,6 +21,21 @@ export const validateProductData = (usedProducts: ValidateProductInputType) => {
     !usedProducts.price ||
     !usedProducts.quantity ||
     !usedProducts.size
+  ) {
+    return false;
+  } else {
+    return true;
+  }
+};
+
+export const validateProductData = (products: ValidateProductInputType) => {
+  if (
+    !products.description ||
+    !products.productName ||
+    !products.price ||
+    !products.quantity ||
+    !products.size||
+    !products.categories
   ) {
     return false;
   } else {
