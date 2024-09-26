@@ -6,9 +6,9 @@ import { BasicButton, Layout, LoadingSpinner } from '@/components';
 import { FormInput, FormRadio } from '../usedProductsUpload';
 
 import { editUsedProducts, getUsedPageMainInfo } from '@/_apis';
-import { initlUsedProduct } from '@/_example';
+import { initUsedProduct } from '@/_example';
 import { UsedProductType } from '@/_typesBundle';
-import { validateProductData } from '@/_utils';
+import { validateUsedProductData } from '@/_utils';
 
 export const UsedProductsEdit = () => {
   const navigate = useNavigate();
@@ -34,7 +34,7 @@ export const UsedProductsEdit = () => {
 
   const onClickMoveUsedMain = () => {
     if (confirm('중고 제품 수정을 취소하겠습니까?')) {
-      setUsedEditProducts(initlUsedProduct);
+      setUsedEditProducts(initUsedProduct);
       navigate(`/used/detail/${productId}`);
     }
   };
@@ -70,7 +70,7 @@ export const UsedProductsEdit = () => {
   const onClickEditUsedProducts = async () => {
     setIsLoading(true);
     if (usedEditProducts !== null) {
-      if (!validateProductData(usedEditProducts)) {
+      if (!validateUsedProductData(usedEditProducts)) {
         setIsLoading(false);
         return alert('모든 필수 필드를 입력해주세요');
       }

@@ -13,8 +13,8 @@ import { validateUserData } from '@/_utils';
 
 export const UsedHome = () => {
   const navigate = useNavigate();
-
   const user = useRecoilValue(userState);
+  
   const [searchResult, setSearchResult] = useState<UsedProductType[]>([]);
   const [isSearching, setIsSearching] = useState(false);
 
