@@ -96,16 +96,6 @@ export const getUsedProducts = async (): Promise<UsedProductType[]> => {
   }
 };
 
-export const getUsedProductDetail = async (productId: string) => {
-  try {
-    const snapshot = await get(ref(database, `usedProducts/${productId}`));
-    if (snapshot.exists()) return snapshot.val();
-  } catch (error) {
-    console.error('중고 상세 페이지 데이터 로드 에러', error);
-    return {};
-  }
-};
-
 export const editUsedProducts = async (editUsedProducts: UsedProductType) => {
   try {
     const { productName, price, quantity } = editUsedProducts;
@@ -133,37 +123,7 @@ export const removeUsedProducts = async () => {
   // 제품삭제는 생각해보자. 꼭 필요한 기능인지
 };
 
-interface GetMyPageDataProps<T> {
-  userId: string;
-  table: string;
-  type?: T;
-}
-interface HasCreatedType { // 제네릭에 필수 타입을 추가해줌
-  createdAt: string[];
-}
 
-export const getMyPageData = async <T extends HasCreatedType>({
-  userId,
-  table,
-}: GetMyPageDataProps<T>): Promise<T[]> => {
-  try {
-    const snapshot = await get(ref(database, `${table}/${userId}`));
-    if (snapshot.exists()) {
-      const data = Object.values(snapshot.val()) as T[];
-      console.log(data);
-      const sortedData: T[] = data.sort(
-        (a, b) =>
-          new Date(b.createdAt.join('')).getTime() -
-          new Date(a.createdAt.join('')).getTime(),
-      );
-      return sortedData;
-    }
-    return [];
-  } catch (error) {
-    console.error('중고 제품 로드 에러', error);
-    return [];
-  }
-};
 
 // UsedComment API
 export interface addUsedCommentProps {
@@ -513,21 +473,6 @@ export const salesProducts = async (
   }
 };
 
-export const getUsedMessageInfo = async (messageId: string) => {
-  try {
-    const messageStatusSnapshot = await get(
-      ref(database, `usedMessages/${messageId}`),
-    );
-    if (messageStatusSnapshot.exists()) {
-      return messageStatusSnapshot.val();
-    }
-    return null;
-  } catch (error) {
-    console.error('쪽지방 상태 불러오기 에러', error);
-    return null;
-  }
-};
-
 export const removeMessage = async ({
   messageId,
   setUser,
@@ -553,5 +498,54 @@ export const removeMessage = async ({
     await update(ref(database), updates);
   } catch (error) {
     console.error('쪽지 삭제 에러', error);
+  }
+};
+
+// GET 중고 상세, 쪽지 정보
+interface GetUsedPageMainInfoType {
+  table: string;
+  id: string;
+}
+export const getUsedPageMainInfo = async <T>({
+  table,
+  id,
+}: GetUsedPageMainInfoType) => {
+  try {
+    const snapshot = await get(ref(database, `${table}/${id}`));
+    if (snapshot.exists()) {
+      return snapshot.val() as T;
+    } else {
+      throw new Error(`${table}/${id} 데이터가 존재하지 않습니다.`);
+    }
+  } catch (error) {
+    console.error(`${table} 데이터 불러오기 에러`, error);
+    return null;
+  }
+};
+
+// 시간순 정렬해서 데이터를 가져오는 함수 
+interface HasCreatedType { // 제네릭에 필수 타입을 추가
+  createdAt: string[];
+}
+export const getUsedPageSortData = async <T extends HasCreatedType>({
+  url,
+}: {
+  url: string;
+}): Promise<T[]> => {
+  try {
+    const snapshot = await get(ref(database, `${url}`));
+    if (snapshot.exists()) {
+      const data = Object.values(snapshot.val()) as T[];
+      const sortedData: T[] = data.sort(
+        (a, b) =>
+          new Date(b.createdAt.join('')).getTime() -
+          new Date(a.createdAt.join('')).getTime(),
+      );
+      return sortedData;
+    }
+    return [];
+  } catch (error) {
+    console.error(error);
+    return [];
   }
 };

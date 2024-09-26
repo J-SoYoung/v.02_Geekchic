@@ -1,10 +1,11 @@
-import { getMyPageData } from '@/_apis';
+import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useParams } from 'react-router-dom';
+
+import { getUsedPageSortData } from '@/_apis';
 import { defaultImage } from '@/_example';
 import { UsedPurchaseListType } from '@/_typesBundle';
 import { Layout, MyProductCard } from '@/components';
-import { useQuery } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 
 const purchasesData = [
   {
@@ -48,11 +49,11 @@ export const PurchaseList = () => {
   } = useQuery({
     queryKey: ['usedPurchase', userId],
     queryFn: async () =>
-      await getMyPageData<UsedPurchaseListType>({
-        userId: userId as string,
-        table: 'usedPurchaseList',
+      await getUsedPageSortData<UsedPurchaseListType>({
+        url: `usedPurchaseList/${userId}`,
       }),
   });
+
   // 제품 구매목록 가지고 와야함 useQuery로
 
   useEffect(() => {

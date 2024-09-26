@@ -7,7 +7,7 @@ import { SearchBar, SearchList, Skeleton } from './index';
 
 import { BasicButton, ErrorPageReload, UsedProductCard } from '@/components';
 import { userState } from '@/_recoil';
-import { getUsedProducts } from '@/_apis';
+import { getUsedPageSortData } from '@/_apis';
 import { UsedProductType } from '@/_typesBundle';
 import { validateUserData } from '@/_utils';
 
@@ -22,9 +22,10 @@ export const UsedHome = () => {
     data: usedProducts,
     isLoading,
     isError,
-  } = useQuery<UsedProductType[], Error>({
+  } = useQuery<UsedProductType[]>({
     queryKey: ['usedProducts'],
-    queryFn: async () => await getUsedProducts(),
+    queryFn: async () =>
+      await getUsedPageSortData<UsedProductType>({ url: 'usedProducts' }),
     retry: 3, // 쿼리옵션-> 요청 3번 재시도
     retryDelay: 1000, // 쿼리옵션-> 재시도 사이의 지연 시간
   });
@@ -54,7 +55,6 @@ export const UsedHome = () => {
       />
     );
   }
-
 
   return (
     <main className='p-11 pb-4 text-right'>
