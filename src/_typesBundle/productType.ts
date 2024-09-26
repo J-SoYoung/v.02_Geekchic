@@ -29,7 +29,7 @@ interface SellsItemType {
   usedProductId: string; // 판매목록id === 제품id
   userId: string;
   sellsQuantity: number;
-  size:string
+  size: string;
   buyerInfo?: {
     // 구매자정보
     address: string;
@@ -83,8 +83,22 @@ interface UsedPurchaseListType {
   purchaseId: string;
   sellerId: string;
   sellerName: string;
-  size:string
+  size: string;
 }
+
+interface SalesInfoType {
+  buyerId: string;
+  sellerId: string;
+  sellerName: string;
+  productsQuantity: number;
+  quantity: number;
+  productId: string;
+  productImage: string;
+  productName: string;
+  price: number;
+  createdAt: string[];
+}
+
 export type {
   UsedProductType,
   CommentType,
@@ -93,4 +107,5 @@ export type {
   MessageResultType,
   MessagesInfoType,
   UsedPurchaseListType,
+  SalesInfoType,
 };
