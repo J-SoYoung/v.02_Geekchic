@@ -15,8 +15,8 @@ import {
 import { uploadCloudImagesArray, uploadUsedProducts } from '@/_apis';
 import { UsedProductType } from '@/_typesBundle';
 import { userState } from '@/_recoil';
-import { initlUsedProduct } from '@/_example';
-import { utcToKoreaTimes, validateProductData } from '@/_utils';
+import { initUsedProduct } from '@/_example';
+import { utcToKoreaTimes, validateUsedProductData } from '@/_utils';
 import { FormRadio } from './FormRadio';
 
 export const UsedProductsUpload = () => {
@@ -24,7 +24,7 @@ export const UsedProductsUpload = () => {
   const [user, setUser] = useRecoilState(userState)
 
   const [usedProducts, setUsedProducts] =
-    useState<UsedProductType>(initlUsedProduct);
+    useState<UsedProductType>(initUsedProduct);
   const [previewImages, setPreviewImages] = useState<string[]>([]);
   const [uploadImages, setUploadImages] = useState<File[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -42,7 +42,7 @@ export const UsedProductsUpload = () => {
 
   const onClickMoveUsedMain = () => {
     if (confirm('중고 제품 업로드를 취소하겠습니까?')) {
-      setUsedProducts(initlUsedProduct);
+      setUsedProducts(initUsedProduct);
       navigate('/used');
     }
   };
@@ -72,7 +72,7 @@ export const UsedProductsUpload = () => {
   const onClickUploadUsedProducts = async () => {
     setIsLoading(true);
 
-    if (!validateProductData(usedProducts)) {
+    if (!validateUsedProductData(usedProducts)) {
       setIsLoading(false);
       return alert('모든 필수 필드를 입력해주세요');
     }

@@ -1,8 +1,8 @@
 import googleLogo from './googleLogo.png';
-import headerIcon from './headerIcon.png';
+import headerLogo from './headerIcon.png';
 import kakaoLogo from './kakaoLogo.png';
 import loginLogo from './loginLogo.png';
 import mainImg from './mainImg.jpg';
 import ErrorImg from './errorImg.webp';
 
-export { googleLogo, headerIcon, kakaoLogo, loginLogo, mainImg, ErrorImg };
+export { googleLogo, headerLogo, kakaoLogo, loginLogo, mainImg, ErrorImg };
