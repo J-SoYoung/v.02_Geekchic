@@ -1,6 +1,7 @@
-import { useRecoilValue } from 'recoil';
-import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
 import { BsSearch } from 'react-icons/bs';
 
 import { userState } from '@/_recoil';
@@ -8,7 +9,8 @@ import { BasicButton } from '@/components';
 import { SearchBar } from '../usedHome';
 import { ProductType } from '@/_typesBundle';
 import { headerLogo, mainImg } from '@/_assets';
-import { CategoriesButton } from './CategoriesButton';
+import { CategoriesButton, ProductCard } from './index';
+import { getUsedPageSortData } from '@/_apis';
 
 export const Home = () => {
   const user = useRecoilValue(userState);
@@ -18,6 +20,11 @@ export const Home = () => {
   const [activeTab, setActiveTab] = useState<
     'outer' | 'top' | 'bottom' | 'shoes' | 'acc' | 'all'
   >('all');
+
+  const { data: products, isPending } = useQuery<ProductType[]>({
+    queryKey: ['products'],
+    queryFn: async () => await getUsedPageSortData<ProductType>({ url: 'products' }),
+  });
 
   const onClickMoveProductUpload = () => {
     navigate('/products/new');
@@ -35,7 +42,7 @@ export const Home = () => {
           />
         </div>
       )}
-      <header className='pt-24 px-8 pb-8 flex flex-col items-center border'>
+      <header className='pt-20 px-8 pb-8 flex flex-col items-center border'>
         <img src={headerLogo} width={'300px'} className='mb-4' />
         {/* 검색바 */}
         <section className='w-full h-[50px] px-4 flex items-center justify-between text-xl bg-[#EEE] rounded-lg'>
@@ -64,7 +71,7 @@ export const Home = () => {
       </div>
 
       <section className='p-8'>
-        <div className='flex justify-start border-b mb-4'>
+        <section className='flex justify-between border-b mb-8'>
           <CategoriesButton
             title='전체'
             value='all'
@@ -101,7 +108,24 @@ export const Home = () => {
             activeTab={activeTab}
             setActiveTab={setActiveTab}
           />
-        </div>
+        </section>
+        <section className=''>
+          {isPending ? (
+            <p>로딩중</p>
+          ) : (
+            <div className='grid grid-cols-4 gap-4 mt-4 mb-24'>
+              {products &&
+                products.map((product: ProductType) => (
+                  <ProductCard
+                    key={product.id}
+                    id={product.id}
+                    image={product.images[0]}
+                    productName={product.productName}
+                  />
+                ))}
+            </div>
+          )}
+        </section>
       </section>
     </div>
   );
