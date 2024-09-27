@@ -16,7 +16,7 @@ export const CategoriesButton = ({
   return (
     <button
       onClick={() => setActiveTab(value)}
-      className={`m-3 ${activeTab === value ? 'px-4 py-1 bg-[#b66cf7] text-white rounded-lg' : 'text-gray-500'}`}
+      className={`m-3 py-1 px-2 hover:bg-gray-100 ${activeTab === value ? 'text-[#b66cf7] font-bold' : 'text-gray-500'}`}
     >
       {title}
     </button>
