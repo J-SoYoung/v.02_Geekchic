@@ -13,7 +13,6 @@ import {
   Mypage,
   OrderDetail,
   Payments,
-  Products,
   ProductsDetail,
   ProductsUpload,
   Profile,
