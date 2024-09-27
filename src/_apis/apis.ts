@@ -12,6 +12,3 @@ export const uploadProducts = async (newProducts: ProductType) => {
   }
 };
 
-export const getProducts = () =>{
-  
-}
