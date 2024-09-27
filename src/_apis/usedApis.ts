@@ -76,25 +76,6 @@ export const searchUsedProducts = async (
   }
 };
 
-export const getUsedProducts = async (): Promise<UsedProductType[]> => {
-  try {
-    const snapshot = await get(ref(database, `usedProducts`));
-    if (snapshot.exists()) {
-      const data = Object.values(snapshot.val()) as UsedProductType[];
-      const sortedData = data.sort(
-        (a, b) =>
-          new Date(b.createdAt.join(' ')).getTime() -
-          new Date(a.createdAt.join(' ')).getTime(),
-      );
-      return sortedData;
-    }
-    return [];
-  } catch (error) {
-    console.error('중고 제품 로드 에러', error);
-    return [];
-  }
-};
-
 export const editUsedProducts = async (editUsedProducts: UsedProductType) => {
   try {
     const { productName, price, quantity } = editUsedProducts;
