@@ -4,6 +4,8 @@ import Icon_King from './king.svg';
 import Icon_Message from './message.svg';
 import Icon_Pencile from './pencil.svg';
 import Icon_Trash from './trash.svg';
+import Icon_Heart from './heart.svg';
+import Icon_FullHeart from './heart_full.svg';
 
 export {
   Icon_Chevron_left,
@@ -12,4 +14,6 @@ export {
   Icon_Message,
   Icon_Pencile,
   Icon_Trash,
+  Icon_Heart,
+  Icon_FullHeart,
 };
