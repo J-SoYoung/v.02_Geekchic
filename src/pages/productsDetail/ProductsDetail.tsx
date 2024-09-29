@@ -17,6 +17,7 @@ import { useRecoilValue } from 'recoil';
 export const ProductsDetail = () => {
   const navigate = useNavigate();
   const user = useRecoilValue(userState);
+
   const queryClient = useQueryClient();
 
   const { productId } = useParams<{ productId: string }>();
@@ -24,7 +25,7 @@ export const ProductsDetail = () => {
   const [selectedSize, setSelectedSize] = useState('');
 
   const { data: currentWishState, isPending: currentWishPending } = useQuery({
-    queryKey: ['wishList', user._id],
+    queryKey: ['wishListState', user._id],
     queryFn: async () =>
       await getWishDataState({
         userId: user._id,
@@ -54,19 +55,19 @@ export const ProductsDetail = () => {
           userId: user._id,
           productId: productId as string,
         });
-        alert('관심물품 추가합니다')
+        alert('관심물품 추가합니다');
       } else {
         await removeWishData({
           userId: user._id,
           productId: productId as string,
         });
-        alert('관심물품 삭제합니다')
+        alert('관심물품 삭제합니다');
       }
     },
     onSuccess: () => {
       queryClient.invalidateQueries(
         {
-          queryKey:  ['wishList', user._id],
+          queryKey: ['wishList', user._id],
           refetchType: 'active',
           exact: true,
         },
