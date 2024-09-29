@@ -11,6 +11,7 @@ interface UserDataType {
   listMessages: string[];
   listPurchases: number;
   listSells: number;
+  isAdmin?: boolean;
 }
 
 export type { UserDataType };

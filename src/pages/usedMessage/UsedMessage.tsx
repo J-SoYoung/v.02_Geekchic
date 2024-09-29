@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { useLocation } from 'react-router-dom';
 
 import {
@@ -14,10 +14,13 @@ import {
   sendMessages,
   getMessages,
   salesProducts,
-  SalesInfoProps,
   getUsedPageMainInfo,
 } from '@/_apis';
-import { MessageResultType, MessagesInfoType } from '@/_typesBundle';
+import {
+  MessageResultType,
+  MessagesInfoType,
+  SalesInfoType,
+} from '@/_typesBundle';
 import { utcToKoreaTimes } from '@/_utils';
 
 export const UsedMessage = () => {
@@ -62,7 +65,7 @@ export const UsedMessage = () => {
     retryDelay: 1000,
   });
 
-  interface sendMessagesMutationTypt {
+  interface sendMessagesMutationType {
     currentMessages: MessagesInfoType;
     messageId: string;
   }
@@ -70,7 +73,7 @@ export const UsedMessage = () => {
     mutationFn: async ({
       currentMessages,
       messageId,
-    }: sendMessagesMutationTypt) => {
+    }: sendMessagesMutationType) => {
       await sendMessages({ currentMessages, messageId });
     },
     onSuccess: () => {
@@ -99,7 +102,7 @@ export const UsedMessage = () => {
   };
 
   const onClickSalesProducts = () => {
-    const salesInfo: SalesInfoProps = {
+    const salesInfo: SalesInfoType = {
       buyerId,
       sellerId,
       sellerName,

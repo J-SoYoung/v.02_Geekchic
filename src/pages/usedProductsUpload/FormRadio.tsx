@@ -28,7 +28,7 @@ export const FormRadio = ({
               className='form-radio'
               checked={selectedValue == option.value}
             />
-            <span className='ml-2'>{option.label}</span>
+            <span className='ml-1 mr-4'>{option.label}</span>
           </label>
         );
       })}

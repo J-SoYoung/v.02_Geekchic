@@ -1,4 +1,4 @@
-import { UsedProductType } from '@/_typesBundle';
+import { ProductType, UsedProductType } from '@/_typesBundle';
 import { UserDataType } from '@/_typesBundle';
 
 export const defaultImage = 'https://via.placeholder.com/150';
@@ -8,7 +8,7 @@ export const initUserData: UserDataType = {
   username: '',
   email: '',
   avatar: '',
-  serviceJoinDate:  ['',''],
+  serviceJoinDate: ['', ''],
   phone: '',
   address: '',
   listCarts: 0,
@@ -17,8 +17,8 @@ export const initUserData: UserDataType = {
   listSells: 0,
 };
 
-export const initlUsedProduct: UsedProductType = {
-  createdAt: ['',''],
+export const initUsedProduct: UsedProductType = {
+  createdAt: ['', ''],
   description: '',
   id: '',
   images: [],
@@ -38,4 +38,16 @@ export const initlUsedProduct: UsedProductType = {
     phone: '',
     address: '',
   },
+};
+
+export const initProduct: ProductType = {
+  categories: '',
+  createdAt: ['', ''],
+  description: '',
+  id: '',
+  images: [],
+  productName: '',
+  price: 1000,
+  quantity: 5,
+  size: '',
 };
