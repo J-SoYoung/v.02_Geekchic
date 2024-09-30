@@ -1,6 +1,8 @@
-import { ProductType } from '@/_typesBundle';
+import { ProductType, UserDataType } from '@/_typesBundle';
 import { database } from './firebase';
 import { get, ref, remove, set, update } from 'firebase/database';
+import { v4 as uuidv4 } from 'uuid';
+import { SetterOrUpdater } from 'recoil';
 
 export const uploadProducts = async (newProducts: ProductType) => {
   try {
@@ -88,6 +90,44 @@ export const getWishDataState = async ({
     }
   } catch (error) {
     console.error('관심물품 상태 에러', error);
+    return false;
+  }
+};
+
+interface CartItemsType {
+  productId: string;
+  userId: string;
+  size: string;
+  quantity: number;
+  createdAt: string[];
+}
+interface AddCartItemsType {
+  cartItems: CartItemsType;
+  setUser: SetterOrUpdater<UserDataType>;
+  user: UserDataType;
+}
+export const addCartItems = async ({
+  cartItems,
+  setUser,
+  user,
+}: AddCartItemsType) => {
+  const { userId, ...filterCartData } = cartItems;
+  const cartsId = uuidv4();
+
+  try {
+    const userSnapshot = await get(ref(database, `users/${userId}`));
+    const userData = userSnapshot.val();
+    const updatedListCarts = (userData.listCarts || 0) + 1;
+
+    const updates = {
+      [`cartList/${userId}/${cartsId}`]: { ...filterCartData },
+      [`users/${userId}/listCarts`]: updatedListCarts,
+    };
+    await update(ref(database), updates);
+    setUser({ ...user, listCarts: updatedListCarts });
+    return true;
+  } catch (error) {
+    console.error('장바구니 담기 에러', error);
     return false;
   }
 };
