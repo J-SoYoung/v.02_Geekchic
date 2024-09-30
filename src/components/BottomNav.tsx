@@ -31,12 +31,6 @@ export const BottomNav = () => {
           pageName={'홈'}
         />
         <BottomNavLinkComp
-          router='/products'
-          icons={ItemsIcon}
-          actIcons={ItemsActIcons}
-          pageName={'상품'}
-        />
-        <BottomNavLinkComp
           router={`/wishlist/${user?._id}`}
           icons={WishIcon}
           actIcons={WishActIcons}
