@@ -23,5 +23,38 @@ interface CartItemType {
   selectedQuantity: number;
   size: string;
 }
+// 결제 타입
+interface PaymentsProductItemsType {
+  cartId: string;
+  description: string;
+  image: string;
+  price: number;
+  productName: string;
+  productId: string;
+  quantity: number;
+  size: string;
+}
+interface PaymentsDataType {
+  paymentsId: string;
+  totalAmount: number;
+  userId: string;
+  paymentsProductItems: PaymentsProductItemsType[];
+}
+interface PaymentsDataInfoType {
+  createdAt: string[];
+  paymentMethod: string;
+  paymentsData: PaymentsDataType;
+  buyerInfo: {
+    buyerName: string;
+    address: string;
+    phone: string;
+  };
+}
 
-export type { ProductType, CartItemType };
+export type {
+  ProductType,
+  CartItemType,
+  PaymentsProductItemsType,
+  PaymentsDataType,
+  PaymentsDataInfoType,
+};

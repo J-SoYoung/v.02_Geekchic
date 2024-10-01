@@ -27,10 +27,9 @@ export const MyProductCard = ({
         />
         <div className='flex flex-col items-start'>
           <h2 className='text-sm font-bold'>{productName}</h2>
-          <p>
-            <span className='text-sm text-gray-500'>{size}</span> |
-            <span className='text-sm text-gray-500'> {quantity}개</span>
-          </p>
+          <span className='text-sm text-gray-500'>
+            {size} | {quantity}개
+          </span>
           <p className='text-base font-bold'>{price.toLocaleString()}원</p>
         </div>
       </div>

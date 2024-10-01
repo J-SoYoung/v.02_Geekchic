@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -23,7 +23,7 @@ export const Carts = () => {
   const [updatedCartItems, setUpdatedCartItems] = useState<CartItemType[]>(
     cartItems || [],
   );
-
+  console.log(cartItems);
   useEffect(() => {
     if (cartItems) {
       setUpdatedCartItems(cartItems);
@@ -50,6 +50,7 @@ export const Carts = () => {
   const onClickMovePaymentsPage = async () => {
     const paymentsId = uuidv4();
     const paymentsProductItems = updatedCartItems.map((item) => ({
+      cartId: item.cartId,
       description: item.description,
       image: item.images[0],
       price: item.price,
@@ -72,6 +73,11 @@ export const Carts = () => {
     <Layout title='장바구니'>
       {isPending ? (
         <p>로딩중</p>
+      ) : cartItems === undefined ? (
+        <div>
+          <p>장바구니가 비었습니다.</p>
+          <Link to='/' className='my-4 font-bold'>제품 구경하러 가기</Link>
+        </div>
       ) : (
         <div>
           <div className='border-b py-8'>
