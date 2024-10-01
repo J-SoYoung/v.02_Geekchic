@@ -1,5 +1,5 @@
 import { atom } from 'recoil';
-import { UserDataType } from '@/_typesBundle';
+import { ProductType, UserDataType } from '@/_typesBundle';
 
 // 유저 데이터 초기화
 export const getEmptyUserData = (): UserDataType => ({
@@ -8,7 +8,7 @@ export const getEmptyUserData = (): UserDataType => ({
   avatar: '',
   email: '',
   phone: '',
-  serviceJoinDate: '',
+  serviceJoinDate: ['',''],
   username: '',
   listCarts: 0,
   listMessages: [],
@@ -24,7 +24,7 @@ export const userState = atom<UserDataType>({
     avatar: '',
     email: '',
     phone: '',
-    serviceJoinDate: '',
+    serviceJoinDate: ['',''],
     username: '',
     listCarts: 0,
     listMessages: [],

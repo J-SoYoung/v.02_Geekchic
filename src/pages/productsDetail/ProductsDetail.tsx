@@ -1,4 +1,5 @@
 import {
+  addCartItems,
   addWishList,
   getUsedPageMainInfo,
   getWishDataState,
@@ -12,17 +13,17 @@ import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { CommentInput, CommentsList } from '../usedProductsDetail';
 import { userState } from '@/_recoil';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
+import { utcToKoreaTimes, validateCartItems } from '@/_utils';
 
 export const ProductsDetail = () => {
   const navigate = useNavigate();
-  const user = useRecoilValue(userState);
-
+  const [user, setUser] = useRecoilState(userState);
   const queryClient = useQueryClient();
-
   const { productId } = useParams<{ productId: string }>();
 
   const [selectedSize, setSelectedSize] = useState('');
+  const [selectedQuantity, setSelectedQuantity] = useState(0);
 
   const { data: currentWishState, isPending: currentWishPending } = useQuery({
     queryKey: ['wishListState', user._id],
@@ -67,7 +68,7 @@ export const ProductsDetail = () => {
     onSuccess: () => {
       queryClient.invalidateQueries(
         {
-          queryKey: ['wishList', user._id],
+          queryKey: ['wishListState', user._id],
           refetchType: 'active',
           exact: true,
         },
@@ -75,13 +76,35 @@ export const ProductsDetail = () => {
       );
     },
   });
-
   const onClickWishProduct = async () => {
     wishProductMutation.mutate();
   };
 
+  const onClickAddCart = async () => {
+    if (!validateCartItems(selectedSize, selectedQuantity)) return;
+    const cartItems = {
+      productId: productId as string,
+      userId: user._id,
+      size: selectedSize,
+      selectedQuantity: selectedQuantity,
+      createdAt: utcToKoreaTimes(),
+    };
+    try {
+      const cartSaveResult = await addCartItems({ cartItems, setUser, user });
+      if (cartSaveResult) {
+        if (
+          confirm('장바구니에 담겼습니다. 장바구니 페이지로 이동하시겠습니까?')
+        ) {
+          navigate(`/my/carts/${user._id}`);
+        }
+      } else alert('장바구니 추가에 실패했습니다. 다시 시도해 주세요.');
+    } catch (error) {
+      console.error('장바구니 추가 중 에러가 발생했습니다', error);
+      alert('오류가 발생했습니다. 나중에 다시 시도해 주세요.');
+    }
+  };
+
   const onClickPurchaseProduct = () => {};
-  const onClickAddCart = () => {};
 
   if (isPending && currentWishPending) {
     return <p>로딩중</p>;
@@ -134,8 +157,8 @@ export const ProductsDetail = () => {
       </section>
 
       {/* purchases */}
-      <section className='p-8'>
-        <div className='mb-8'>
+      <section className='p-8 mb-20'>
+        <div className='w-3/4 mb-8'>
           <label
             htmlFor='sizeSelect'
             className='block mb-2 text-sm font-medium text-gray-900'
@@ -159,7 +182,26 @@ export const ProductsDetail = () => {
               ))}
           </select>
         </div>
-        <div className='mb-8 flex'>
+        <div className='w-3/4 mb-8'>
+          <label
+            htmlFor='sizeSelect'
+            className='block mb-2 text-sm font-medium text-gray-900'
+          >
+            수량 선택
+          </label>
+          <input
+            type='number'
+            placeholder='수량을 선택해주세요'
+            value={selectedQuantity}
+            onChange={(e) => {
+              setSelectedQuantity(Number(e.target.value));
+            }}
+            className='border block w-full p-3 bg-gray-100 border border-gray-300 text-gray-900 text-m rounded-lg '
+            min={0}
+            max={product?.quantity}
+          />
+        </div>
+        <div className='py-8 flex'>
           <BasicButton
             onClickFunc={onClickAddCart}
             text={'장바구니'}

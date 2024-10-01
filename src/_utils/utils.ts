@@ -34,7 +34,7 @@ export const validateProductData = (products: ValidateProductInputType) => {
     !products.productName ||
     !products.price ||
     !products.quantity ||
-    !products.size||
+    !products.size ||
     !products.categories
   ) {
     return false;
@@ -54,6 +54,14 @@ export const validateUserData = (user: UserDataType) => {
 export const validateUsedComment = (comment: string) => {
   if (comment.length < 5) {
     return alert('댓글은 5자 이상 입력해주세요');
+  } else {
+    return true;
+  }
+};
+
+export const validateCartItems = (size: string, quantity: number) => {
+  if (size === '' || quantity === 0) {
+    return alert('구매하시려는 사이즈 또는 수량을 확인해주세요');
   } else {
     return true;
   }
