@@ -86,7 +86,7 @@ export const ProductsDetail = () => {
       productId: productId as string,
       userId: user._id,
       size: selectedSize,
-      quantity: selectedQuantity,
+      selectedQuantity: selectedQuantity,
       createdAt: utcToKoreaTimes(),
     };
     try {
