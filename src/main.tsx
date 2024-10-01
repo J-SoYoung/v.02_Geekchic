@@ -40,7 +40,7 @@ const router = createBrowserRouter([
       { path: '/products/detail/:productId', element: <ProductsDetail /> },
       { path: '/wishlist/:userId', element: <WishList /> },
       { path: '/orders/:orderId', element: <OrderDetail /> },
-      { path: '/payments/:orderId', element: <Payments /> },
+      { path: '/payments/:paymentsId', element: <Payments /> },
       { path: '/used', element: <UsedHome /> },
       { path: '/used/new', element: <UsedProductsUpload /> },
       { path: '/used/edit/:productId', element: <UsedProductsEdit /> },
