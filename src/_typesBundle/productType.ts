@@ -10,4 +10,18 @@ interface ProductType {
   size: string;
 }
 
-export type { ProductType };
+interface CartItemType {
+  cartId: string;
+  categories: string;
+  createdAt: string[];
+  description: string;
+  id: string;
+  images: string[];
+  price: number;
+  productName: string;
+  quantity: number;
+  selectedQuantity: number;
+  size: string;
+}
+
+export type { ProductType, CartItemType };
