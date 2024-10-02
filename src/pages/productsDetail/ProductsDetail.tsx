@@ -1,3 +1,10 @@
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
+import { v4 as uuidv4 } from 'uuid';
+
+import { CommentInput, CommentsList } from '../usedProductsDetail';
 import {
   addCartItems,
   addWishList,
@@ -8,12 +15,7 @@ import {
 import { Icon_Chevron_left, Icon_FullHeart, Icon_Heart } from '@/_assets';
 import { ProductType } from '@/_typesBundle';
 import { BasicButton } from '@/components';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { CommentInput, CommentsList } from '../usedProductsDetail';
 import { userState } from '@/_recoil';
-import { useRecoilState } from 'recoil';
 import { utcToKoreaTimes, validateCartItems } from '@/_utils';
 
 export const ProductsDetail = () => {
@@ -103,8 +105,29 @@ export const ProductsDetail = () => {
       alert('오류가 발생했습니다. 나중에 다시 시도해 주세요.');
     }
   };
-
-  const onClickPurchaseProduct = () => {};
+  const onClickPurchaseProduct = () => {
+    if (!validateCartItems(selectedSize, selectedQuantity)) return;
+    const paymentsId = uuidv4();
+    const paymentsData = {
+      paymentsId,
+      userId: user._id,
+      totalAmount: product?.price,
+      paymentsProductItems: [
+        {
+          description: product?.description,
+          image: product?.images[0],
+          price: product?.price,
+          productName: product?.productName,
+          productId: product?.id,
+          quantity: selectedQuantity,
+          size: selectedSize,
+        },
+      ],
+    };
+    navigate(`/payments/${paymentsId}`, {
+      state: { paymentsData, from: `/products/detail/${product?.id}` },
+    });
+  };
 
   if (isPending && currentWishPending) {
     return <p>로딩중</p>;

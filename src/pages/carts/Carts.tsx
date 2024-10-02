@@ -66,7 +66,9 @@ export const Carts = () => {
       totalAmount: totalPrice,
       paymentsProductItems, 
     };
-    navigate(`/payments/${paymentsId}`, { state: { paymentsData } });
+    navigate(`/payments/${paymentsId}`, {
+      state: { paymentsData, from: `/my/carts/${userId}` },
+    });
   };
 
   return (
@@ -76,7 +78,9 @@ export const Carts = () => {
       ) : cartItems === undefined ? (
         <div>
           <p>장바구니가 비었습니다.</p>
-          <Link to='/' className='my-4 font-bold'>제품 구경하러 가기</Link>
+          <Link to='/' className='my-4 font-bold'>
+            제품 구경하러 가기
+          </Link>
         </div>
       ) : (
         <div>
