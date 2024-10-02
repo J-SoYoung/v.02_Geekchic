@@ -9,15 +9,15 @@ import { PaymentsProductItemsType } from '@/_typesBundle';
 
 export const Payments = () => {
   const location = useLocation();
-  const { paymentsData } = location.state;
+  const { paymentsData, from } = location.state;
   const navigate = useNavigate();
 
   const [user, setUser] = useRecoilState(userState);
   const [paymentMethod, setPaymentMethod] = useState('');
 
   const onClickMoveToMain = () => {
-    if (confirm('주문 데이터가 초기화됩니다. 메인으로 이동하시겠습니까?')) {
-      return navigate(`/my/carts/${user._id}`);
+    if (confirm('주문 데이터가 초기화됩니다. 페이지를 이동하시겠습니까?')) {
+      return navigate(from);
     }
   };
   const onClickPayments = async () => {
@@ -64,6 +64,7 @@ export const Payments = () => {
               </div>
             ),
           )}
+
           {/* 총금액 */}
           <div className='py-4 text-center bg-gray-200'>
             <span className='inline-block mr-4 text-gray-600'>상품 합계</span>
