@@ -1,11 +1,13 @@
+import { useNavigate } from "react-router-dom";
+
 interface MyProductCardPropsType {
   createdAt: string[];
   productImage: string;
   productName: string;
   price: number;
-  quantity: number; 
-  isCarts?: boolean; // 장바구니 페이지인지 여부
+  quantity: number;
   size: string;
+  paymentsId?: string;
 }
 
 export const MyProductCard = ({
@@ -15,11 +17,13 @@ export const MyProductCard = ({
   size,
   quantity,
   price,
+  paymentsId,
 }: MyProductCardPropsType) => {
+  const navigate = useNavigate()
   return (
     <div className='flex flex-col items-start p-4 rounded-md border-b'>
       <p className='text-m text-gray-500 mb-2'>{createdAt[0]}</p>
-      <div className='flex '>
+      <div className='w-full flex relative'>
         <img
           src={productImage}
           alt={productName}
@@ -27,12 +31,12 @@ export const MyProductCard = ({
         />
         <div className='flex flex-col items-start'>
           <h2 className='text-sm font-bold'>{productName}</h2>
-          <p>
-            <span className='text-sm text-gray-500'>{size}</span> |
-            <span className='text-sm text-gray-500'> {quantity}개</span>
-          </p>
+          <span className='text-sm text-gray-500'>
+            {size} | {quantity}개
+          </span>
           <p className='text-base font-bold'>{price.toLocaleString()}원</p>
         </div>
+        {paymentsId && <button onClick={()=>navigate(`/my/purchases/detail/${paymentsId}`)} className="absolute right-0 text-sm">주문 상세내역 보기</button>}
       </div>
     </div>
   );

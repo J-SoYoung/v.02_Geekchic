@@ -3,44 +3,27 @@ import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 
 import { getUsedPageSortData } from '@/_apis';
-import { defaultImage } from '@/_example';
-import { UsedPurchaseListType } from '@/_typesBundle';
+import { PaymentsDataInfoType, UsedPurchaseListType } from '@/_typesBundle';
 import { Layout, MyProductCard } from '@/components';
 
-const purchasesData = [
-  {
-    createdAt: ['2024-09-25', '11:50:10'],
-    price: 120000,
-    productId: '나이키 V2K 런',
-    productImage: defaultImage,
-    productName: '나이키 V2K 런',
-    productsQuantity: 1,
-    purchaseId: 'purchase1',
-    sellerId: 'thdud1',
-    sellerName: '소영',
-    title: 'shoese',
-    size: '250',
-  },
-  {
-    createdAt: ['2024-09-26', '11:50:10'],
-    price: 120000,
-    productId: '나이키 V2K 런',
-    productImage: defaultImage,
-    productName: '나이키 V2K 런',
-    productsQuantity: 1,
-    purchaseId: 'purchase2',
-    sellerId: 'thdud1',
-    sellerName: '소영',
-    title: 'shoese',
-    size: '250',
-  },
-];
+interface CombinedDataType {
+  createdAt: string[];
+  price: number;
+  productId: string;
+  productImage: string;
+  productName: string;
+  productsQuantity: number;
+  size: string;
+  paymentsId?: string;
+  purchaseId?: string;
+}
+
 export const PurchaseList = () => {
   const { userId } = useParams<string>();
   const [activeTab, setActiveTab] = useState<
     'all' | 'products' | 'usedProducts'
   >('all');
-  const [filteredData, setFilteredData] = useState<UsedPurchaseListType[]>([]);
+  const [filteredData, setFilteredData] = useState<CombinedDataType[]>([]);
 
   const {
     data: usedPurchasesData,
@@ -54,24 +37,46 @@ export const PurchaseList = () => {
       }),
   });
 
-  // 제품 구매목록 가지고 와야함 useQuery로
+  const { data: purchasesDataInitial } = useQuery({
+    queryKey: ['purchaselist', userId],
+    queryFn: async () =>
+      await getUsedPageSortData<PaymentsDataInfoType>({
+        url: `purchaseList/${userId}`,
+      }),
+  });
+
+  const transformedpurchasesData = purchasesDataInitial?.flatMap((purchase) => {
+    return purchase.paymentsData.paymentsProductItems.map((item) => ({
+      createdAt: purchase.createdAt,
+      paymentsId: purchase.paymentsData.paymentsId,
+      price: item.price,
+      productId: item.productId,
+      productImage: item.image,
+      productName: item.productName,
+      productsQuantity: item.quantity,
+      size: item.size,
+    }));
+  });
 
   useEffect(() => {
-    if (usedPurchasesData && purchasesData) {
+    if (usedPurchasesData && transformedpurchasesData) {
       if (activeTab === 'all') {
-        const combineData = [...usedPurchasesData, ...purchasesData].sort(
+        const combineData: CombinedDataType[] = [
+          ...usedPurchasesData,
+          ...transformedpurchasesData,
+        ].sort(
           (a, b) =>
             new Date(b.createdAt.join('')).getTime() -
             new Date(a.createdAt.join('')).getTime(),
         );
         setFilteredData(combineData);
       } else if (activeTab === 'products') {
-        setFilteredData(purchasesData);
+        setFilteredData(transformedpurchasesData);
       } else if (activeTab === 'usedProducts') {
         setFilteredData(usedPurchasesData);
       }
     }
-  }, [purchasesData, usedPurchasesData, activeTab]);
+  }, [purchasesDataInitial, usedPurchasesData, activeTab]);
 
   return (
     <Layout title='구매목록'>
@@ -99,15 +104,16 @@ export const PurchaseList = () => {
         <p>로딩중.</p>
       ) : (
         <div>
-          {filteredData.map((data) => (
+          {filteredData.map((data, idx) => (
             <MyProductCard
-              key={data.purchaseId}
+              key={idx}
               createdAt={data.createdAt}
               productImage={data.productImage}
               productName={data.productName}
               size={data.size}
               quantity={data.productsQuantity}
               price={data.price}
+              paymentsId={data.paymentsId}
             />
           ))}
         </div>

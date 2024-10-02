@@ -1,4 +1,8 @@
-import { ProductType, UserDataType } from '@/_typesBundle';
+import {
+  PaymentsDataInfoType,
+  ProductType,
+  UserDataType,
+} from '@/_typesBundle';
 import { database } from './firebase';
 import { get, ref, remove, set, update } from 'firebase/database';
 import { v4 as uuidv4 } from 'uuid';
@@ -164,29 +168,65 @@ export const getCartLists = async (userId: string) => {
   }
 };
 
-interface PaymentDataInfoType {
-  userId: string;
-  createdAt: string[];
-  paymentMethod: string;
-  paymentsData: {
-    purchaseId: string;
-    totalAmount: number;
-    paymentsProductItems: {
-      description: string;
-      image: string;
-      price: number;
-      productName: string;
-      productId: string;
-      quantity: number;
-      size: string;
-    };
-  }[];
-}
-
-export const paymentProducts = async (paymentInfo: PaymentDataInfoType) => {
+export const paymentProducts = async (
+  paymentInfo: PaymentsDataInfoType,
+  user: UserDataType,
+  setUser: SetterOrUpdater<UserDataType>,
+) => {
   try {
-    console.log(paymentInfo);
+    // 제품product 수량 업데이트
+    // 유저user 구매목록/장바구니 데이터 추가 및 삭제
+    // 구매목록purchaseList db 추가
+    // 장바구니cartList 목록 삭제
+    const { paymentsData } = paymentInfo;
+    const { userId, paymentsId } = paymentsData;
+
+    // 제품 수량 업데이트, 장바구니 데이터 삭제
+    const productQuantityUpdate = paymentsData.paymentsProductItems.map(
+      async (item) => {
+        const productId = item.productId;
+        const productSnapshot = await get(
+          ref(database, `products/${productId}`),
+        );
+        if (productSnapshot.exists()) {
+          const productData = productSnapshot.val();
+          const updatedQuantity = productData.quantity - item.quantity;
+
+          return {
+            [`products/${productId}/quantity`]: updatedQuantity,
+            [`cartList/${userId}/${item.cartId}`]: null,
+          };
+        }
+      },
+    );
+    const updates = await Promise.all(productQuantityUpdate);
+
+    // 유저데이터 업데이트 - 구매목록/장바구니 갯수
+    const userSnapshot = await get(
+      ref(database, `users/${userId}/listPurchases`),
+    );
+    const currentListPurchases = userSnapshot.exists() ? userSnapshot.val() : 0;
+    const currentListCarts = userSnapshot.exists() ? userSnapshot.val() : 0;
+
+    let updatesDatabase = {
+      [`users/${userId}/listPurchases`]: currentListPurchases + 1,
+      [`purchaseList/${userId}/${paymentsId}`]: { ...paymentInfo },
+    };
+    updates.forEach((update) => {
+      if (update) {
+        Object.assign(updatesDatabase, update);
+      }
+    });
+
+    await update(ref(database), updatesDatabase);
+    setUser({ // recoil업데이트
+      ...user,
+      listPurchases: currentListPurchases + 1,
+      listCarts: currentListCarts - paymentsData.paymentsProductItems.length,
+    });
+    return true;
   } catch (error) {
     console.error('제품 결제하기 에러', error);
+    return false;
   }
 };
