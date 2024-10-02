@@ -49,10 +49,10 @@ const router = createBrowserRouter([
       { path: '/my/:userId', element: <Mypage /> },
       { path: '/my/profile/:userId', element: <Profile /> },
       { path: '/my/sellsList/:userId', element: <SellsList /> },
-      { path: '/my/purchasesList/:userId', element: <PurchaseList /> },
       { path: '/my/carts/:userId', element: <Carts /> },
       { path: '/my/messagesList/:userId', element: <UsedMessageList /> },
-      { path: '/my/purchases/detail/:userId', element: <PurchaseDetail /> },
+      { path: '/my/purchasesList/:userId', element: <PurchaseList /> },
+      { path: '/my/purchases/detail/:paymentsId', element: <PurchaseDetail /> },
     ],
   },
 ]);
