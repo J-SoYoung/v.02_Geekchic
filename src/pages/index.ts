@@ -2,7 +2,6 @@ import Carts from './carts';
 import Home from './home';
 import Login from './login';
 import Mypage from './mypage';
-import OrderDetail from './orderDetail';
 import Payments from './payments';
 import ProductsDetail from './productsDetail';
 import ProductsUpload from './productsUpload';
@@ -23,7 +22,6 @@ export {
   Home,
   Login,
   Mypage,
-  OrderDetail,
   Payments,
   ProductsDetail,
   ProductsUpload,
