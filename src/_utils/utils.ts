@@ -51,7 +51,7 @@ export const validateUserData = (user: UserDataType) => {
   }
 };
 
-export const validateUsedComment = (comment: string) => {
+export const validateComment = (comment: string) => {
   if (comment.length < 5) {
     return alert('댓글은 5자 이상 입력해주세요');
   } else {

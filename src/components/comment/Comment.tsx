@@ -2,24 +2,31 @@ import { useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { CommentButton } from './index';
+import { CommentButton } from './CommentButton';
 
 import { userState } from '@/_recoil';
 import { CommentType } from '@/_typesBundle';
-import {
-  editUsedComment,
-  EditUsedCommentProps,
-  removeUsedComment,
-  removeUsedCommentProps,
-} from '@/_apis';
-import { validateUsedComment } from '@/_utils';
+import { editComments, removeComment } from '@/_apis';
+import { validateComment } from '@/_utils';
 
 interface CommentProps {
   comment: CommentType;
   productId: string;
+  queryKeys: string;
+  url: string;
+}
+interface EditCommentProps {
+  productId: string;
+  commentId: string;
+  editCommentData: CommentType;
 }
 
-export const Comment = ({ comment, productId }: CommentProps) => {
+export const Comment = ({
+  comment,
+  productId,
+  url,
+  queryKeys,
+}: CommentProps) => {
   const user = useRecoilValue(userState);
   const [isCommentEdit, setIsCommentEdit] = useState(false);
   const [editComment, setEditComment] = useState('');
@@ -27,18 +34,14 @@ export const Comment = ({ comment, productId }: CommentProps) => {
   const queryClient = useQueryClient();
 
   const editCommentMutation = useMutation({
-    mutationFn: async ({
-      productId,
-      commentId,
-      editCommentData,
-    }: EditUsedCommentProps) => {
-      await editUsedComment({ productId, commentId, editCommentData });
+    mutationFn: async ({ commentId, editCommentData }: EditCommentProps) => {
+      await editComments({ url: `${url}/${commentId}`, editCommentData });
     },
     onSuccess: () => {
       setIsCommentEdit(false);
       queryClient.invalidateQueries(
         {
-          queryKey: ['usedComments', productId],
+          queryKey: [queryKeys, productId],
           refetchType: 'active',
           exact: true,
         },
@@ -47,7 +50,7 @@ export const Comment = ({ comment, productId }: CommentProps) => {
     },
   });
   const onClickEditComment = (commentId: string) => {
-    if (!validateUsedComment(editComment)) return;
+    if (!validateComment(editComment)) return;
 
     const editCommentData = {
       ...comment,
@@ -61,13 +64,13 @@ export const Comment = ({ comment, productId }: CommentProps) => {
   };
 
   const removeCommentMutation = useMutation({
-    mutationFn: async ({ productId, commentId }: removeUsedCommentProps) => {
-      await removeUsedComment({ productId, commentId });
+    mutationFn: async ({ commentId }: { commentId: string }) => {
+      await removeComment(`${url}/${commentId}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(
         {
-          queryKey: ['usedComments', productId],
+          queryKey: [queryKeys, productId],
           refetchType: 'active',
           exact: true,
         },
@@ -77,10 +80,7 @@ export const Comment = ({ comment, productId }: CommentProps) => {
   });
   const onClickRemoveComment = (commentId: string) => {
     if (confirm('댓글을 삭제하시겠습니까?')) {
-      removeCommentMutation.mutate({
-        productId: productId as string,
-        commentId,
-      });
+      removeCommentMutation.mutate({ commentId });
     }
   };
 
@@ -124,9 +124,7 @@ export const Comment = ({ comment, productId }: CommentProps) => {
                 </>
               ))}
           </div>
-          <div className='text-sm text-gray-500'>
-            {comment.createdAt[0]}
-          </div>
+          <div className='text-sm text-gray-500'>{comment.createdAt[0]}</div>
         </div>
 
         {isCommentEdit ? (

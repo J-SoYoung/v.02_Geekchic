@@ -39,14 +39,6 @@ interface SellsItemType {
     username: string;
   }[];
 }
-interface CommentType {
-  commentId?: string;
-  userId: string;
-  username: string;
-  avatar: string;
-  comment: string;
-  createdAt: string[];
-}
 interface MessageType {
   messageId: string;
   productId: string;
@@ -101,7 +93,6 @@ interface SalesInfoType {
 
 export type {
   UsedProductType,
-  CommentType,
   SellsItemType,
   MessageType,
   MessageResultType,

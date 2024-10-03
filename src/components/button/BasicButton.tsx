@@ -14,7 +14,7 @@ export const BasicButton = ({
   return (
     <button
       onClick={onClickFunc}
-      className={`${!width? 'w-full': `${width}`} h-[50px] mb-2 border rounded-md text-white ${bg}`}
+      className={`${!width? 'w-full': `${width}`} h-[50px] border rounded-md text-white ${bg}`}
     >
       {text}
     </button>

@@ -1,8 +1,7 @@
-import { get, push, ref, remove, set, update } from 'firebase/database';
+import { get, push, ref, set, update } from 'firebase/database';
 import { database } from './firebase';
 import { v4 as uuidv4 } from 'uuid';
 import {
-  CommentType,
   MessageResultType,
   MessagesInfoType,
   MessageType,
@@ -103,78 +102,6 @@ export const removeUsedProducts = async () => {
   // 제품삭제는 생각해보자. 꼭 필요한 기능인지
 };
 
-
-
-// UsedComment API
-export interface addUsedCommentProps {
-  productId: string;
-  comment: CommentType;
-}
-export interface removeUsedCommentProps {
-  productId: string;
-  commentId: string;
-}
-export interface EditUsedCommentProps {
-  productId: string;
-  commentId: string;
-  editCommentData: CommentType;
-}
-
-export const getUsedComment = async (productId: string) => {
-  try {
-    const commentsSnapshot = await get(
-      ref(database, `usedComments/${productId}`),
-    );
-    if (commentsSnapshot.exists()) {
-      const data = Object.values(commentsSnapshot.val()) as CommentType[];
-      const sortedData = data.sort(
-        (a, b) =>
-          new Date(b.createdAt.join(' ')).getTime() -
-          new Date(a.createdAt.join(' ')).getTime(),
-      );
-      return sortedData;
-    }
-    return [];
-  } catch (error) {
-    console.error('댓글 불러오기 에러', error);
-    return [];
-  }
-};
-
-export const addUsedComment = ({ productId, comment }: addUsedCommentProps) => {
-  try {
-    const commentRef = ref(database, `usedComments/${productId}`);
-    const newCommentRef = push(commentRef);
-    return set(newCommentRef, { ...comment, commentId: newCommentRef.key });
-  } catch (error) {
-    console.error('중고제품 댓글 추가 에러', error);
-  }
-};
-
-export const removeUsedComment = async ({
-  productId,
-  commentId,
-}: removeUsedCommentProps) => {
-  try {
-    const commentRef = ref(database, `usedComments/${productId}/${commentId}`);
-    return remove(commentRef);
-  } catch (error) {
-    console.error('중고제품 댓글삭제 에러', error);
-  }
-};
-
-export const editUsedComment = async ({
-  productId,
-  commentId,
-  editCommentData,
-}: EditUsedCommentProps) => {
-  try {
-    const commentRef = ref(database, `usedComments/${productId}/${commentId}`);
-    return await update(commentRef, editCommentData);
-  } catch (error) {
-    console.error('중고제품 댓글수정 에러', error);
-  }
-};
 
 // Messages API
 interface checkMessageProps {

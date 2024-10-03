@@ -3,25 +3,25 @@ import { useRecoilValue } from 'recoil';
 import { useParams } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { addUsedComment, addUsedCommentProps } from '@/_apis';
+import { addComment } from '@/_apis';
 import { userState } from '@/_recoil';
 import { CommentType } from '@/_typesBundle';
-import { utcToKoreaTimes, validateUsedComment } from '@/_utils';
+import { utcToKoreaTimes, validateComment } from '@/_utils';
 
-export const CommentInput = () => {
+export const CommentInput = ({ url, queryKeys }: { url: string; queryKeys: string }) => {
   const { productId } = useParams<{ productId: string }>();
   const user = useRecoilValue(userState);
   const [newComment, setNewComment] = useState('');
   const queryClient = useQueryClient();
 
   const addCommentMutation = useMutation({
-    mutationFn: async ({ productId, comment }: addUsedCommentProps) => {
-      await addUsedComment({ productId, comment });
+    mutationFn: async ({ comment }: { comment: CommentType }) => {
+      await addComment({ url, comment });
     },
     onSuccess: () => {
       queryClient.invalidateQueries(
         {
-          queryKey: ['usedComments', productId],
+          queryKey: [queryKeys, productId],
           refetchType: 'active',
           exact: true,
         },
@@ -31,7 +31,7 @@ export const CommentInput = () => {
   });
 
   const onClickAddComment = () => {
-    if (!validateUsedComment(newComment)) return;
+    if (!validateComment(newComment)) return;
 
     const newCommentData: CommentType = {
       userId: user._id,
@@ -40,10 +40,7 @@ export const CommentInput = () => {
       comment: newComment,
       createdAt: utcToKoreaTimes(),
     };
-    addCommentMutation.mutate({
-      productId: productId as string,
-      comment: newCommentData,
-    });
+    addCommentMutation.mutate({ comment: newCommentData });
     setNewComment('');
   };
 
