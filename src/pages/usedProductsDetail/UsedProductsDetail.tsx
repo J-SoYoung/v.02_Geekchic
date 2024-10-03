@@ -4,9 +4,11 @@ import { useQuery } from '@tanstack/react-query';
 import { useRecoilState } from 'recoil';
 import { v4 as uuidv4 } from 'uuid';
 
-import { CommentInput, CommentsList, Skeleton } from './index';
+import { Skeleton } from './Skeleton';
 
 import {
+  CommentInput,
+  CommentsList,
   ErrorPageReload,
   LoadingSpinner,
   UserProfileInfoComp,
@@ -182,8 +184,14 @@ export const UsedProductsDetail = () => {
               <div className='py-8'>{usedProduct.description}</div>
             </section>
 
-            <CommentsList />
-            <CommentInput />
+            <CommentsList
+              url={`usedComments/${productId}`}
+              queryKeys={'usedComments'}
+            />
+            <CommentInput
+              url={`usedComments/${productId}`}
+              queryKeys={'usedComments'}
+            />
           </article>
         </>
       )}
