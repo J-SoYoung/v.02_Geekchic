@@ -9,7 +9,6 @@ interface ProductType {
   quantity: number;
   size: string;
 }
-
 interface CartItemType {
   cartId: string;
   categories: string;
@@ -51,10 +50,20 @@ interface PaymentsDataInfoType {
   };
 }
 
+interface CommentType {
+  commentId?: string;
+  userId: string;
+  username: string;
+  avatar: string;
+  comment: string;
+  createdAt: string[];
+}
+
 export type {
   ProductType,
   CartItemType,
   PaymentsProductItemsType,
   PaymentsDataType,
   PaymentsDataInfoType,
+  CommentType
 };

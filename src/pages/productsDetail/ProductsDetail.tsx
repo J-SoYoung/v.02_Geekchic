@@ -4,7 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { v4 as uuidv4 } from 'uuid';
 
-import { CommentInput, CommentsList } from '../usedProductsDetail';
+import { BasicButton, CommentInput, CommentsList } from '@/components';
 import {
   addCartItems,
   addWishList,
@@ -14,7 +14,6 @@ import {
 } from '@/_apis';
 import { Icon_Chevron_left, Icon_FullHeart, Icon_Heart } from '@/_assets';
 import { ProductType } from '@/_typesBundle';
-import { BasicButton } from '@/components';
 import { userState } from '@/_recoil';
 import { utcToKoreaTimes, validateCartItems } from '@/_utils';
 
@@ -180,7 +179,7 @@ export const ProductsDetail = () => {
       </section>
 
       {/* purchases */}
-      <section className='p-8 mb-20'>
+      <section className='p-8'>
         <div className='w-3/4 mb-8'>
           <label
             htmlFor='sizeSelect'
@@ -224,7 +223,7 @@ export const ProductsDetail = () => {
             max={product?.quantity}
           />
         </div>
-        <div className='py-8 flex'>
+        <div className='pt-4 flex'>
           <BasicButton
             onClickFunc={onClickAddCart}
             text={'장바구니'}
@@ -240,8 +239,8 @@ export const ProductsDetail = () => {
 
       {/* comment  */}
       <section className='p-8'>
-        {/* <CommentsList /> */}
-        <CommentInput />
+        <CommentsList url={`comments/${productId}`} queryKeys={'commentsData'}/>
+        <CommentInput url={`comments/${productId}`} queryKeys={'commentsData'} />
       </section>
     </main>
   );

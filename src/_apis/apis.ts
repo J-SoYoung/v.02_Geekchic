@@ -1,10 +1,12 @@
 import {
+  CommentType,
   PaymentsDataInfoType,
   ProductType,
+  UsedProductType,
   UserDataType,
 } from '@/_typesBundle';
 import { database } from './firebase';
-import { get, ref, remove, set, update } from 'firebase/database';
+import { get, push, ref, remove, set, update } from 'firebase/database';
 import { v4 as uuidv4 } from 'uuid';
 import { SetterOrUpdater } from 'recoil';
 
@@ -17,6 +19,7 @@ export const uploadProducts = async (newProducts: ProductType) => {
   }
 };
 
+// 관심물픔 [ 추가 / 제거 / 리스트 가져오기 / 한개 가져오기 ]
 export const addWishList = async ({
   userId,
   productId,
@@ -111,6 +114,7 @@ interface AddCartItemsType {
   user: UserDataType;
 }
 
+// 장바구니 
 export const addCartItems = async ({
   cartItems,
   setUser,
@@ -138,7 +142,6 @@ export const addCartItems = async ({
 };
 
 type CartDataType = Omit<CartItemsType, 'userId'>;
-
 export const getCartLists = async (userId: string) => {
   try {
     const cartDataSnapshot = await get(ref(database, `cartList/${userId}`));
@@ -168,6 +171,7 @@ export const getCartLists = async (userId: string) => {
   }
 };
 
+// 바로 구매하기
 export const paymentProducts = async (
   paymentInfo: PaymentsDataInfoType,
   user: UserDataType,
@@ -219,7 +223,8 @@ export const paymentProducts = async (
     });
 
     await update(ref(database), updatesDatabase);
-    setUser({ // recoil업데이트
+    setUser({
+      // recoil업데이트
       ...user,
       listPurchases: currentListPurchases + 1,
       listCarts: currentListCarts - paymentsData.paymentsProductItems.length,
@@ -228,5 +233,114 @@ export const paymentProducts = async (
   } catch (error) {
     console.error('제품 결제하기 에러', error);
     return false;
+  }
+};
+
+// 댓글 [ 추가 / 가져오기 / 삭제 / 수정 ] , 중고물품이랑 같이 사용
+export const addComment = ({
+  comment,
+  url,
+}: {
+  comment: CommentType;
+  url: string;
+}) => {
+  try {
+    console.log(comment, url);
+    const commentRef = ref(database, `${url}`);
+    const newCommentRef = push(commentRef);
+    return set(newCommentRef, { ...comment, commentId: newCommentRef.key });
+  } catch (error) {
+    console.error('댓글 추가 에러', error);
+  }
+};
+
+export const getComment = async (url: string) => {
+  try {
+    const commentsSnapshot = await get(ref(database, `${url}`));
+    if (commentsSnapshot.exists()) {
+      const data = Object.values(commentsSnapshot.val()) as CommentType[];
+      const sortedData = data.sort(
+        (a, b) =>
+          new Date(b.createdAt.join(' ')).getTime() -
+          new Date(a.createdAt.join(' ')).getTime(),
+      );
+      return sortedData;
+    }
+    return [];
+  } catch (error) {
+    console.error('댓글 불러 오기 에러', error);
+    return [];
+  }
+};
+
+export const removeComment = async (url: string) => {
+  try {
+    const commentRef = ref(database, `${url}`);
+    return remove(commentRef);
+  } catch (error) {
+    console.error('제품 댓글 삭제 에러', error);
+  }
+};
+
+export const editComments = async ({
+  url,
+  editCommentData,
+}: {
+  url: string;
+  editCommentData: CommentType;
+}) => {
+  try {
+    const commentRef = ref(database, `${url}`);
+    return await update(commentRef, editCommentData);
+  } catch (error) {
+    console.error('제품 댓글 수정 에러', error);
+  }
+};
+
+export interface SearchResult {
+  id: string;
+  productName: string;
+  price: number;
+  images: string[];
+  quantity: number;
+  isSoldOut: boolean;
+}
+
+export const searchProducts = async ({
+  searchQuery,
+  url,
+}: {
+  searchQuery: string;
+  url: string;
+}): Promise<SearchResult[]> => {
+  try {
+    console.log(searchQuery, url);
+    const snapshot = await get(ref(database, url));
+    if (snapshot.exists()) {
+      const dataArr = Object.values(snapshot.val()) as Array<UsedProductType | ProductType>;
+      const filterData = dataArr
+        .filter((data) => {
+          return (
+            data.productName &&
+            data.productName.toLowerCase().includes(searchQuery.toLowerCase())
+          );
+        })
+        .map((data) => {
+          return {
+            id: data.id || '',
+            productName: data.productName || '이름 없음',
+            price: data.price || 0,
+            images: data.images || [],
+            quantity: data.quantity || 0,
+            isSoldOut: data.quantity < 1,
+          };
+        });
+      console.log('firebase통신', filterData);
+      return filterData;
+    }
+    return [];
+  } catch (error) {
+    console.error('제품 검색 에러', error);
+    return [];
   }
 };
