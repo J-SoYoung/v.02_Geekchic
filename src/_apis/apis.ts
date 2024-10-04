@@ -2,6 +2,7 @@ import {
   CommentType,
   PaymentsDataInfoType,
   ProductType,
+  UsedProductType,
   UserDataType,
 } from '@/_typesBundle';
 import { database } from './firebase';
@@ -293,5 +294,53 @@ export const editComments = async ({
     return await update(commentRef, editCommentData);
   } catch (error) {
     console.error('제품 댓글 수정 에러', error);
+  }
+};
+
+export interface SearchResult {
+  id: string;
+  productName: string;
+  price: number;
+  images: string[];
+  quantity: number;
+  isSoldOut: boolean;
+}
+
+export const searchProducts = async ({
+  searchQuery,
+  url,
+}: {
+  searchQuery: string;
+  url: string;
+}): Promise<SearchResult[]> => {
+  try {
+    console.log(searchQuery, url);
+    const snapshot = await get(ref(database, url));
+    if (snapshot.exists()) {
+      const dataArr = Object.values(snapshot.val()) as Array<UsedProductType | ProductType>;
+      const filterData = dataArr
+        .filter((data) => {
+          return (
+            data.productName &&
+            data.productName.toLowerCase().includes(searchQuery.toLowerCase())
+          );
+        })
+        .map((data) => {
+          return {
+            id: data.id || '',
+            productName: data.productName || '이름 없음',
+            price: data.price || 0,
+            images: data.images || [],
+            quantity: data.quantity || 0,
+            isSoldOut: data.quantity < 1,
+          };
+        });
+      console.log('firebase통신', filterData);
+      return filterData;
+    }
+    return [];
+  } catch (error) {
+    console.error('제품 검색 에러', error);
+    return [];
   }
 };
