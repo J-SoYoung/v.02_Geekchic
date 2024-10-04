@@ -8,6 +8,7 @@ import { SellerMark } from './SellerMark';
 import { ErrorPageReload } from './ErrorPageReload';
 import { LoginButton, BasicButton } from './button';
 import { Comment, CommentButton, CommentInput, CommentsList } from './comment';
+import { SearchBar, SearchList } from './searchBar';
 
 export {
   Layout,
@@ -24,4 +25,6 @@ export {
   CommentButton,
   CommentInput,
   CommentsList,
+  SearchBar,
+  SearchList,
 };
