@@ -3,19 +3,25 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { useQuery } from '@tanstack/react-query';
 
-import { SearchBar, SearchList, Skeleton } from './index';
+import { Skeleton } from './index';
 
-import { BasicButton, ErrorPageReload, UsedProductCard } from '@/components';
+import {
+  BasicButton,
+  ErrorPageReload,
+  SearchBar,
+  SearchList,
+  UsedProductCard,
+} from '@/components';
 import { userState } from '@/_recoil';
-import { getUsedPageSortData } from '@/_apis';
+import { getUsedPageSortData, SearchResult } from '@/_apis';
 import { UsedProductType } from '@/_typesBundle';
 import { validateUserData } from '@/_utils';
 
 export const UsedHome = () => {
   const navigate = useNavigate();
   const user = useRecoilValue(userState);
-  
-  const [searchResult, setSearchResult] = useState<UsedProductType[]>([]);
+
+  const [searchResult, setSearchResult] = useState<SearchResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
 
   const {
@@ -29,10 +35,6 @@ export const UsedHome = () => {
     retry: 3, // 쿼리옵션-> 요청 3번 재시도
     retryDelay: 1000, // 쿼리옵션-> 재시도 사이의 지연 시간
   });
-
-  const onClickBackToUsedHome = () => {
-    setIsSearching(false);
-  };
 
   const onClickMoveUploadPage = () => {
     if (user._id === '') {
@@ -57,12 +59,12 @@ export const UsedHome = () => {
   }
 
   return (
-    <main className='p-11 pb-4 text-right'>
+    <main className='p-11 pb-8 text-right'>
       <header>
         <h1 className='text-3xl font-bold text-left mb-5 '>
           <Link to='/used'>중고거래</Link>
         </h1>
-        <div className='flex justify-end items-center'>
+        <div className='mb-4 flex justify-end items-center'>
           <span className='mr-2'>{user?.username}님 반갑습니다!</span>
           <BasicButton
             onClickFunc={onClickMoveUploadPage}
@@ -74,6 +76,7 @@ export const UsedHome = () => {
       </header>
 
       <SearchBar
+        url='usedProducts'
         setSearchResult={setSearchResult}
         setIsSearching={setIsSearching}
       />
@@ -82,14 +85,16 @@ export const UsedHome = () => {
         <Skeleton />
       ) : isSearching ? (
         <SearchList
+          url='used'
           searchResult={searchResult}
-          onClickFunc={onClickBackToUsedHome}
+          onClickFunc={() => setIsSearching(false)}
         />
       ) : (
         usedProducts && (
           <div className='grid grid-cols-2 gap-4 mt-4 mb-24'>
             {usedProducts?.map((usedProduct) => (
               <UsedProductCard
+                url='used'
                 key={usedProduct.id}
                 id={usedProduct.id}
                 name={usedProduct.productName}

@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { SellerMark } from './SellerMark';
 
 interface UsedProductCardProps {
+  url?: string;
   id: string;
   name: string;
   price: number;
@@ -23,6 +24,7 @@ interface UsedProductCardProps {
 
 // ⭕컴포넌트 나누기 : object-cover 이미지 검색되는 것 avatar, user, 정보
 export const UsedProductCard = ({
+  url,
   id,
   name,
   price,
@@ -34,10 +36,12 @@ export const UsedProductCard = ({
   sellerId,
   buyerInfo,
 }: UsedProductCardProps) => {
+  console.log(url)
+  // /used/detail/:productId  //// /products/detail/:productId
   return (
     <section>
       <Link
-        to={`/used/detail/${id}`}
+        to={ `/${url? url : 'used'}/detail/${id}`}
         className={`relative rounded-lg cursor-pointer ${isSoldOut && 'opacity-50'} `}
       >
         {image ? (
