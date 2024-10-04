@@ -4,11 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 
 import { CategoriesButton, ProductCard } from './index';
-import { BasicButton, SearchBar,SearchList } from '@/components';
+import { BasicButton, SearchBar, SearchList } from '@/components';
 import { userState } from '@/_recoil';
 import { ProductType } from '@/_typesBundle';
 import { headerLogo, mainImg } from '@/_assets';
-import { getUsedPageSortData, SearchResult } from '@/_apis';
+import { getMainSortData, SearchResult } from '@/_apis';
 
 export const Home = () => {
   const user = useRecoilValue(userState);
@@ -22,9 +22,13 @@ export const Home = () => {
   >('all');
 
   const { data: products, isPending } = useQuery<ProductType[]>({
-    queryKey: ['products'],
+    queryKey: ['products', activeTab],
     queryFn: async () =>
-      await getUsedPageSortData<ProductType>({ url: 'products' }),
+      await getMainSortData({
+        url: 'products',
+        categories: activeTab,
+      }),
+    enabled: !!activeTab,
   });
 
   const onClickMoveProductUpload = () => {
@@ -94,7 +98,7 @@ export const Home = () => {
                 setActiveTab={setActiveTab}
               />
               <CategoriesButton
-                title='가방'
+                title='신발'
                 value='shoes'
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
@@ -109,6 +113,8 @@ export const Home = () => {
             <section className=''>
               {isPending ? (
                 <p>로딩중</p>
+              ) : products && products.length === 0 ? (
+                <p>데이터가 없습니다</p>
               ) : (
                 <div className='grid grid-cols-4 gap-4 mt-4 mb-24'>
                   {products &&
