@@ -1,23 +1,27 @@
 import { useState } from 'react';
 import { BsSearch } from 'react-icons/bs';
 
-import { searchUsedProducts } from '@/_apis';
-import { UsedProductType } from '@/_typesBundle';
+import { searchProducts, SearchResult } from '@/_apis';
 
 interface SearchBarProps {
-  setSearchResult: React.Dispatch<React.SetStateAction<UsedProductType[]>>;
+  url: string;
+  setSearchResult: React.Dispatch<
+    React.SetStateAction<SearchResult[]>
+  >;
   setIsSearching: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const SearchBar = ({
+  url,
   setSearchResult,
   setIsSearching,
 }: SearchBarProps) => {
+  
   const [searchQuery, setSearchQuery] = useState('');
 
   // ⭕mutation으로 검색기능 구현
   const onClickButtonSearch = async () => {
-    const result = await searchUsedProducts(searchQuery);
+    const result = await searchProducts({ searchQuery, url });
     setSearchResult(result);
     setIsSearching(true);
   };
