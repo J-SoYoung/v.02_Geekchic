@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 
@@ -20,14 +20,19 @@ export const Home = () => {
     'outer' | 'top' | 'bottom' | 'shoes' | 'acc' | 'all'
   >('all');
 
-  const categories: CategoriesType[] = [
-    { title: '전체', value: 'all' },
-    { title: '아우터', value: 'outer' },
-    { title: '상의', value: 'top' },
-    { title: '하의', value: 'bottom' },
-    { title: '신발', value: 'shoes' },
-    { title: '악세사리', value: 'acc' },
-  ];
+  const categories: CategoriesType[] = useMemo(() => 
+    [
+      { title: '전체', value: 'all' },
+      { title: '아우터', value: 'outer' },
+      { title: '상의', value: 'top' },
+      { title: '하의', value: 'bottom' },
+      { title: '신발', value: 'shoes' },
+      { title: '악세사리', value: 'acc' },
+    ], []);
+
+  const onClickMoveProductUpload = useCallback(() => {
+    navigate('/products/new');
+  }, [navigate]);
 
   const { data: products, isPending } = useProducts(activeTab);
 
@@ -37,7 +42,7 @@ export const Home = () => {
         {user.isAdmin && (
           <div className='absolute top-8 right-8'>
             <BasicButton
-              onClickFunc={() => navigate('/products/new')}
+              onClickFunc={onClickMoveProductUpload}
               text='제품등록'
               bg='bg-black'
               width='w-[100px]'
