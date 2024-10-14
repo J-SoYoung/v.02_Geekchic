@@ -59,6 +59,14 @@ export const validateComment = (comment: string) => {
   }
 };
 
+export const validateSearchQuery = (searchQuery: string) => {
+  if (searchQuery.length < 1) {
+    return alert('검색어를 입력해주세요');
+  } else {
+    return true;
+  }
+};
+
 export const validateCartItems = (size: string, quantity: number) => {
   if (size === '' || quantity === 0) {
     return alert('구매하시려는 사이즈 또는 수량을 확인해주세요');
