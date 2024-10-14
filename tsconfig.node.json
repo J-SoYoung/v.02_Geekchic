@@ -24,12 +24,13 @@
       "@/*": ["src/*"],
       "@/pages/*": ["src/pages/*"],
       "@/components/*": ["src/components/*"],
+      "@/hooks/*": ["src/hooks/*"],
       "@/_assets/*": ["src/_assets/*"],
       "@/_apis/*": ["src/_apis/*"],
       "@/_example/*": ["src/_example/*"],
       "@/_utils/*": ["src/_utils/*"],
       "@/_recoil/*": ["src/_recoil/*"],
-      "@/_typesBundle/*": ["src/_typesBundle/*"]
+      "@/_typesBundle/*": ["src/_typesBundle/*"],
     }
   },
   "include": ["vite.config.ts"]
