@@ -1,11 +1,5 @@
-interface CategoriesButtonProps {
-  title: string;
-  value: 'outer' | 'top' | 'bottom' | 'shoes' | 'acc' | 'all';
-  activeTab: 'outer' | 'top' | 'bottom' | 'shoes' | 'acc' | 'all';
-  setActiveTab: React.Dispatch<
-    React.SetStateAction<'outer' | 'top' | 'bottom' | 'shoes' | 'acc' | 'all'>
-  >;
-}
+import { CategoriesButtonProps } from "@/_typesBundle";
+
 export const CategoriesButton = ({
   title,
   value,
