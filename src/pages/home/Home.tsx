@@ -6,7 +6,7 @@ import { useRecoilValue } from 'recoil';
 import { CategoriesButton, ProductCard } from './index';
 import { BasicButton, SearchBar, SearchList } from '@/components';
 import { userState } from '@/_recoil';
-import { ProductType } from '@/_typesBundle';
+import { CategoriesType, ProductType } from '@/_typesBundle';
 import { headerLogo, mainImg } from '@/_assets';
 import { getMainSortData, SearchResult } from '@/_apis';
 
@@ -20,6 +20,15 @@ export const Home = () => {
   const [activeTab, setActiveTab] = useState<
     'outer' | 'top' | 'bottom' | 'shoes' | 'acc' | 'all'
   >('all');
+
+  const categories: CategoriesType[] = [
+    { title: '전체', value: 'all' },
+    { title: '아우터', value: 'outer' },
+    { title: '상의', value: 'top' },
+    { title: '하의', value: 'bottom' },
+    { title: '신발', value: 'shoes' },
+    { title: '악세사리', value: 'acc' },
+  ];
 
   const { data: products, isPending } = useQuery<ProductType[]>({
     queryKey: ['products', activeTab],
@@ -73,43 +82,17 @@ export const Home = () => {
           </article>
           <article className='p-8'>
             <section className='flex justify-between border-b mb-8'>
-              <CategoriesButton
-                title='전체'
-                value='all'
-                activeTab={activeTab}
-                setActiveTab={setActiveTab}
-              />
-              <CategoriesButton
-                title='아우터'
-                value='outer'
-                activeTab={activeTab}
-                setActiveTab={setActiveTab}
-              />
-              <CategoriesButton
-                title='상의'
-                value='top'
-                activeTab={activeTab}
-                setActiveTab={setActiveTab}
-              />
-              <CategoriesButton
-                title='하의'
-                value='bottom'
-                activeTab={activeTab}
-                setActiveTab={setActiveTab}
-              />
-              <CategoriesButton
-                title='신발'
-                value='shoes'
-                activeTab={activeTab}
-                setActiveTab={setActiveTab}
-              />
-              <CategoriesButton
-                title='악세사리'
-                value='acc'
-                activeTab={activeTab}
-                setActiveTab={setActiveTab}
-              />
+              {categories.map((category) => (
+                <CategoriesButton
+                  key={category.value}
+                  title={category.title}
+                  value={category.value}
+                  activeTab={activeTab}
+                  setActiveTab={setActiveTab}
+                />
+              ))}
             </section>
+
             <section className=''>
               {isPending ? (
                 <p>로딩중</p>
