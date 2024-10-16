@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useCallback, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { useQuery } from '@tanstack/react-query';
 
@@ -36,7 +36,7 @@ export const UsedHome = () => {
     retryDelay: 1000, // 쿼리옵션-> 재시도 사이의 지연 시간
   });
 
-  const onClickMoveUploadPage = () => {
+  const onClickMoveUploadPage = useCallback(() => {
     if (user._id === '') {
       alert('로그인 한 유저만 업로드가 가능합니다. 로그인 페이지로 이동합니다');
       return navigate(`/login`);
@@ -47,7 +47,7 @@ export const UsedHome = () => {
     } else {
       navigate('/used/new');
     }
-  };
+  }, []);
 
   if (isError) {
     return (
@@ -61,9 +61,7 @@ export const UsedHome = () => {
   return (
     <main className='p-11 pb-8 text-right'>
       <header>
-        <h1 className='text-3xl font-bold text-left mb-5 '>
-          <Link to='/used'>중고거래</Link>
-        </h1>
+        <h1 className='text-3xl font-bold text-left mb-5 '>중고거래</h1>
         <div className='mb-4 flex justify-end items-center'>
           <span className='mr-2'>{user?.username}님 반갑습니다!</span>
           <BasicButton
