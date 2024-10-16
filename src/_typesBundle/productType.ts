@@ -9,6 +9,19 @@ interface ProductType {
   quantity: number;
   size: string;
 }
+
+type TabTypes = 'outer' | 'top' | 'bottom' | 'shoes' | 'acc' | 'all';
+export interface CategoriesType {
+  title: string;
+  value: TabTypes;
+}
+export interface CategoriesButtonProps extends CategoriesType {
+  activeTab: TabTypes;
+  setActiveTab: React.Dispatch<
+    React.SetStateAction<'outer' | 'top' | 'bottom' | 'shoes' | 'acc' | 'all'>
+  >;
+}
+
 interface CartItemType {
   cartId: string;
   categories: string;
@@ -65,5 +78,5 @@ export type {
   PaymentsProductItemsType,
   PaymentsDataType,
   PaymentsDataInfoType,
-  CommentType
+  CommentType,
 };

@@ -317,7 +317,8 @@ export const searchProducts = async ({
     console.log(searchQuery, url);
     const snapshot = await get(ref(database, url));
     if (snapshot.exists()) {
-      const dataArr = Object.values(snapshot.val()) as Array<UsedProductType | ProductType>;
+      const dataArr = Object.values(snapshot.val()) as Array<        UsedProductType | ProductType
+      >;
       const filterData = dataArr
         .filter((data) => {
           return (
@@ -341,6 +342,38 @@ export const searchProducts = async ({
     return [];
   } catch (error) {
     console.error('제품 검색 에러', error);
+    return [];
+  }
+};
+
+export const getMainSortData = async ({
+  url,
+  categories,
+}: {
+  url: string;
+  categories: string;
+}): Promise<ProductType[]> => {
+  console.log(url, categories);
+  try {
+    const snapshot = await get(ref(database, `${url}`));
+    if (snapshot.exists()) {
+      let data = Object.values(snapshot.val()) as ProductType[];
+
+      const filterData =
+        categories !== 'all'
+          ? data.filter((item) => item.categories === categories)
+          : data;
+      const sortedData = filterData.sort(
+        (a, b) =>
+          new Date(b.createdAt.join('')).getTime() -
+          new Date(a.createdAt.join('')).getTime(),
+      );
+      console.log(sortedData);
+      return sortedData;
+    }
+    return [];
+  } catch (error) {
+    console.error(error);
     return [];
   }
 };

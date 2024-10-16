@@ -1,3 +1,5 @@
+import { memo } from "react";
+
 interface BasicButtonProps {
   onClickFunc: () => void;
   text: string;
@@ -5,7 +7,7 @@ interface BasicButtonProps {
   width?: string;
 }
 
-export const BasicButton = ({
+export const BasicButton = memo(({
   onClickFunc,
   text,
   bg,
@@ -19,4 +21,4 @@ export const BasicButton = ({
       {text}
     </button>
   );
-};
+});
