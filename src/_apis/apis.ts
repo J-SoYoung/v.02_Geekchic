@@ -346,7 +346,7 @@ export const searchProducts = async ({
   }
 };
 
-export const getMainSortData = async ({
+export const getCategoriesSortData = async ({
   url,
   categories,
 }: {

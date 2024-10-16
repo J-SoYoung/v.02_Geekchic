@@ -13,7 +13,7 @@ import {
   UsedProductCard,
 } from '@/components';
 import { userState } from '@/_recoil';
-import { getUsedPageSortData, SearchResult } from '@/_apis';
+import { getTimeSortedData, SearchResult } from '@/_apis';
 import { UsedProductType } from '@/_typesBundle';
 import { validateUserData } from '@/_utils';
 
@@ -31,7 +31,7 @@ export const UsedHome = () => {
   } = useQuery<UsedProductType[]>({
     queryKey: ['usedProducts'],
     queryFn: async () =>
-      await getUsedPageSortData<UsedProductType>({ url: 'usedProducts' }),
+      await getTimeSortedData<UsedProductType>({ url: 'usedProducts' }),
     retry: 3, // 쿼리옵션-> 요청 3번 재시도
     retryDelay: 1000, // 쿼리옵션-> 재시도 사이의 지연 시간
   });

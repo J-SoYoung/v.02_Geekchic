@@ -418,11 +418,12 @@ export const getUsedPageMainInfo = async <T>({
   }
 };
 
-// 시간순 정렬해서 데이터를 가져오는 함수 
+// ⭕ 함수명 변경 => 시간순 정렬해서 데이터를 가져오는 함수 
 interface HasCreatedType { // 제네릭에 필수 타입을 추가
   createdAt: string[];
 }
-export const getUsedPageSortData = async <T extends HasCreatedType>({
+
+export const getTimeSortedData = async <T extends HasCreatedType>({
   url,
 }: {
   url: string;

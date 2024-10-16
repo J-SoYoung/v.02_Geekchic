@@ -1,4 +1,4 @@
-import { getUsedPageSortData } from '@/_apis';
+import { getTimeSortedData } from '@/_apis';
 import { userState } from '@/_recoil';
 import { PaymentsDataInfoType, PaymentsProductItemsType } from '@/_typesBundle';
 import { Layout } from '@/components';
@@ -15,7 +15,7 @@ export const PurchaseDetail = () => {
   } = useQuery({
     queryKey: ['purchaselist', user._id],
     queryFn: async () =>
-      await getUsedPageSortData<PaymentsDataInfoType>({
+      await getTimeSortedData<PaymentsDataInfoType>({
         url: `purchaseList/${user._id}`,
       }),
   });
