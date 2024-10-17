@@ -1,84 +1,49 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { v4 as uuidv4 } from 'uuid';
 
 import { BasicButton, CommentInput, CommentsList } from '@/components';
-import {
-  addCartItems,
-  addWishList,
-  getUsedPageMainInfo,
-  getWishDataState,
-  removeWishData,
-} from '@/_apis';
+import { addCartItems } from '@/_apis';
 import { Icon_Chevron_left, Icon_FullHeart, Icon_Heart } from '@/_assets';
-import { ProductType } from '@/_typesBundle';
+
 import { userState } from '@/_recoil';
 import { utcToKoreaTimes, validateCartItems } from '@/_utils';
+import {
+  useProductDetail,
+  useWishProductMutation,
+  useWishState,
+} from '@/hooks';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export const ProductsDetail = () => {
   const navigate = useNavigate();
   const [user, setUser] = useRecoilState(userState);
-  const queryClient = useQueryClient();
   const { productId } = useParams<{ productId: string }>();
 
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedQuantity, setSelectedQuantity] = useState(0);
 
-  const { data: currentWishState, isPending: currentWishPending } = useQuery({
-    queryKey: ['wishListState', user._id],
-    queryFn: async () =>
-      await getWishDataState({
-        userId: user._id,
-        productId: productId as string,
-      }),
+  const { data: currentWishState } = useWishState({
+    userId: user._id,
+    productId: productId as string,
   });
 
   const {
     data: product,
     isPending,
     isError,
-  } = useQuery({
-    queryKey: ['productDetail', productId],
-    queryFn: () =>
-      getUsedPageMainInfo<ProductType>({
-        table: 'products',
-        id: productId as string,
-      }),
-  });
+  } = useProductDetail(productId as string);
 
   const sizeOptions = useMemo(() => product?.size.split(' / '), [product]);
 
-  const wishProductMutation = useMutation({
-    mutationFn: async () => {
-      if (currentWishState === false) {
-        await addWishList({
-          userId: user._id,
-          productId: productId as string,
-        });
-        alert('관심물품 추가합니다');
-      } else {
-        await removeWishData({
-          userId: user._id,
-          productId: productId as string,
-        });
-        alert('관심물품 삭제합니다');
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(
-        {
-          queryKey: ['wishListState', user._id],
-          refetchType: 'active',
-          exact: true,
-        },
-        { throwOnError: true, cancelRefetch: true },
-      );
-    },
-  });
+  // WishList 추가, 삭제
+  const wishProductMutation = useWishProductMutation(
+    user._id,
+    productId as string,
+  );
   const onClickWishProduct = () => {
-    wishProductMutation.mutate();
+    wishProductMutation.mutate(currentWishState);
   };
 
   const onClickAddCart = useCallback(async () => {
@@ -132,14 +97,7 @@ export const ProductsDetail = () => {
   const commentsUrl = `comments/${productId}`;
   const queryKeys = 'commentsData';
 
-  const handleSizeChange = useCallback(
-    (e: React.ChangeEvent<HTMLSelectElement>) => {
-      setSelectedSize(e.target.value);
-    },
-    [],
-  );
-
-  if (isPending && currentWishPending) {
+  if (isPending) {
     return <p>로딩중</p>;
   }
 
@@ -151,7 +109,7 @@ export const ProductsDetail = () => {
       >
         <img src={Icon_Chevron_left} alt='이전 페이지로' className='w-full' />
       </button>
-      
+
       {/* image view*/}
       <section className='w-full h-[100%]'>
         <div className='mb-6 bg-gray-200 border-red-400'>
@@ -202,7 +160,7 @@ export const ProductsDetail = () => {
           <select
             id='sizeSelect'
             value={selectedSize}
-            onChange={handleSizeChange}
+            onChange={(e) => setSelectedSize(e.target.value)}
             className='block w-full p-3 bg-gray-100 border border-gray-300 text-gray-900 text-m rounded-lg '
           >
             <option value=''>사이즈를 선택하세요</option>
