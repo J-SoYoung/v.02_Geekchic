@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { v4 as uuidv4 } from 'uuid';
@@ -48,7 +48,7 @@ export const ProductsDetail = () => {
       }),
   });
 
-  const sizeOptions = product?.size.split(' / ');
+  const sizeOptions = useMemo(() => product?.size.split(' / '), [product]);
 
   const wishProductMutation = useMutation({
     mutationFn: async () => {
@@ -77,11 +77,11 @@ export const ProductsDetail = () => {
       );
     },
   });
-  const onClickWishProduct = async () => {
+  const onClickWishProduct = () => {
     wishProductMutation.mutate();
   };
 
-  const onClickAddCart = async () => {
+  const onClickAddCart = useCallback(async () => {
     if (!validateCartItems(selectedSize, selectedQuantity)) return;
     const cartItems = {
       productId: productId as string,
@@ -103,8 +103,9 @@ export const ProductsDetail = () => {
       console.error('장바구니 추가 중 에러가 발생했습니다', error);
       alert('오류가 발생했습니다. 나중에 다시 시도해 주세요.');
     }
-  };
-  const onClickPurchaseProduct = () => {
+  }, [selectedSize, selectedQuantity, navigate, productId, setUser, user]);
+
+  const onClickPurchaseProduct = useCallback(() => {
     if (!validateCartItems(selectedSize, selectedQuantity)) return;
     const paymentsId = uuidv4();
     const paymentsData = {
@@ -126,7 +127,17 @@ export const ProductsDetail = () => {
     navigate(`/payments/${paymentsId}`, {
       state: { paymentsData, from: `/products/detail/${product?.id}` },
     });
-  };
+  }, [selectedSize, selectedQuantity, navigate, productId, setUser, user]);
+
+  const commentsUrl = `comments/${productId}`;
+  const queryKeys = 'commentsData';
+
+  const handleSizeChange = useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      setSelectedSize(e.target.value);
+    },
+    [],
+  );
 
   if (isPending && currentWishPending) {
     return <p>로딩중</p>;
@@ -140,6 +151,7 @@ export const ProductsDetail = () => {
       >
         <img src={Icon_Chevron_left} alt='이전 페이지로' className='w-full' />
       </button>
+      
       {/* image view*/}
       <section className='w-full h-[100%]'>
         <div className='mb-6 bg-gray-200 border-red-400'>
@@ -190,9 +202,7 @@ export const ProductsDetail = () => {
           <select
             id='sizeSelect'
             value={selectedSize}
-            onChange={(e) => {
-              setSelectedSize(e.target.value);
-            }}
+            onChange={handleSizeChange}
             className='block w-full p-3 bg-gray-100 border border-gray-300 text-gray-900 text-m rounded-lg '
           >
             <option value=''>사이즈를 선택하세요</option>
@@ -237,10 +247,9 @@ export const ProductsDetail = () => {
         </div>
       </section>
 
-      {/* comment  */}
       <section className='p-8'>
-        <CommentsList url={`comments/${productId}`} queryKeys={'commentsData'}/>
-        <CommentInput url={`comments/${productId}`} queryKeys={'commentsData'} />
+        <CommentsList url={commentsUrl} queryKeys={queryKeys} />
+        <CommentInput url={commentsUrl} queryKeys={queryKeys} />
       </section>
     </main>
   );
