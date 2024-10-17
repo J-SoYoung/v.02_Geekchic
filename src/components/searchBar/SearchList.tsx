@@ -13,8 +13,6 @@ export const SearchList = ({
   onClickFunc,
   url,
 }: SearchListProps) => {
-  console.log(searchResult);
-
   return (
     <section>
       <p className='mb-1 text-left font-bold '>
