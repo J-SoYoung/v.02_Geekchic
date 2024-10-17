@@ -46,29 +46,36 @@ export const ProductsDetail = () => {
     wishProductMutation.mutate(currentWishState);
   };
 
-  const onClickAddCart = useCallback(async () => {
-    if (!validateCartItems(selectedSize, selectedQuantity)) return;
-    const cartItems = {
-      productId: productId as string,
-      userId: user._id,
-      size: selectedSize,
-      selectedQuantity: selectedQuantity,
-      createdAt: utcToKoreaTimes(),
-    };
-    try {
-      const cartSaveResult = await addCartItems({ cartItems, setUser, user });
-      if (cartSaveResult) {
-        if (
-          confirm('장바구니에 담겼습니다. 장바구니 페이지로 이동하시겠습니까?')
-        ) {
+  const addToCartMutation = useMutation({
+    mutationFn: async () => {
+      const cartItems = {
+        productId: productId as string,
+        userId: user._id,
+        size: selectedSize,
+        selectedQuantity: selectedQuantity,
+        createdAt: utcToKoreaTimes(),
+      };
+      return await addCartItems({ cartItems, setUser, user });
+    },
+    onSuccess: (data) => {
+      if (data) {
+        if (confirm('장바구니 페이지로 이동하시겠습니까?')) {
           navigate(`/my/carts/${user._id}`);
         }
-      } else alert('장바구니 추가에 실패했습니다. 다시 시도해 주세요.');
-    } catch (error) {
-      console.error('장바구니 추가 중 에러가 발생했습니다', error);
+      } else {
+        alert('장바구니 추가에 실패했습니다. 다시 시도해 주세요.');
+      }
+    },
+    onError: (error: any) => {
+      console.error('장바구니 추가 중 에러 발생:', error);
       alert('오류가 발생했습니다. 나중에 다시 시도해 주세요.');
-    }
-  }, [selectedSize, selectedQuantity, navigate, productId, setUser, user]);
+    },
+  });
+
+  const onClickAddCart = useCallback(async () => {
+    if (!validateCartItems(selectedSize, selectedQuantity)) return;
+    addToCartMutation.mutate();
+  }, [selectedSize, selectedQuantity, addToCartMutation]);
 
   const onClickPurchaseProduct = useCallback(() => {
     if (!validateCartItems(selectedSize, selectedQuantity)) return;
