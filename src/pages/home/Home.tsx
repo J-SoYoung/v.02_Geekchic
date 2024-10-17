@@ -4,7 +4,7 @@ import { useRecoilValue } from 'recoil';
 
 import { CategoriesButton, ProductCard } from './index';
 import { BasicButton, SearchBar, SearchList } from '@/components';
-import { useProducts } from '@/hooks/useProducts';
+import { useProducts } from '@/hooks';
 import { userState } from '@/_recoil';
 import { CategoriesType, ProductType } from '@/_typesBundle';
 import { headerLogo, mainImg } from '@/_assets';
