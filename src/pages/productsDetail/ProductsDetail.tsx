@@ -4,17 +4,16 @@ import { useRecoilState } from 'recoil';
 import { v4 as uuidv4 } from 'uuid';
 
 import { BasicButton, CommentInput, CommentsList } from '@/components';
-import { addCartItems } from '@/_apis';
 import { Icon_Chevron_left, Icon_FullHeart, Icon_Heart } from '@/_assets';
 
 import { userState } from '@/_recoil';
 import { utcToKoreaTimes, validateCartItems } from '@/_utils';
 import {
+  useAddToCartMutation,
   useProductDetail,
   useWishProductMutation,
   useWishState,
 } from '@/hooks';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export const ProductsDetail = () => {
   const navigate = useNavigate();
@@ -42,40 +41,28 @@ export const ProductsDetail = () => {
     user._id,
     productId as string,
   );
+
   const onClickWishProduct = () => {
     wishProductMutation.mutate(currentWishState);
   };
 
-  const addToCartMutation = useMutation({
-    mutationFn: async () => {
-      const cartItems = {
-        productId: productId as string,
-        userId: user._id,
-        size: selectedSize,
-        selectedQuantity: selectedQuantity,
-        createdAt: utcToKoreaTimes(),
-      };
-      return await addCartItems({ cartItems, setUser, user });
-    },
-    onSuccess: (data) => {
-      if (data) {
-        if (confirm('장바구니 페이지로 이동하시겠습니까?')) {
-          navigate(`/my/carts/${user._id}`);
-        }
-      } else {
-        alert('장바구니 추가에 실패했습니다. 다시 시도해 주세요.');
-      }
-    },
-    onError: (error: any) => {
-      console.error('장바구니 추가 중 에러 발생:', error);
-      alert('오류가 발생했습니다. 나중에 다시 시도해 주세요.');
-    },
-  });
-
+  const addToCartMutation = useAddToCartMutation();
   const onClickAddCart = useCallback(async () => {
     if (!validateCartItems(selectedSize, selectedQuantity)) return;
-    addToCartMutation.mutate();
-  }, [selectedSize, selectedQuantity, addToCartMutation]);
+    const cartItems = {
+      productId: productId as string,
+      userId: user._id,
+      size: selectedSize,
+      selectedQuantity: selectedQuantity,
+      createdAt: utcToKoreaTimes(),
+    };
+    addToCartMutation.mutate({
+      cartItems,
+      setUser,
+      user,
+      navigate,
+    });
+  }, [selectedSize, selectedQuantity, productId, user, setUser, navigate]);
 
   const onClickPurchaseProduct = useCallback(() => {
     if (!validateCartItems(selectedSize, selectedQuantity)) return;
