@@ -36,12 +36,10 @@ export const UsedProductCard = ({
   sellerId,
   buyerInfo,
 }: UsedProductCardProps) => {
-  console.log(url)
-  // /used/detail/:productId  //// /products/detail/:productId
   return (
     <section>
       <Link
-        to={ `/${url? url : 'used'}/detail/${id}`}
+        to={`/${url ? url : 'used'}/detail/${id}`}
         className={`relative rounded-lg cursor-pointer ${isSoldOut && 'opacity-50'} `}
       >
         {image ? (

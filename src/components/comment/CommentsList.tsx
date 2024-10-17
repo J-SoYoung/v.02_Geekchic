@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 
 import { Comment } from './index';
 
-import { getUsedPageSortData } from '@/_apis';
+import { getTimeSortedData } from '@/_apis';
 import { CommentType } from '@/_typesBundle';
 import { ErrorPageReload } from '@/components';
 
@@ -22,7 +22,7 @@ export const CommentsList = ({
     isError,
   } = useQuery<CommentType[]>({
     queryKey: [queryKeys, productId],
-    queryFn: () => getUsedPageSortData<CommentType>({ url: `${url}` }),
+    queryFn: () => getTimeSortedData<CommentType>({ url: `${url}` }),
   });
 
   if (isPending) return <p>로딩중... </p>;

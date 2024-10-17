@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 
-import { getUsedPageSortData } from '@/_apis';
+import { getTimeSortedData } from '@/_apis';
 import { PaymentsDataInfoType, UsedPurchaseListType } from '@/_typesBundle';
 import { Layout, MyProductCard } from '@/components';
 
@@ -32,7 +32,7 @@ export const PurchaseList = () => {
   } = useQuery({
     queryKey: ['usedPurchase', userId],
     queryFn: async () =>
-      await getUsedPageSortData<UsedPurchaseListType>({
+      await getTimeSortedData<UsedPurchaseListType>({
         url: `usedPurchaseList/${userId}`,
       }),
   });
@@ -40,7 +40,7 @@ export const PurchaseList = () => {
   const { data: purchasesDataInitial } = useQuery({
     queryKey: ['purchaselist', userId],
     queryFn: async () =>
-      await getUsedPageSortData<PaymentsDataInfoType>({
+      await getTimeSortedData<PaymentsDataInfoType>({
         url: `purchaseList/${userId}`,
       }),
   });

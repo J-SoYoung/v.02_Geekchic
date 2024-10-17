@@ -2,7 +2,7 @@ import { Link, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 
 import { ErrorPageReload, Layout, UsedProductCard } from '@/components';
-import { getUsedPageSortData } from '@/_apis';
+import { getTimeSortedData } from '@/_apis';
 import { SellsItemType } from '@/_typesBundle';
 
 export const SellsList = () => {
@@ -15,7 +15,7 @@ export const SellsList = () => {
   } = useQuery({
     queryKey: ['sellsItem', userId],
     queryFn: async () =>
-      await getUsedPageSortData<SellsItemType>({
+      await getTimeSortedData<SellsItemType>({
         url: `userSellList/${userId}`,
       }),
   });
