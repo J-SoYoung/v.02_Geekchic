@@ -4,7 +4,7 @@ import { useRecoilState } from 'recoil';
 import { v4 as uuidv4 } from 'uuid';
 
 import { BasicButton, CommentInput, CommentsList } from '@/components';
-import { Icon_Chevron_left, Icon_FullHeart, Icon_Heart } from '@/_assets';
+import { Icon_Chevron_left } from '@/_assets';
 
 import { userState } from '@/_recoil';
 import { utcToKoreaTimes, validateCartItems } from '@/_utils';
@@ -14,6 +14,11 @@ import {
   useWishProductMutation,
   useWishState,
 } from '@/hooks';
+import ProductImageGallery from './ProductImageGallery';
+import ProductInfo from './ProductInfo';
+import SizeSelector from './SizeSelector';
+import QuantitySelector from './QuantitySelector';
+import { WishProductIcon } from './WishProductIcon';
 
 export const ProductsDetail = () => {
   const navigate = useNavigate();
@@ -33,18 +38,15 @@ export const ProductsDetail = () => {
     isPending,
     isError,
   } = useProductDetail(productId as string);
+  const sizeOptions = useMemo(() => product?.size?.split(' / '), [product]);
 
-  const sizeOptions = useMemo(() => product?.size.split(' / '), [product]);
-
-  // WishList 추가, 삭제
   const wishProductMutation = useWishProductMutation(
     user._id,
     productId as string,
   );
-
-  const onClickWishProduct = () => {
+  const onClickWishProduct = useCallback(() => {
     wishProductMutation.mutate(currentWishState);
-  };
+  }, [wishProductMutation, currentWishState]);
 
   const addToCartMutation = useAddToCartMutation();
   const onClickAddCart = useCallback(async () => {
@@ -62,7 +64,7 @@ export const ProductsDetail = () => {
       user,
       navigate,
     });
-  }, [selectedSize, selectedQuantity, productId, user, setUser, navigate]);
+  }, [selectedSize, selectedQuantity, productId, user, addToCartMutation]);
 
   const onClickPurchaseProduct = useCallback(() => {
     if (!validateCartItems(selectedSize, selectedQuantity)) return;
@@ -86,14 +88,13 @@ export const ProductsDetail = () => {
     navigate(`/payments/${paymentsId}`, {
       state: { paymentsData, from: `/products/detail/${product?.id}` },
     });
-  }, [selectedSize, selectedQuantity, navigate, productId, setUser, user]);
+  }, [selectedSize, selectedQuantity, productId, product, user, navigate]);
 
   const commentsUrl = `comments/${productId}`;
   const queryKeys = 'commentsData';
 
-  if (isPending) {
-    return <p>로딩중</p>;
-  }
+  if (isPending) return <p>로딩중</p>;
+  if (!product) return <div>데이터가 없습니다</div>;
 
   return (
     <main className='text-left'>
@@ -104,87 +105,33 @@ export const ProductsDetail = () => {
         <img src={Icon_Chevron_left} alt='이전 페이지로' className='w-full' />
       </button>
 
-      {/* image view*/}
-      <section className='w-full h-[100%]'>
-        <div className='mb-6 bg-gray-200 border-red-400'>
-          <img
-            src={product?.images[0]}
-            alt={product?.productName}
-            className='w-[100%] h-96 object-cover'
-          />
-        </div>
-        <div className='flex space-x-4 pl-8'>
-          {product?.images.map((i: string, idx: number) => (
-            <div
-              key={idx}
-              className='w-24 h-24 flex items-center justify-center'
-            >
-              <img src={i} className='w-full h-full object-cover' />
-            </div>
-          ))}
-        </div>
+      <section className='relative'>
+        <ProductImageGallery
+          images={product.images}
+          productName={product.productName}
+        />
+        <WishProductIcon
+          currentWishState={currentWishState}
+          onClickWishProduct={onClickWishProduct}
+        />
+        <ProductInfo
+          productName={product.productName}
+          price={product.price}
+          description={product.description}
+        />
       </section>
 
-      {/* product info */}
-      <section className='p-8 pb-0'>
-        <div className='mb-8 flex justify-between items-center'>
-          <div>
-            <p className='mb-1 text-lg'>{product?.productName}</p>
-            <p className='text-2xl'>{product?.price}원</p>
-          </div>
-          <button onClick={onClickWishProduct}>
-            <img
-              src={currentWishState ? Icon_FullHeart : Icon_Heart}
-              className='w-8 h-8'
-            />
-          </button>
-        </div>
-        <p>{product?.description}</p>
-      </section>
-
-      {/* purchases */}
       <section className='p-8'>
-        <div className='w-3/4 mb-8'>
-          <label
-            htmlFor='sizeSelect'
-            className='block mb-2 text-sm font-medium text-gray-900'
-          >
-            사이즈 선택
-          </label>
-          <select
-            id='sizeSelect'
-            value={selectedSize}
-            onChange={(e) => setSelectedSize(e.target.value)}
-            className='block w-full p-3 bg-gray-100 border border-gray-300 text-gray-900 text-m rounded-lg '
-          >
-            <option value=''>사이즈를 선택하세요</option>
-            {sizeOptions &&
-              sizeOptions.map((size) => (
-                <option key={size} value={size}>
-                  {size}
-                </option>
-              ))}
-          </select>
-        </div>
-        <div className='w-3/4 mb-8'>
-          <label
-            htmlFor='sizeSelect'
-            className='block mb-2 text-sm font-medium text-gray-900'
-          >
-            수량 선택
-          </label>
-          <input
-            type='number'
-            placeholder='수량을 선택해주세요'
-            value={selectedQuantity}
-            onChange={(e) => {
-              setSelectedQuantity(Number(e.target.value));
-            }}
-            className='border block w-full p-3 bg-gray-100 border border-gray-300 text-gray-900 text-m rounded-lg '
-            min={0}
-            max={product?.quantity}
-          />
-        </div>
+        <SizeSelector
+          sizeOptions={sizeOptions}
+          selectedSize={selectedSize}
+          setSelectedSize={setSelectedSize}
+        />
+        <QuantitySelector
+          quantity={product.quantity}
+          selectedQuantity={selectedQuantity}
+          setSelectedQuantity={setSelectedQuantity}
+        />
         <div className='pt-4 flex'>
           <BasicButton
             onClickFunc={onClickAddCart}
