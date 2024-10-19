@@ -2,11 +2,11 @@ import { useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 
-import { CategoriesButton, ProductCard } from './index';
+import { CategoriesButton, ProductList, SkeletonProduct } from './index';
 import { BasicButton, SearchBar, SearchList } from '@/components';
-import { useProducts } from '@/hooks/useProducts';
+import { useProducts } from '@/hooks';
 import { userState } from '@/_recoil';
-import { CategoriesType, ProductType } from '@/_typesBundle';
+import { CategoriesType } from '@/_typesBundle';
 import { headerLogo, mainImg } from '@/_assets';
 import { SearchResult } from '@/_apis';
 
@@ -20,15 +20,17 @@ export const Home = () => {
     'outer' | 'top' | 'bottom' | 'shoes' | 'acc' | 'all'
   >('all');
 
-  const categories: CategoriesType[] = useMemo(() => 
-    [
+  const categories: CategoriesType[] = useMemo(
+    () => [
       { title: '전체', value: 'all' },
       { title: '아우터', value: 'outer' },
       { title: '상의', value: 'top' },
       { title: '하의', value: 'bottom' },
       { title: '신발', value: 'shoes' },
       { title: '악세사리', value: 'acc' },
-    ], []);
+    ],
+    [],
+  );
 
   const onClickMoveProductUpload = useCallback(() => {
     navigate('/products/new');
@@ -85,21 +87,11 @@ export const Home = () => {
 
             <section>
               {isPending ? (
-                <p>로딩중</p>
+                <SkeletonProduct />
               ) : products && products.length === 0 ? (
                 <p>데이터가 없습니다</p>
               ) : (
-                <div className='grid grid-cols-4 gap-4 mt-4 mb-24'>
-                  {products &&
-                    products.map((product: ProductType) => (
-                      <ProductCard
-                        key={product.id}
-                        id={product.id}
-                        image={product.images[0]}
-                        productName={product.productName}
-                      />
-                    ))}
-                </div>
+                <ProductList products={products} />
               )}
             </section>
           </article>
