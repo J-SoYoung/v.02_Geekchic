@@ -4,7 +4,6 @@ import { useRecoilState } from 'recoil';
 import { v4 as uuidv4 } from 'uuid';
 
 import { BasicButton, CommentInput, CommentsList } from '@/components';
-import { Icon_Chevron_left } from '@/_assets';
 
 import { userState } from '@/_recoil';
 import { utcToKoreaTimes, validateCartItems } from '@/_utils';
@@ -20,6 +19,7 @@ import SizeSelector from './SizeSelector';
 import QuantitySelector from './QuantitySelector';
 import { WishProductIcon } from './WishProductIcon';
 import { Skeleton } from './Skeleton';
+import { BackToMoveButton } from '@/components/button';
 
 export const ProductsDetail = () => {
   const navigate = useNavigate();
@@ -105,18 +105,8 @@ export const ProductsDetail = () => {
       ) : (
         !!product && (
           <main className='text-left'>
-            <button
-              className='w-10 h-10 fixed top-2 cursor-pointer'
-              onClick={() => navigate(-1)}
-            >
-              <img
-                src={Icon_Chevron_left}
-                alt='이전 페이지로'
-                className='w-full'
-              />
-            </button>
-
             <section className='relative'>
+              <BackToMoveButton />
               <ProductImageGallery
                 images={product.images}
                 productName={product.productName}
@@ -143,7 +133,7 @@ export const ProductsDetail = () => {
                 selectedQuantity={selectedQuantity}
                 setSelectedQuantity={setSelectedQuantity}
               />
-              <div className='pt-4 flex'>
+              <div className='py-4 flex'>
                 <BasicButton
                   onClickFunc={onClickAddCart}
                   text={'장바구니'}
@@ -156,8 +146,8 @@ export const ProductsDetail = () => {
                 />
               </div>
             </section>
-
-            <section className='p-8'>
+            
+            <section className='p-8 pb-24'>
               <CommentsList url={commentsUrl} queryKeys={queryKeys} />
               <CommentInput url={commentsUrl} queryKeys={queryKeys} />
             </section>
