@@ -3,7 +3,7 @@ import {
   getUsedPageMainInfo,
   getWishDataState,
 } from '@/_apis';
-import { ProductType } from '@/_typesBundle';
+import { ProductType, UsedProductType } from '@/_typesBundle';
 import { useQuery } from '@tanstack/react-query';
 
 const useProducts = (activeTab: string) => {
@@ -17,13 +17,21 @@ const useProducts = (activeTab: string) => {
     enabled: !!activeTab,
   });
 };
-
-const useProductDetail = (productId: string) => {
+interface useProductDetailProps {
+  productId: string;
+  queryKey: string;
+  table: string;
+}
+const useProductDetail = ({
+  productId,
+  queryKey,
+  table,
+}: useProductDetailProps) => {
   return useQuery({
-    queryKey: ['productDetail', productId],
+    queryKey: [queryKey, productId],
     queryFn: async () =>
-      await getUsedPageMainInfo<ProductType>({
-        table: 'products',
+      await getUsedPageMainInfo<ProductType|UsedProductType>({
+        table: table,
         id: productId as string,
       }),
   });
