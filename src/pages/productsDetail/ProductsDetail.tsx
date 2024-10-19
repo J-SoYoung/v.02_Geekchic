@@ -38,7 +38,11 @@ export const ProductsDetail = () => {
     data: product,
     isPending,
     isError,
-  } = useProductDetail(productId as string);
+  } = useProductDetail({
+    productId: productId as string,
+    queryKey: 'productDetail',
+    table: 'products',
+  });
   const sizeOptions = useMemo(() => product?.size?.split(' / '), [product]);
 
   const wishProductMutation = useWishProductMutation(

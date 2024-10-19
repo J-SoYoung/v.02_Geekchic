@@ -14,10 +14,11 @@ import {
   UserProfileInfoComp,
 } from '@/components';
 import { Icon_Chevron_left } from '@/_assets';
-import { addMessagesPage, checkMessage, getUsedPageMainInfo } from '@/_apis';
+import { addMessagesPage, checkMessage } from '@/_apis';
 import { userState } from '@/_recoil';
 import { MessageType, UsedProductType } from '@/_typesBundle';
 import { utcToKoreaTimes } from '@/_utils';
+import { useProductDetail } from '@/hooks';
 
 export const UsedProductsDetail = () => {
   const { productId } = useParams<{ productId: string }>();
@@ -28,18 +29,14 @@ export const UsedProductsDetail = () => {
   );
   const [isLoadingMessage, setIsLoadingMessage] = useState(true);
 
-  const {
-    data: usedProduct,
-    isPending,
-    isError,
-  } = useQuery({
-    queryKey: ['usedProductDetail', productId],
-    queryFn: () =>
-      getUsedPageMainInfo<UsedProductType>({
-        table: 'usedProducts',
-        id: productId as string,
-      }),
+  const { data, isPending, isError } = useProductDetail({
+    productId: productId as string,
+    queryKey: 'usedProductDetail',
+    table: 'usedProducts',
   });
+
+  const usedProduct =
+    data && 'seller' in data ? (data as UsedProductType) : null;
 
   const seller = loginUser?._id === usedProduct?.seller._id;
   const isSoldOut = usedProduct && usedProduct.quantity < 1;
