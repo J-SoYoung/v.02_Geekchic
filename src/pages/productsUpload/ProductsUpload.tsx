@@ -2,8 +2,14 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
 import { ProductType } from '@/_typesBundle';
-import { FormInput, FormRadio, UploadImage } from '../usedProductsUpload';
-import { BasicButton, Layout, LoadingSpinner } from '@/components';
+import {
+  BasicButton,
+  Layout,
+  LoadingSpinner,
+  FormInput,
+  FormRadio,
+  UploadImage,
+} from '@/components';
 import { initProduct } from '@/_example';
 import { useInput } from '@/hooks/useInput';
 import { useProductUpload } from './useProductUpload';
@@ -12,13 +18,20 @@ export const ProductsUpload = () => {
   const navigate = useNavigate();
   const [previewImages, setPreviewImages] = useState<string[]>([]);
   const [uploadImages, setUploadImages] = useState<File[]>([]);
- 
-  const { values: products, handleChange, reset } = useInput<ProductType>(initProduct);
-  const { isLoading, onClickUploadProducts } = useProductUpload(products,uploadImages)
+
+  const {
+    values: products,
+    handleChange,
+    reset,
+  } = useInput<ProductType>(initProduct);
+  const { isLoading, onClickUploadProducts } = useProductUpload(
+    products,
+    uploadImages,
+  );
 
   const onClickMoveUsedMain = () => {
     if (confirm('제품 업로드를 취소하겠습니까?')) {
-      reset()
+      reset();
       navigate('/');
     }
   };
