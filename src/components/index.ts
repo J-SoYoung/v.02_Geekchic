@@ -9,6 +9,7 @@ import { ErrorPageReload } from './ErrorPageReload';
 export * from './button';
 export * from './comment';
 export * from './searchBar';
+export * from './formComponent';
 
 export {
   Layout,
