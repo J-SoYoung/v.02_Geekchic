@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { memo, useRef } from 'react';
 
 interface UploadImageProps {
   previewImages: string[];
@@ -6,7 +6,7 @@ interface UploadImageProps {
   setUploadImages: React.Dispatch<React.SetStateAction<File[]>>;
 }
 
-export const UploadImage = ({
+export const UploadImage = memo(({
   previewImages,
   setPreviewImages,
   setUploadImages,
@@ -61,4 +61,4 @@ export const UploadImage = ({
       </div>
     </div>
   );
-};
+});
