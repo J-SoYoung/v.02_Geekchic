@@ -103,20 +103,22 @@ export const PurchaseList = () => {
       {usedPurchasesPending ? (
         <p>로딩중.</p>
       ) : (
-        <div>
+        <>
           {filteredData.map((data, idx) => (
-            <MyProductCard
-              key={idx}
-              createdAt={data.createdAt}
-              productImage={data.productImage}
-              productName={data.productName}
-              size={data.size}
-              quantity={data.productsQuantity}
-              price={data.price}
-              paymentsId={data.paymentsId}
-            />
+            <div className='border-b'>
+              <MyProductCard
+                key={idx}
+                createdAt={data.createdAt}
+                productImage={data.productImage}
+                productName={data.productName}
+                size={data.size}
+                quantity={data.productsQuantity}
+                price={data.price}
+                paymentsId={data.paymentsId}
+              />
+            </div>
           ))}
-        </div>
+        </>
       )}
     </Layout>
   );
