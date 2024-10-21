@@ -1,17 +1,16 @@
-import { useRef } from 'react';
+import { memo, useRef } from 'react';
 
 interface UploadImageProps {
   previewImages: string[];
-  setPreviewImages: (images: string[]) => void;
-  setUploadImages: (files: File[]) => void;
+  setPreviewImages: React.Dispatch<React.SetStateAction<string[]>>;
+  setUploadImages: React.Dispatch<React.SetStateAction<File[]>>;
 }
 
-export const UploadImage = ({
+export const UploadImage = memo(({
   previewImages,
   setPreviewImages,
   setUploadImages,
 }: UploadImageProps) => {
-
   const inputFileRef = useRef<HTMLInputElement>(null);
   const onChangeImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -62,4 +61,4 @@ export const UploadImage = ({
       </div>
     </div>
   );
-};
+});

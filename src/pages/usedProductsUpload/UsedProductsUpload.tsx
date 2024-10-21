@@ -3,25 +3,24 @@ import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { useRecoilState } from 'recoil';
 import { v4 as uuidv4 } from 'uuid';
-
-import { UploadImage, FormInput } from './index';
-
 import {
   Layout,
   BasicButton,
   ErrorPageReload,
   LoadingSpinner,
+  UploadImage,
+  FormInput,
+  FormRadio,
 } from '@/components';
 import { uploadCloudImagesArray, uploadUsedProducts } from '@/_apis';
 import { UsedProductType } from '@/_typesBundle';
 import { userState } from '@/_recoil';
 import { initUsedProduct } from '@/_example';
 import { utcToKoreaTimes, validateUsedProductData } from '@/_utils';
-import { FormRadio } from './FormRadio';
 
 export const UsedProductsUpload = () => {
-  const navigate = useNavigate();;
-  const [user, setUser] = useRecoilState(userState)
+  const navigate = useNavigate();
+  const [user, setUser] = useRecoilState(userState);
 
   const [usedProducts, setUsedProducts] =
     useState<UsedProductType>(initUsedProduct);
@@ -55,7 +54,7 @@ export const UsedProductsUpload = () => {
 
   const usedProductUploadMutation = useMutation({
     mutationFn: async (newUsedProducts: UsedProductType) => {
-      await uploadUsedProducts(newUsedProducts, user, setUser );
+      await uploadUsedProducts(newUsedProducts, user, setUser);
     },
     onSuccess: () => {
       navigate('/used');
@@ -133,7 +132,7 @@ export const UsedProductsUpload = () => {
             <span className='mb-6 text-3xl text-[#8F5BBD] font-bold'>
               Loading
             </span>
-            <LoadingSpinner size='6'/>
+            <LoadingSpinner size='6' />
           </div>
         </div>
       )}
