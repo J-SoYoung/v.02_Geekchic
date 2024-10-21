@@ -2,8 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
-import { BasicButton, Layout, LoadingSpinner } from '@/components';
-import { FormInput, FormRadio } from '../usedProductsUpload';
+import { BasicButton, Layout, LoadingSpinner,FormInput, FormRadio  } from '@/components';
 
 import { editUsedProducts, getUsedPageMainInfo } from '@/_apis';
 import { initUsedProduct } from '@/_example';

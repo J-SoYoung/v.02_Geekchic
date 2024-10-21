@@ -4,7 +4,6 @@ import { useRecoilState } from 'recoil';
 import { v4 as uuidv4 } from 'uuid';
 
 import { BasicButton, CommentInput, CommentsList } from '@/components';
-import { Icon_Chevron_left } from '@/_assets';
 
 import { userState } from '@/_recoil';
 import { utcToKoreaTimes, validateCartItems } from '@/_utils';
@@ -19,6 +18,8 @@ import ProductInfo from './ProductInfo';
 import SizeSelector from './SizeSelector';
 import QuantitySelector from './QuantitySelector';
 import { WishProductIcon } from './WishProductIcon';
+import { Skeleton } from './Skeleton';
+import { BackToMoveButton } from '@/components/button';
 
 export const ProductsDetail = () => {
   const navigate = useNavigate();
@@ -37,7 +38,11 @@ export const ProductsDetail = () => {
     data: product,
     isPending,
     isError,
-  } = useProductDetail(productId as string);
+  } = useProductDetail({
+    productId: productId as string,
+    queryKey: 'productDetail',
+    table: 'products',
+  });
   const sizeOptions = useMemo(() => product?.size?.split(' / '), [product]);
 
   const wishProductMutation = useWishProductMutation(
@@ -93,63 +98,62 @@ export const ProductsDetail = () => {
   const commentsUrl = `comments/${productId}`;
   const queryKeys = 'commentsData';
 
-  if (isPending) return <p>로딩중</p>;
-  if (!product) return <div>데이터가 없습니다</div>;
-
   return (
-    <main className='text-left'>
-      <button
-        className='w-10 h-10 fixed top-2 cursor-pointer'
-        onClick={() => navigate(-1)}
-      >
-        <img src={Icon_Chevron_left} alt='이전 페이지로' className='w-full' />
-      </button>
+    <>
+      {isPending ? (
+        <Skeleton />
+      ) : (
+        !!product && (
+          <main className='text-left'>
+            <section className='relative'>
+              <BackToMoveButton />
+              <ProductImageGallery
+                images={product.images}
+                productName={product.productName}
+              />
+              <WishProductIcon
+                currentWishState={currentWishState}
+                onClickWishProduct={onClickWishProduct}
+              />
+              <ProductInfo
+                productName={product.productName}
+                price={product.price}
+                description={product.description}
+              />
+            </section>
 
-      <section className='relative'>
-        <ProductImageGallery
-          images={product.images}
-          productName={product.productName}
-        />
-        <WishProductIcon
-          currentWishState={currentWishState}
-          onClickWishProduct={onClickWishProduct}
-        />
-        <ProductInfo
-          productName={product.productName}
-          price={product.price}
-          description={product.description}
-        />
-      </section>
-
-      <section className='p-8'>
-        <SizeSelector
-          sizeOptions={sizeOptions}
-          selectedSize={selectedSize}
-          setSelectedSize={setSelectedSize}
-        />
-        <QuantitySelector
-          quantity={product.quantity}
-          selectedQuantity={selectedQuantity}
-          setSelectedQuantity={setSelectedQuantity}
-        />
-        <div className='pt-4 flex'>
-          <BasicButton
-            onClickFunc={onClickAddCart}
-            text={'장바구니'}
-            bg={'bg-[#D34D4D]'}
-          />
-          <BasicButton
-            onClickFunc={onClickPurchaseProduct}
-            text={'바로구매'}
-            bg={'bg-[#8F5BBD]'}
-          />
-        </div>
-      </section>
-
-      <section className='p-8'>
-        <CommentsList url={commentsUrl} queryKeys={queryKeys} />
-        <CommentInput url={commentsUrl} queryKeys={queryKeys} />
-      </section>
-    </main>
+            <section className='p-8'>
+              <SizeSelector
+                sizeOptions={sizeOptions}
+                selectedSize={selectedSize}
+                setSelectedSize={setSelectedSize}
+              />
+              <QuantitySelector
+                quantity={product.quantity}
+                selectedQuantity={selectedQuantity}
+                setSelectedQuantity={setSelectedQuantity}
+              />
+              <div className='py-4 flex'>
+                <BasicButton
+                  onClickFunc={onClickAddCart}
+                  text={'장바구니'}
+                  bg={'bg-[#D34D4D]'}
+                />
+                <BasicButton
+                  onClickFunc={onClickPurchaseProduct}
+                  text={'바로구매'}
+                  bg={'bg-[#8F5BBD]'}
+                />
+              </div>
+            </section>
+            
+            <section className='p-8 pb-24'>
+              <CommentsList url={commentsUrl} queryKeys={queryKeys} />
+              <CommentInput url={commentsUrl} queryKeys={queryKeys} />
+            </section>
+          </main>
+        )
+      )}
+    </>
   );
 };

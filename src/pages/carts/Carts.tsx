@@ -37,7 +37,6 @@ export const Carts = () => {
 
   const onClickUpdateQuantity = useCallback(
     (idx: number, newQuantity: number) => {
-      console.log('handleUpdateQuantity called, 함수생성중');
       setUpdatedCartItems((prevItems) =>
         prevItems.map((item, i) =>
           i === idx ? { ...item, selectedQuantity: newQuantity } : item,
@@ -64,7 +63,7 @@ export const Carts = () => {
       paymentsId,
       userId: userId as string,
       totalAmount: totalPrice,
-      paymentsProductItems, 
+      paymentsProductItems,
     };
     navigate(`/payments/${paymentsId}`, {
       state: { paymentsData, from: `/my/carts/${userId}` },
@@ -83,19 +82,18 @@ export const Carts = () => {
           </Link>
         </div>
       ) : (
-        <div>
-          <div className='border-b py-8'>
-            {updatedCartItems?.map((cartItem, idx) => {
-              return (
+        <>
+          {updatedCartItems?.map((cartItem, idx) => {
+            return (
+              <div key={idx} className='flex flex-col items-start pb-4 '>
                 <CartItems
-                  key={idx}
                   cartItem={cartItem}
                   onUpdateQuantity={onClickUpdateQuantity}
                   idx={idx}
                 />
-              );
-            })}
-          </div>
+              </div>
+            );
+          })}
           <div className='py-8'>
             <h2 className='mb-8 text-xl font-bold'>
               총 가격: {totalPrice.toLocaleString()}원
@@ -106,7 +104,7 @@ export const Carts = () => {
               bg='bg-[#8F5BBD]'
             />
           </div>
-        </div>
+        </>
       )}
     </Layout>
   );
