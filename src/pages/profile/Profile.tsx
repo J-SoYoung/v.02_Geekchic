@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import { useNavigate } from 'react-router-dom';
 
 import { ContentsBox } from './index';
@@ -7,72 +7,36 @@ import { ContentsBox } from './index';
 import { Layout, BasicButton, LoadingSpinner } from '@/components';
 import { userState } from '@/_recoil';
 import { UserDataType } from '@/_typesBundle';
-import { uploadCloudImage, editUserProfileData } from '@/_apis';
 import { Icon_Pencile } from '@/_assets';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useInput } from '@/hooks/useInput';
+import { useImage } from './useImage';
+import { useProfileMutation } from './useProfileMutation';
 
 // ⭕프로필 수정시 -> 전화번호. 주소 유효성검사 check
 export const Profile = () => {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
-
-  const [user, setUser] = useRecoilState(userState);
+  const user = useRecoilValue(userState);
   const [isEditing, setIsEditing] = useState(false);
-  const [editUser, setEditUser] = useState<UserDataType>(user);
-
-  const [previewImage, setPreviewImage] = useState('');
-  const [imageFile, setImageFile] = useState<File>();
   const imageRef = useRef<HTMLInputElement>(null);
 
-  const onChangeEditInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target) {
-      const { name, value } = e.target;
-      setEditUser({ ...editUser, [name]: value });
-    }
-  };
-
-  const onChangeEditImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const file = e.target.files[0];
-      setImageFile(file);
-      const urlFile = URL.createObjectURL(file);
-      setPreviewImage(urlFile);
-    }
-  };
+  const {
+    values: editUser,
+    handleChange,
+    reset,
+  } = useInput<UserDataType>(user);
+  const { previewImage, imageFile, onChangeEditImage, resetImage } = useImage();
 
   const onClickProfileCancel = () => {
-    setEditUser(user);
+    reset();
     setIsEditing(false);
-    setPreviewImage(user.avatar ?? '');
+    resetImage();
   };
 
-  const saveProfileMutation = useMutation({
-    mutationFn: async (updatedUser: UserDataType) => {
-      await editUserProfileData(updatedUser, setUser);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(
-        {
-          queryKey: ['user', user._id],
-          refetchType: 'active',
-          exact: true,
-        },
-        { throwOnError: true, cancelRefetch: true },
-      );
-    },
-    onSettled: () => {
-      setIsEditing(false);
-    },
+  const { onClickSaveProfile, isLoadingProfile } = useProfileMutation({
+    imageFile,
+    setIsEditing,
+    editUser,
   });
-
-  const onClickSaveProfile = async () => {
-    let updatedUser: UserDataType = { ...editUser };
-    if (imageFile) {
-      const cloudImage = await uploadCloudImage(imageFile);
-      updatedUser = { ...editUser, avatar: cloudImage };
-    }
-    saveProfileMutation.mutate(updatedUser);
-  };
 
   return (
     <Layout
@@ -82,7 +46,7 @@ export const Profile = () => {
       }}
     >
       <div className='p-8 relative'>
-        {saveProfileMutation.isPending && (
+        {isLoadingProfile && (
           <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
             <LoadingSpinner size='8' />
           </div>
@@ -121,21 +85,21 @@ export const Profile = () => {
             value={editUser.email ?? ''}
             isEditing={isEditing}
             inputName={'email'}
-            onChange={onChangeEditInput}
+            onChange={handleChange}
           />
           <ContentsBox
             title={'이름'}
             value={editUser.username ?? ''}
             isEditing={isEditing}
             inputName={'username'}
-            onChange={onChangeEditInput}
+            onChange={handleChange}
           />
           <ContentsBox
             title={'전화번호'}
             value={editUser.phone ?? ''}
             isEditing={isEditing}
             inputName={'phone'}
-            onChange={onChangeEditInput}
+            onChange={handleChange}
             isBlank={!user.phone}
           />
           <ContentsBox
@@ -143,7 +107,7 @@ export const Profile = () => {
             value={editUser.address}
             isEditing={isEditing}
             inputName={'address'}
-            onChange={onChangeEditInput}
+            onChange={handleChange}
             onKeyDown={(e: { key: string }) => {
               if (e.key === 'Enter') onClickSaveProfile();
             }}
