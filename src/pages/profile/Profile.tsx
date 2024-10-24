@@ -12,11 +12,15 @@ import { useInput } from '@/hooks/useInput';
 import { useImage } from './useImage';
 import { useProfileMutation } from './useProfileMutation';
 
-// ⭕프로필 수정시 -> 전화번호. 주소 유효성검사 check
 export const Profile = () => {
   const navigate = useNavigate();
   const user = useRecoilValue(userState);
   const [isEditing, setIsEditing] = useState(false);
+  const [errorMessage, setErrorMessage] = useState({
+    username: '',
+    phone: '',
+    address: '',
+  });
   const imageRef = useRef<HTMLInputElement>(null);
 
   const {
@@ -30,6 +34,7 @@ export const Profile = () => {
     reset();
     setIsEditing(false);
     resetImage();
+    setErrorMessage({ username: '', phone: '', address: '' });
   };
 
   const { onClickSaveProfile, isLoadingProfile } = useProfileMutation({
@@ -37,6 +42,36 @@ export const Profile = () => {
     setIsEditing,
     editUser,
   });
+
+  const onClickProfileValidate = () => {
+    const newErrorMessage = { ...errorMessage };
+
+    if (!/^[a-zA-Z가-힣\s]{2,20}$/.test(editUser.username)) {
+      newErrorMessage.username = '올바른 이름을 입력해주세요.';
+    } else {
+      newErrorMessage.username = '';
+    }
+    if (!/^\d{3}-\d{3,4}-\d{4}$/.test(editUser.phone)) {
+      newErrorMessage.phone = '유효한 전화번호를 입력해주세요.';
+    } else {
+      newErrorMessage.phone = '';
+    }
+    if (editUser.address.length < 5) {
+      newErrorMessage.address = '주소를 정확히 입력해주세요.';
+    } else {
+      newErrorMessage.address = '';
+    }
+    setErrorMessage(newErrorMessage);
+
+    // 모두 빈칸이 아니다. 
+    const hasError = Object.values(newErrorMessage).some(
+      (message) => message !== '',
+    );
+    // 모두 빈칸이다. ( 부정부정)
+    if (!hasError) {
+      onClickSaveProfile();
+    }
+  };
 
   return (
     <Layout
@@ -94,14 +129,20 @@ export const Profile = () => {
             inputName={'username'}
             onChange={handleChange}
           />
+          {errorMessage.username && (
+            <p className='text-red-500'>{errorMessage.username}</p>
+          )}
           <ContentsBox
-            title={'전화번호'}
+            title={'전화번호 ( - 까지 입력해주세요)'}
             value={editUser.phone ?? ''}
             isEditing={isEditing}
             inputName={'phone'}
             onChange={handleChange}
             isBlank={!user.phone}
           />
+          {errorMessage.phone && (
+            <p className='text-red-500'>{errorMessage.phone}</p>
+          )}
           <ContentsBox
             title={'주소'}
             value={editUser.address}
@@ -109,16 +150,19 @@ export const Profile = () => {
             inputName={'address'}
             onChange={handleChange}
             onKeyDown={(e: { key: string }) => {
-              if (e.key === 'Enter') onClickSaveProfile();
+              if (e.key === 'Enter') onClickProfileValidate();
             }}
             isBlank={!user.address}
           />
+          {errorMessage.address && (
+            <p className='text-red-500'>{errorMessage.address}</p>
+          )}
         </div>
 
         {isEditing ? (
           <div className='my-20 w-full flex justify-between'>
             <BasicButton
-              onClickFunc={onClickSaveProfile}
+              onClickFunc={onClickProfileValidate}
               text='저장하기'
               bg='bg-[#8F5BBD]'
             />
